@@ -20,9 +20,26 @@ dsh plugin install /path/to/dsh-openfoam-workbench
 ```
 
 **Edit `cordis.patch.yml` first** — it ships with the author's machine paths
-(`/opt/openfoam14`, `/opt/paraview`, a `caseRoots`). Point them at your own
-OpenFOAM, a headless-capable ParaView (6.x), and your working directory before
-installing. Restart DSH after install or after source changes.
+(`foamRoots.org`/`foamRoots.com`, `/opt/paraview`, a `caseRoots`). Point them at
+your own OpenFOAM distribution(s) — org and/or com — a headless-capable ParaView
+(6.x), and your working directory. `defaultDistribution` picks the one used when a
+tool is called without `distribution=`. Restart DSH after install or changes.
+
+## Multiple distributions
+
+Several OpenFOAM installations can coexist:
+
+```yaml
+foamRoots:
+  org: /opt/openfoam14
+  com: /usr/lib/openfoam/openfoam2606
+defaultDistribution: org
+```
+
+`openfoam_env_check` reports **every** configured distribution. `openfoam_run`,
+`openfoam_run_solver_async`, `openfoam_solver_build`, `openfoam_dry_compile`,
+`openfoam_solver_smoke` and `openfoam_version_info` take a `distribution` argument
+(`org` / `com`) and otherwise use `defaultDistribution`.
 
 ## What you get
 

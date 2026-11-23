@@ -4,8 +4,10 @@
     - id: openfoam-workbench
       name: '@yakovlev-i-a/dsh-openfoam-workbench'
       config:
-        foamRoot: /opt/openfoam14
-        openfoamBash: /opt/openfoam14/etc/bashrc
+        foamRoots:
+          org: /opt/openfoam14
+          com: /usr/lib/openfoam/openfoam2606
+        defaultDistribution: org
         paraviewExe: /opt/paraview/bin/paraview
         paraviewPython: /opt/paraview/bin/pvpython
         caseRoots:
