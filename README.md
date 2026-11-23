@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**57 tools · 10 skills · 28 tests**
+**v0.2.0 · 57 tools · 10 skills · 29 tests**
 
 ## Install
 
@@ -24,6 +24,23 @@ dsh plugin install /path/to/dsh-openfoam-workbench
 your own OpenFOAM distribution(s) — org and/or com — a headless-capable ParaView
 (6.x), and your working directory. `defaultDistribution` picks the one used when a
 tool is called without `distribution=`. Restart DSH after install or changes.
+
+## Update
+
+DSH imports plugin code at boot, so a running instance keeps the version it
+started with:
+
+```bash
+# linked install ("...": "link:/path/to/dsh-openfoam-workbench") — no reinstall:
+git -C /path/to/dsh-openfoam-workbench pull --ff-only
+# package install (github:, npm tarball):
+dsh plugin --profile web update @yakovlev-i-a/dsh-openfoam-workbench
+# then restart the host that boots the profile:
+dsh web
+```
+
+`openfoam_env_check`/`openfoam_version_info` return `plugin.version` from
+`package.json`, so a stale in-memory copy is visible without guessing.
 
 ## Multiple distributions
 
@@ -71,7 +88,7 @@ service, never in `settings.json` or in the bundle.
 lib/index.js       # 57 tools + core section + skill registration
 lib/of-engine.js   # OpenFOAM dict parser + 28 silent-failure rules (MIT)
 skills/            # 10 × SKILL.md (progressive disclosure)
-test/              # 18 engine tests + 10 tool tests + mock smoke
+test/              # 18 engine tests + 11 tool tests + mock smoke
 locale/            # en/ru plugin-card strings
 icon.svg           # plugin icon
 ```

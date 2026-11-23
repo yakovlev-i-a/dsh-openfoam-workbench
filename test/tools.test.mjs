@@ -2,7 +2,7 @@
 // against synthetic cases (no OpenFOAM install needed).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { apply } from '../lib/index.js'
@@ -156,6 +156,16 @@ test('list_solvers classifies modules and reports distribution', async () => {
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
+})
+
+test('env_check reports the bundle version and accepts distribution', async () => {
+  const tools = registry()
+  assert.ok(tools.openfoam_env_check.parameters.properties.distribution)
+  assert.ok(tools.openfoam_version_info.parameters.properties.distribution)
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  const r = await tools.openfoam_env_check.execute({})
+  assert.equal(r.plugin.name, pkg.name)
+  assert.equal(r.plugin.version, pkg.version)
 })
 
 test('durable registry: apply reconciles a dead run with End to success', async () => {
