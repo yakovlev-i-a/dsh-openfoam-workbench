@@ -1,0 +1,12 @@
+# dsh-openfoam-workbench bundle: mount the OpenFOAM Workbench plugin.
+# EDIT THESE PATHS for your machine before installing.
+- insert:
+    - id: openfoam-workbench
+      name: '@yakovlev-i-a/dsh-openfoam-workbench'
+      config:
+        foamRoot: /opt/openfoam14
+        openfoamBash: /opt/openfoam14/etc/bashrc
+        paraviewExe: /opt/paraview/bin/paraview
+        paraviewPython: /opt/paraview/bin/pvpython
+        caseRoots:
+          - /media/yakovlev-i-a/adata-legend-512/openfoam-dev

@@ -1,0 +1,25 @@
+OpenFOAM Workbench (dsh-openfoam-workbench)
+
+This product includes software and ideas derived from the following projects.
+
+1. NullFlux / CFDriver (https://github.com/LZF1111/nullflux)
+   Copyright (c) LZF. Licensed under the Apache License, Version 2.0.
+   The OpenFOAM tool logic, the experience-card format, and the workflow
+   structure are derived from this project, substantially rewritten,
+   translated (zh → en/ru) and simplified.
+
+2. dsh-openfoam-doctor (https://github.com/bushizhanghan/dsh-openfoam-doctor)
+   Copyright (c) bushizhanghan. Licensed under the MIT License.
+   The OpenFOAM dictionary parser, the 28 silent-failure check rules, and the
+   checkMesh/run-log parsers in lib/of-engine.js, together with the ported
+   test suite and the checkMesh log fixture, are derived from this project.
+   See licenses/dsh-openfoam-doctor-MIT.txt.
+
+3. csml-rpi/AI-CFD-Scientist (https://github.com/csml-rpi/AI-CFD-Scientist)
+   The mesh-independence protocol (STEPS A–E), the numerical-stats patterns,
+   the run-validity policy, and the PROCEED/REVISE/RERUN decision taxonomy
+   were adapted into our skills. Verify that repository's license before
+   redistributing the adapted protocols.
+
+OpenFOAM itself is NOT redistributed. This plugin calls the user's installed
+OpenFOAM (GPL-3.0) via subprocesses.

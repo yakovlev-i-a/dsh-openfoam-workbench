@@ -1,0 +1,7 @@
+.experience/
+test/.tmp/
+test/.case/
+node_modules/
+icon-preview.png
+*.log
+.openfoam-runs/
