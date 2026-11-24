@@ -15,16 +15,15 @@ window.__ModuleLoader__.load({
   id: '@yakovlev-i-a/dsh-openfoam-workbench',
   factory() {
     const TAG = '@yakovlev-i-a/dsh-openfoam-workbench/tool-accent.css'
-    // Light/dark come from the Host palette attribute on <body>. The tool name
-    // is the css-module element ending in `_title` (its hash prefix changes
-    // between builds, the local suffix does not); the row is ringed with
-    // box-shadow so the layout does not shift.
+    // Light/dark come from the Host palette attribute on <body>. The row shows
+    // `Tool call` as the title and `openfoam_x · <argument summary>` in the
+    // summary element (css-module local name `_summary`; its hash prefix changes
+    // between builds). Blue marks the call itself; the ring and the orange title
+    // are gone by request.
     const CSS = [
-      '/* OpenFOAM Workbench: orange name + ring on every openfoam_* tool row */',
-      '[data-tool^="openfoam_"] { box-shadow: 0 0 0 1px #c2410c; border-radius: 8px; }',
-      '[data-tool^="openfoam_"] [class*="_title"] { color: #c2410c; }',
-      'body[data-ds-dark-theme] [data-tool^="openfoam_"] { box-shadow: 0 0 0 1px #fb923c; }',
-      'body[data-ds-dark-theme] [data-tool^="openfoam_"] [class*="_title"] { color: #fdba74; }',
+      '/* OpenFOAM Workbench: blue call summary on every openfoam_* tool row */',
+      '[data-tool^="openfoam_"] [class*="_summary"] { color: #3b518c; }',
+      'body[data-ds-dark-theme] [data-tool^="openfoam_"] [class*="_summary"] { color: #9db4e0; }',
     ].join('\n')
 
     return {

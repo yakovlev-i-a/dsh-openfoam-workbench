@@ -38,9 +38,9 @@ test('client.js registers the openfoam accent stylesheet and removes it on clean
     const style = head.children[0]
     assert.equal(style.attrs['data-plugin-css'], '@yakovlev-i-a/dsh-openfoam-workbench/tool-accent.css')
     assert.match(style.textContent, /\[data-tool\^="openfoam_"\]/)
-    assert.match(style.textContent, /box-shadow: 0 0 0 1px #c2410c/, 'orange ring expected')
-    assert.match(style.textContent, /\[class\*="_title"\] \{ color: #c2410c/, 'orange tool name expected')
-    assert.match(style.textContent, /#fb923c|#fdba74/, 'dark palette expected')
+    assert.match(style.textContent, /\[class\*="_summary"\] \{ color: #3b518c/, 'blue summary expected')
+    assert.match(style.textContent, /#9db4e0/, 'dark palette variant expected')
+    assert.doesNotMatch(style.textContent, /box-shadow/, 'the ring was removed by request')
     assert.match(style.textContent, /data-ds-dark-theme/, 'dark palette variant expected')
     assert.equal(typeof cleanup, 'function')
     cleanup()
