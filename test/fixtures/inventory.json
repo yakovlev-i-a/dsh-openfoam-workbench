@@ -1,0 +1,357 @@
+{
+  "tools": [
+    {
+      "name": "openfoam_algo_case_audit",
+      "description": "8e02e13a54569659",
+      "parameters": "e2ededea230fd74e"
+    },
+    {
+      "name": "openfoam_algo_extract_contract",
+      "description": "fc647adea8d312df",
+      "parameters": "a8ccee8efc1baa0b"
+    },
+    {
+      "name": "openfoam_case_probe_facts",
+      "description": "19a9f7002c250a40",
+      "parameters": "e7e77fe0bda1c69a"
+    },
+    {
+      "name": "openfoam_check",
+      "description": "8d9e17f61500cb44",
+      "parameters": "90c859043e947754"
+    },
+    {
+      "name": "openfoam_clean",
+      "description": "2f48259974891b58",
+      "parameters": "2999f2311d589bd9"
+    },
+    {
+      "name": "openfoam_clone_solver",
+      "description": "62e2527bf0d75620",
+      "parameters": "66b97d39b0a1ae61"
+    },
+    {
+      "name": "openfoam_clone_tutorial",
+      "description": "fa8decf48c13d2b0",
+      "parameters": "6f11f96e78e07edb"
+    },
+    {
+      "name": "openfoam_compare_render",
+      "description": "b69c86e280d54db1",
+      "parameters": "c4f99b5399c62c33"
+    },
+    {
+      "name": "openfoam_compute_first_layer",
+      "description": "836e39b3ada5909e",
+      "parameters": "42755b2de130cbfb"
+    },
+    {
+      "name": "openfoam_diagnose_error",
+      "description": "c984c21a7a7930ae",
+      "parameters": "9dbd108976fe989d"
+    },
+    {
+      "name": "openfoam_dict_set",
+      "description": "e0763450930e8ef0",
+      "parameters": "7b66f103567b354c"
+    },
+    {
+      "name": "openfoam_dry_compile",
+      "description": "f81eb8a9470f5e72",
+      "parameters": "17d13bc02e6aed8f"
+    },
+    {
+      "name": "openfoam_env_check",
+      "description": "4cfe5373aecc86b9",
+      "parameters": "f1df4c59f4796d58"
+    },
+    {
+      "name": "openfoam_experience_eval_compare",
+      "description": "4186741c5a37e857",
+      "parameters": "737412dee2efb4f9"
+    },
+    {
+      "name": "openfoam_experience_export",
+      "description": "06392f784a56ceb2",
+      "parameters": "af5c823349668e31"
+    },
+    {
+      "name": "openfoam_experience_export_sft",
+      "description": "a26dbeadef624dd0",
+      "parameters": "c2ba6a0679b1deb9"
+    },
+    {
+      "name": "openfoam_experience_forget",
+      "description": "b28c3d2318ff6464",
+      "parameters": "3c45daf109e3e3a7"
+    },
+    {
+      "name": "openfoam_experience_import",
+      "description": "c0845f762900dbfa",
+      "parameters": "04ec82e2ca2900d9"
+    },
+    {
+      "name": "openfoam_experience_list",
+      "description": "1571efa1b7add355",
+      "parameters": "8243f0af367f188a"
+    },
+    {
+      "name": "openfoam_experience_recall",
+      "description": "0af0bac90e70b561",
+      "parameters": "55c24ee874cb3958"
+    },
+    {
+      "name": "openfoam_experience_save",
+      "description": "dcbb0adcfd4b92c5",
+      "parameters": "740777fb1dfbf15b"
+    },
+    {
+      "name": "openfoam_find_source",
+      "description": "255bfa0de6c998e1",
+      "parameters": "82a326037e6cb1fb"
+    },
+    {
+      "name": "openfoam_find_tutorial",
+      "description": "f2a47dca3e608bfe",
+      "parameters": "0b438a7765162544"
+    },
+    {
+      "name": "openfoam_geom_verify",
+      "description": "c98aa7c9f0850341",
+      "parameters": "464d17783012a48a"
+    },
+    {
+      "name": "openfoam_inspect_case",
+      "description": "660490d2f454f2d0",
+      "parameters": "cd509c8fecc9e5d3"
+    },
+    {
+      "name": "openfoam_learn_error_pattern",
+      "description": "22fa5ccc5d3a8a95",
+      "parameters": "66960b754dd6c3db"
+    },
+    {
+      "name": "openfoam_list_cases",
+      "description": "1ab927e0db2925d8",
+      "parameters": "0770e89feddf12c9"
+    },
+    {
+      "name": "openfoam_list_solvers",
+      "description": "f8d19ae64a39e97e",
+      "parameters": "050ee4d572bdde69"
+    },
+    {
+      "name": "openfoam_log",
+      "description": "fae1b48786906154",
+      "parameters": "449c37387d457de3"
+    },
+    {
+      "name": "openfoam_mesh_box_stl",
+      "description": "cc39fd3919c6ee90",
+      "parameters": "63ad151d98474034"
+    },
+    {
+      "name": "openfoam_mesh_plan",
+      "description": "7c9a4525a8dd63c4",
+      "parameters": "b64347fdceeac7bc"
+    },
+    {
+      "name": "openfoam_mesh_stl_check",
+      "description": "c9c7bb52c70b87c9",
+      "parameters": "cf03fbe88a5a860a"
+    },
+    {
+      "name": "openfoam_mesh_verify",
+      "description": "6c9d493dbe301408",
+      "parameters": "a9ec827689d14e7f"
+    },
+    {
+      "name": "openfoam_paper_extract",
+      "description": "09bf16ccdcc26a8a",
+      "parameters": "aa9da9b5adc2f118"
+    },
+    {
+      "name": "openfoam_paper_fetch",
+      "description": "5ce46a95ec467a8a",
+      "parameters": "fcafcc85967dcf7b"
+    },
+    {
+      "name": "openfoam_paper_param_verify",
+      "description": "d3722b8dd5927f2a",
+      "parameters": "f4563f788599ff83"
+    },
+    {
+      "name": "openfoam_paper_search",
+      "description": "87e7440ecbd444b7",
+      "parameters": "55c24ee874cb3958"
+    },
+    {
+      "name": "openfoam_patch_diff",
+      "description": "984d58253b001af5",
+      "parameters": "99822b37a933781b"
+    },
+    {
+      "name": "openfoam_post_verify",
+      "description": "393000ccfc937a80",
+      "parameters": "9859c1b0ca83eb0e"
+    },
+    {
+      "name": "openfoam_read_dict",
+      "description": "fc389c5ce46ebac8",
+      "parameters": "a6035329468179fe"
+    },
+    {
+      "name": "openfoam_read_document",
+      "description": "50fd8db1188e49bd",
+      "parameters": "449c37387d457de3"
+    },
+    {
+      "name": "openfoam_read_paper",
+      "description": "14b1f7bd2a59e6f1",
+      "parameters": "aa9da9b5adc2f118"
+    },
+    {
+      "name": "openfoam_read_source",
+      "description": "0df6f010d30e37b9",
+      "parameters": "1cf9e7dff62b887b"
+    },
+    {
+      "name": "openfoam_render",
+      "description": "bda5918afae8ebc9",
+      "parameters": "5141a540cecf9a6a"
+    },
+    {
+      "name": "openfoam_residual_series",
+      "description": "0e74c6b61626913d",
+      "parameters": "aa58a47db774c2c4"
+    },
+    {
+      "name": "openfoam_run",
+      "description": "4b7e506c64ea6721",
+      "parameters": "cd6a49be3c2b3012"
+    },
+    {
+      "name": "openfoam_run_list",
+      "description": "60f2e5ef8501d6ff",
+      "parameters": "df77aedc30aeb617"
+    },
+    {
+      "name": "openfoam_run_progress",
+      "description": "fec93758c23807fe",
+      "parameters": "7ffd01110f5c90f5"
+    },
+    {
+      "name": "openfoam_run_solver_async",
+      "description": "dcaa5cb48a8619c1",
+      "parameters": "1334e84ea99b7b1e"
+    },
+    {
+      "name": "openfoam_solve_verify",
+      "description": "7b5d111e918df05d",
+      "parameters": "663c42914ce3219e"
+    },
+    {
+      "name": "openfoam_solver_build",
+      "description": "1f8516fc3a7e50b0",
+      "parameters": "e3c47675f5bbe824"
+    },
+    {
+      "name": "openfoam_solver_inspect",
+      "description": "5fc6e70a4c7d1a9d",
+      "parameters": "ac553c9ab06125e9"
+    },
+    {
+      "name": "openfoam_solver_smoke",
+      "description": "8f11b96e1407f493",
+      "parameters": "d4b67316c9c2050e"
+    },
+    {
+      "name": "openfoam_solver_status",
+      "description": "c5f858b47ee8df0a",
+      "parameters": "dffb37dbcca421f1"
+    },
+    {
+      "name": "openfoam_solver_stop",
+      "description": "5bac54312fc1277a",
+      "parameters": "dffb37dbcca421f1"
+    },
+    {
+      "name": "openfoam_source_search",
+      "description": "82894756e39a042e",
+      "parameters": "80a31011d94a6de6"
+    },
+    {
+      "name": "openfoam_stl_generate",
+      "description": "7407bd98cb326b86",
+      "parameters": "36bc7a7dd57e95d1"
+    },
+    {
+      "name": "openfoam_stl_inspect",
+      "description": "f9f2885c81a825ae",
+      "parameters": "0ea5ac09f5787c0a"
+    },
+    {
+      "name": "openfoam_stl_render",
+      "description": "78cf6662f0c41277",
+      "parameters": "18968ac87622d146"
+    },
+    {
+      "name": "openfoam_usage_report",
+      "description": "1adda349309058aa",
+      "parameters": "d6fa9360a7172522"
+    },
+    {
+      "name": "openfoam_version_info",
+      "description": "03a4ce16daa25a34",
+      "parameters": "aab61ec4d2b6b36c"
+    }
+  ],
+  "section": {
+    "name": "openfoam-workbench:core",
+    "order": 250,
+    "interpolate": false,
+    "text": "dca9976e58b32041"
+  },
+  "skills": [
+    {
+      "name": "openfoam-analyze",
+      "description": "bc366cec06cd1c05"
+    },
+    {
+      "name": "openfoam-case-builder",
+      "description": "0984945f551bfd4d"
+    },
+    {
+      "name": "openfoam-code-modify",
+      "description": "dd382c498c0f803f"
+    },
+    {
+      "name": "openfoam-mesh-independence",
+      "description": "7f5d89bbe7814467"
+    },
+    {
+      "name": "openfoam-meshing",
+      "description": "bbaa622e8959ae60"
+    },
+    {
+      "name": "openfoam-paper-reproduction",
+      "description": "68a59bb30fe00f38"
+    },
+    {
+      "name": "openfoam-self-evolution",
+      "description": "ce40fabd3427f237"
+    },
+    {
+      "name": "openfoam-solver-development",
+      "description": "77bf0f7fd17d0029"
+    },
+    {
+      "name": "openfoam-stats",
+      "description": "dd8b0ab70bd7ec04"
+    },
+    {
+      "name": "openfoam-viz",
+      "description": "f4ad5fc3cbc8d684"
+    }
+  ]
+}

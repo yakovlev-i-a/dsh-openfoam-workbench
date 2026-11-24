@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.3.1 · 61 tools · 10 skills · 39 tests**
+**v0.3.3 · 61 tools · 10 skills · 43 tests**
 
 ## Install
 
@@ -108,11 +108,23 @@ service, never in `settings.json` or in the bundle.
 ## Layout
 
 ```
-lib/index.js       # 61 tools + core section + skill registration
-lib/of-engine.js   # OpenFOAM dict parser + 28 silent-failure rules (MIT)
+lib/index.js       # entry: apply() mounts core + skills + tool groups (~50 lines)
+lib/core.js        # always-on prompt section, read from CORE.md on every assembly
+lib/skills.js      # reads skills/*/SKILL.md and registers the catalog
+lib/runtime.js     # process/paths/runs helpers + config defaults (deps for tools)
+lib/knowledge.js   # solver classification + error patterns + diagnosis
+lib/presentation.js# pvpython renders, inline images, tool-call cards, tables
+lib/telemetry.js   # usage counters + reg() wrapper (render/presentCall)
+lib/of-engine.js   # OpenFOAM dict parser + 31 silent-failure rules (MIT)
 lib/of-case.js     # multi-region model: regions, dict paths, command whitelist, progress
+lib/meshlib.js     # STL/geometry helpers + blockMesh/snappy plan writer
+lib/caselib.js     # four-step contract extraction, case facts, contract audit
+lib/buildlib.js    # Make/files parsing + first compiler error
+lib/paperlib.js    # PDF/paper extraction helpers
+lib/explib.js      # experience cards + learned error patterns
+lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (61 total)
 skills/            # 10 × SKILL.md (progressive disclosure)
-test/              # 21 engine tests + 18 tool tests + mock smoke
+test/              # 21 engine + 18 tool + 4 core/inventory tests + mock smoke
 locale/            # en/ru plugin-card strings
 icon.svg           # plugin icon
 ```
