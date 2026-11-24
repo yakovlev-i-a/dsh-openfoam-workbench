@@ -15,13 +15,16 @@ window.__ModuleLoader__.load({
   id: '@yakovlev-i-a/dsh-openfoam-workbench',
   factory() {
     const TAG = '@yakovlev-i-a/dsh-openfoam-workbench/tool-accent.css'
-    // Light/dark come from the Host palette attribute on <body>.
+    // Light/dark come from the Host palette attribute on <body>. The tool name
+    // is the css-module element ending in `_title` (its hash prefix changes
+    // between builds, the local suffix does not); the row is ringed with
+    // box-shadow so the layout does not shift.
     const CSS = [
-      '/* OpenFOAM Workbench: orange accent on every openfoam_* tool row */',
-      '[data-tool^="openfoam_"] { box-shadow: inset 3px 0 0 0 #c2410c; }',
-      'body[data-ds-dark-theme] [data-tool^="openfoam_"] { box-shadow: inset 3px 0 0 0 #fb923c; }',
-      '[data-tool^="openfoam_"][data-state="running"] { box-shadow: inset 3px 0 0 0 #ea580c; }',
-      'body[data-ds-dark-theme] [data-tool^="openfoam_"][data-state="running"] { box-shadow: inset 3px 0 0 0 #fdba74; }',
+      '/* OpenFOAM Workbench: orange name + ring on every openfoam_* tool row */',
+      '[data-tool^="openfoam_"] { box-shadow: 0 0 0 1px #c2410c; border-radius: 8px; }',
+      '[data-tool^="openfoam_"] [class*="_title"] { color: #c2410c; }',
+      'body[data-ds-dark-theme] [data-tool^="openfoam_"] { box-shadow: 0 0 0 1px #fb923c; }',
+      'body[data-ds-dark-theme] [data-tool^="openfoam_"] [class*="_title"] { color: #fdba74; }',
     ].join('\n')
 
     return {

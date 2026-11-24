@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.4.2 · 61 tools · 11 skills · 70 tests**
+**v0.4.3 · 61 tools · 11 skills · 70 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -116,9 +116,9 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   `check` / `run_list` / `mesh_verify` / `env_check` / `list_cases` /
   `run_progress` / `solve_verify` / `usage_report`, compact JSON for large
   payloads, and a `QUESTION` block whenever a tool needs a human decision
-  (`needs_input`). In the Web UI every `openfoam_*` call row carries an orange
-  accent bar (`client.js`, the browser half of this bundle; light and dark
-  palettes, no per-tool registration).
+  (`needs_input`). In the Web UI every `openfoam_*` call row is ringed in
+  orange and its tool name is orange (`client.js`, the browser half of this
+  bundle; light and dark palettes, no per-tool registration).
 
 ## Security
 
