@@ -25,5 +25,5 @@ test('registered tools, core section and skills match the inventory fixture', ()
   }
   assert.deepEqual(actual, expected)
   assert.equal(actual.tools.length, 61)
-  assert.equal(actual.skills.length, 10)
+  assert.equal(actual.skills.length, 11)
 })

@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.3.4 · 61 tools · 10 skills · 49 tests**
+**v0.3.5 · 61 tools · 11 skills · 53 tests**
 
 ## Install
 
@@ -86,9 +86,10 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   render (inline PNG, multi-region), verification (`solve_verify`, `mesh_verify`),
   case editing (`dict_set`, `clean`), doctor checks, diagnostics, papers,
   experience, and a usage self-audit (`usage_report`).
-- **Skills** (`SKILL.md`, load on demand, 10): case-builder, solver-development,
-  code-modify, meshing, mesh-independence, stats, viz, analyze,
-  paper-reproduction, self-evolution.
+- **Skills** (`SKILL.md`, load on demand, 11): case-builder, **cht** (multi-region
+  conjugate heat transfer), solver-development, code-modify, meshing,
+  mesh-independence, stats, viz, analyze, paper-reproduction, self-evolution.
+  A test keeps every referenced tool registered and the always-on catalog under 4 KB.
 - **Presentation**: inline render images (`image` block), tool-call cards
   (`generic` / `terminal`), table renders for `check` / `run_list` / `mesh_verify`.
 
@@ -123,8 +124,8 @@ lib/buildlib.js    # Make/files parsing + first compiler error
 lib/paperlib.js    # PDF/paper extraction helpers
 lib/explib.js      # experience cards + learned error patterns
 lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (61 total)
-skills/            # 10 × SKILL.md (progressive disclosure)
-test/              # 21 engine + 18 tool + 4 core/inventory + 6 registry + mock smoke
+skills/            # 11 × SKILL.md (progressive disclosure)
+test/              # 21 engine + 18 tool + 4 core/inventory + 6 registry + 4 skills
 locale/            # en/ru plugin-card strings
 icon.svg           # plugin icon
 ```
