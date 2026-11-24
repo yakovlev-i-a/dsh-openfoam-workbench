@@ -197,6 +197,16 @@ test('durable registry: dead pid without End becomes interrupted', async () => {
   }
 })
 
+
+// DSH rejects tool output that is not lossless JSON: an `undefined` field makes
+// the whole tool call fail ("returned invalid output"). Guard every new tool.
+function assertJsonSafe(value, path = 'value') {
+  if (value === undefined) assert.fail(`${path} is undefined`)
+  if (value === null || typeof value !== 'object') return
+  if (Array.isArray(value)) { value.forEach((v, i) => assertJsonSafe(v, `${path}[${i}]`)); return }
+  for (const [k, v] of Object.entries(value)) assertJsonSafe(v, `${path}.${k}`)
+}
+
 function multiRegionCase() {
   return makeCase({
     'system/controlDict': 'application foamMultiRun;\nstartTime 0;\nendTime 10;\nregionSolvers { fluid multicomponentFluid; solid solid; }\n',
@@ -234,6 +244,7 @@ test('read_dict resolves multi-region paths without double prefixes', async () =
     const tools = registry()
     for (const f of ['fluid/fvSchemes', 'system/fluid/fvSchemes']) {
       const r = await tools.openfoam_read_dict.execute({ casePath: dir, file: f })
+      assertJsonSafe(r)
       assert.equal(r.ok, true, f)
       assert.equal(r.dict.ddtSchemes.default, 'localEuler')
     }
@@ -243,9 +254,11 @@ test('read_dict resolves multi-region paths without double prefixes', async () =
     assert.equal(zero.ok, true)
     assert.equal(zero.dict.internalField, 'uniform 300')
     const reg = await tools.openfoam_read_dict.execute({ casePath: dir, file: 'fvSchemes', region: 'solid' })
+    assertJsonSafe(reg)
     assert.equal(reg.ok, true)
     assert.equal(reg.dict.ddtSchemes.default, 'Euler')
     const bad = await tools.openfoam_read_dict.execute({ casePath: dir, file: 'nope' })
+    assertJsonSafe(bad)
     assert.equal(bad.ok, false)
     assert.ok(bad.hint.includes('multi-region'))
     assert.ok(bad.available.length > 0)
@@ -259,6 +272,7 @@ test('dict_set rewrites one entry atomically, keeps a backup and appends on dema
   try {
     const tools = registry()
     const dry = await tools.openfoam_dict_set.execute({ casePath: dir, file: 'controlDict', entry: 'writeInterval', value: '0.01', dryRun: true })
+    assertJsonSafe(dry)
     assert.equal(dry.ok, true)
     assert.equal(dry.old, '1')
     assert.ok(!readFileSync(join(dir, 'system/controlDict'), 'utf8').includes('0.01'))
@@ -267,6 +281,7 @@ test('dict_set rewrites one entry atomically, keeps a backup and appends on dema
     assert.ok(readFileSync(join(dir, 'system/controlDict'), 'utf8').includes('writeInterval 0.01;'))
     assert.ok(existsSync(join(dir, 'system/controlDict.bak')))
     const miss = await tools.openfoam_dict_set.execute({ casePath: dir, file: 'controlDict', entry: 'noSuchKey', value: '1' })
+    assertJsonSafe(miss)
     assert.equal(miss.ok, false)
     assert.ok(miss.hint.includes('append'))
     const added = await tools.openfoam_dict_set.execute({ casePath: dir, file: 'controlDict', entry: 'writeFormat', value: 'ascii', append: true })
@@ -290,6 +305,7 @@ test('clean lists artefacts in a dry run and removes them on demand', async () =
   try {
     const tools = registry()
     const dry = await tools.openfoam_clean.execute({ casePath: dir })
+    assertJsonSafe(dry)
     assert.equal(dry.dryRun, true)
     assert.deepEqual(dry.candidates.map((c) => c.rel).sort(), ['1', '2.5', 'log.run'])
     assert.ok(existsSync(join(dir, '1')))
@@ -309,6 +325,7 @@ test('run_progress and solve_verify report RUNNING on a live multi-region log', 
     writeFileSync(log, readFileSync(new URL('./fixtures/log.foamMultiRun.running', import.meta.url), 'utf8'))
     const tools = registry()
     const p = await tools.openfoam_run_progress.execute({ log_path: log })
+    assertJsonSafe(p)
     assert.equal(p.ok, true)
     assert.equal(p.state, 'running')
     assert.ok(p.time > 0)
@@ -317,6 +334,7 @@ test('run_progress and solve_verify report RUNNING on a live multi-region log', 
     assert.equal(p.endTime, 300)
     assert.ok(p.eta)
     const v = await tools.openfoam_solve_verify.execute({ log_path: log })
+    assertJsonSafe(v)
     assert.equal(v.state, 'running')
     assert.equal(v.decision, 'RUNNING')
     assert.equal(v.pass, null)

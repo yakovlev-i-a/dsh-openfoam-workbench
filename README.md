@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.3.0 · 61 tools · 10 skills · 39 tests**
+**v0.3.1 · 61 tools · 10 skills · 39 tests**
 
 ## Install
 
