@@ -47,7 +47,11 @@ test('register keeps a custom render and a custom safety classifier', () => {
   const reg = makeRegistry(ctx, { RENDERS: { openfoam_demo: render } })
   reg.register(tool({ isConcurrencySafe: () => true }))
   const t = ctx.registered.openfoam_demo
-  assert.equal(t.output.render, render)
+  // the registry wraps render to surface needs_input, so compare behaviour, not identity
+  assert.equal(t.output.render({}, { ok: true })[0].text, 'custom')
+  const withQuestion = t.output.render({}, { ok: true, needs_input: { question: 'Which units?', options: ['m', 'mm'] } })
+  assert.match(withQuestion[0].text, /ask_user_question/)
+  assert.equal(withQuestion[1].text, 'custom')
   assert.equal(t.isConcurrencySafe({}), true)
 })
 

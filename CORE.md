@@ -28,6 +28,8 @@ tools to inspect, set up, run and verify cases.
 ## When a tool returns a dead end
 Read its `hint` / `available` / `next` fields, try the narrower call it suggests,
 and tell the user which tool refused and why. Never switch to bash silently.
+If a result carries `needs_input`, ask the user with `ask_user_question` (options
+included) and do not continue until they answer.
 Multi-region cases take `region="fluid"`. Before finishing a long task, call
 openfoam_usage_report: an unused tool family means the work went around the plugin.
 

@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.3.8 · 61 tools · 11 skills · 60 tests**
+**v0.3.9 · 61 tools · 11 skills · 65 tests**
 
 ## Install
 
@@ -57,6 +57,20 @@ defaultDistribution: org
 `openfoam_run_solver_async`, `openfoam_solver_build`, `openfoam_dry_compile`,
 `openfoam_solver_smoke` and `openfoam_version_info` take a `distribution` argument
 (`org` / `com`) and otherwise use `defaultDistribution`.
+
+## Case conventions
+
+Two conventions are enforced by the tools, not by the prompt:
+
+- **`<case-dir-name>.foam`** — `clone_tutorial`, `mesh_plan`, `run`,
+  `run_solver_async` and `render` create the ParaView entry file named after the
+  case directory (`case.foam` is *not* accepted as a substitute). `inspect_case`
+  reports `foamFile`, `list_cases` reports whether it exists.
+- **Geometry-scale gate** — `mesh_plan` and `check` compare the bounding box with
+  `scaleAskAbove` (default `0.1` m). Above it the result carries
+  `needs_input: {question, options}`, rendered as a QUESTION block; the agent must
+  ask the user with `ask_user_question` (e.g. "was the model built in
+  millimetres?") before continuing. Set `scaleAskAbove: 0` to disable.
 
 ## Multi-region (CHT) cases
 
