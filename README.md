@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.3.6 · 61 tools · 11 skills · 58 tests**
+**v0.3.7 · 61 tools · 11 skills · 61 tests**
 
 ## Install
 
@@ -85,7 +85,8 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   run progress/ETA (`run_progress`), meshing (STL → blockMesh/snappy → checkMesh),
   render (inline PNG, multi-region), verification (`solve_verify`, `mesh_verify`),
   case editing (`dict_set`, `clean`), doctor checks, diagnostics, papers,
-  experience, and a usage self-audit (`usage_report`).
+  experience, and a usage self-audit (`usage_report`). Verdicts on huge logs read
+  only the tail (`logTailBytes`, 4 MB by default) instead of the whole file.
 - **Skills** (`SKILL.md`, load on demand, 11): case-builder, **cht** (multi-region
   conjugate heat transfer), solver-development, code-modify, meshing,
   mesh-independence, stats, viz, analyze, paper-reproduction, self-evolution.
@@ -125,7 +126,7 @@ lib/paperlib.js    # PDF/paper extraction helpers
 lib/explib.js      # experience cards + learned error patterns
 lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (61 total)
 skills/            # 11 × SKILL.md (progressive disclosure)
-test/              # 21 engine + 18 tool + 4 core/inventory + 7 registry + 4 skills + 4 case
+test/              # 22 engine + 18 tool + 4 core/inventory + 7 registry + 4 skills + 4 case + 3 logtail
 locale/            # en/ru plugin-card strings
 icon.svg           # plugin icon
 ```
