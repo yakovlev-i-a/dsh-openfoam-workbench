@@ -99,7 +99,10 @@ service, never in `settings.json` or in the bundle.
 
 ## Docs
 
-- [CORE.md](./CORE.md) — the thin always-on core text.
+- [CORE.md](./CORE.md) — the always-on core prompt. It is read at runtime (the
+  section text is a function, re-evaluated on every model step), so editing this
+  file changes the agent on the next message, without restarting DSH. Keep it
+  under 3 KB: a test fails if it grows past the budget or loses a routing marker.
 - [NOTICE](./NOTICE) / [LICENSE](./LICENSE) — attribution (Apache-2.0 + MIT).
 
 ## Layout

@@ -367,3 +367,47 @@ test('command whitelist allows mpirun-wrapped apps and rejects the rest', async 
   assert.equal(commandAllowed('checkMesh && rm -rf /').ok, false)
   assert.equal(commandAllowed('mySolver', ['mySolver']).ok, true)
 })
+
+test('core prompt comes from CORE.md and reloads without a restart', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'ofwb-core-'))
+  const file = join(dir, 'CORE.md')
+  writeFileSync(file, '# core v1\nuse openfoam_read_dict\n')
+  try {
+    const captured = []
+    apply(
+      { systemPrompt: { section: (s) => captured.push(s) }, skills: { register() {} }, tools: { register() {} } },
+      { caseRoots: [], corePath: file },
+    )
+    assert.equal(captured.length, 1)
+    const section = captured[0]
+    assert.equal(section.name, 'openfoam-workbench:core')
+    assert.equal(section.order, 250)
+    assert.equal(section.interpolate, false)
+    assert.equal(typeof section.text, 'function')
+    assert.equal(section.text(), '# core v1\nuse openfoam_read_dict')
+    writeFileSync(file, '# core v2\nuse openfoam_source_search\n')
+    assert.equal(section.text(), '# core v2\nuse openfoam_source_search')
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('apply fails loudly when CORE.md is missing or empty', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'ofwb-core2-'))
+  const ctx = { systemPrompt: { section() {} }, skills: { register() {} }, tools: { register() {} } }
+  try {
+    assert.throws(() => apply(ctx, { caseRoots: [], corePath: join(dir, 'nope.md') }), /CORE\.md is missing or empty/)
+    writeFileSync(join(dir, 'CORE.md'), '   \n\n')
+    assert.throws(() => apply(ctx, { caseRoots: [], corePath: join(dir, 'CORE.md') }), /CORE\.md is missing or empty/)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('the shipped CORE.md stays within the prompt budget and keeps the routing markers', () => {
+  const text = readFileSync(new URL('../CORE.md', import.meta.url), 'utf8')
+  assert.ok(Buffer.byteLength(text) <= 3072, `CORE.md grew to ${Buffer.byteLength(text)} bytes; keep the always-on prompt under 3 KB`)
+  for (const marker of ['openfoam_source_search', 'openfoam_read_dict', 'openfoam_dict_set', 'openfoam_run_progress', 'openfoam_solve_verify', 'openfoam_usage_report', 'openfoam_clean']) {
+    assert.ok(text.includes(marker), `CORE.md lost the routing marker ${marker}`)
+  }
+})
