@@ -10,9 +10,11 @@ This product includes software and ideas derived from the following projects.
 
 2. dsh-openfoam-doctor (https://github.com/bushizhanghan/dsh-openfoam-doctor)
    Copyright (c) bushizhanghan. Licensed under the MIT License.
-   The OpenFOAM dictionary parser, the 28 silent-failure check rules, and the
-   checkMesh/run-log parsers in lib/of-engine.js, together with the ported
-   test suite and the checkMesh log fixture, are derived from this project.
+   The OpenFOAM dictionary parser, the 31 silent-failure check rules in
+   lib/of-engine.js (7 controlDict, 7 fvSchemes, 5 fvSolution, 3 blockMeshDict,
+   1 stray times, 4 boundary fields, 4 physics), and the checkMesh/run-log
+   parsers, together with the ported test suite and the checkMesh log fixture,
+   are derived from this project.
    See licenses/dsh-openfoam-doctor-MIT.txt.
 
 3. csml-rpi/AI-CFD-Scientist (https://github.com/csml-rpi/AI-CFD-Scientist)
