@@ -1,17 +1,21 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-> **⚠ Prototype.** Experimental code — APIs and behavior may change. Use at your own risk.
-
-Native **DeepSeek Harness** plugin for OpenFOAM: case inspection, solver
-development, meshing, durable background runs, off-screen renders, paper
-reproduction and an experience library — plus 10 on-demand CFD skills.
+Native **DeepSeek Harness** plugin for OpenFOAM: 61 tools and 11 on-demand skills
+covering case inspection, solver development, meshing, multi-region CHT runs,
+durable background jobs, off-screen renders, paper reproduction and an
+experience library. The agent gets one coherent surface — a thin always-on core
+prompt (`CORE.md`), procedural skills, and tools that enforce the conventions
+instead of asking the model to remember them.
 
 ## Status
 
-Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
-**ParaView 6.2.0**:
+Implemented and validated on **OpenFOAM 14** (org, modular solvers),
+**OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.4.0 · 61 tools · 11 skills · 69 tests**
+**v0.4.1 · 61 tools · 11 skills · 69 tests**
+
+Pre-1.0: the tool set and the on-disk conventions may still change between
+minor versions.
 
 ## Install
 
@@ -108,8 +112,11 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   conjugate heat transfer), solver-development, code-modify, meshing,
   mesh-independence, stats, viz, analyze, paper-reproduction, self-evolution.
   A test keeps every referenced tool registered and the always-on catalog under 4 KB.
-- **Presentation**: inline render images (`image` block), tool-call cards
-  (`generic` / `terminal`), table renders for `check` / `run_list` / `mesh_verify`.
+- **Presentation**: inline render images (`image` blocks), table renders for
+  `check` / `run_list` / `mesh_verify` / `env_check` / `list_cases` /
+  `run_progress` / `solve_verify` / `usage_report`, compact JSON for large
+  payloads, and a `QUESTION` block whenever a tool needs a human decision
+  (`needs_input`).
 
 ## Security
 
@@ -147,3 +154,29 @@ test/              # 60 tests: engine, tools, registry, skills, case model, inve
 locale/            # en/ru plugin-card strings
 icon.svg           # plugin icon
 ```
+
+## Prior art & acknowledgements
+
+The plugin is its own implementation: a Cordis bundle with its own tool layer,
+runtime, multi-region case model, presentation, tests and prompt design. Two
+parts nevertheless carry lineage, stated here precisely:
+
+- **Dictionary parser and doctor checks** — `lib/of-engine.js` is a port of
+  [dsh-openfoam-doctor](https://github.com/bushizhanghan/dsh-openfoam-doctor)
+  (MIT): the OpenFOAM dictionary parser, the silent-failure rules and the
+  checkMesh / run-log parsers. This plugin extends it (region-aware checks, 31
+  rules, fixes) and ships its license in `licenses/`.
+- **Experience format and operation coverage** — the experience-card schema
+  (`title / domain / triggers / solver / physics / recipe / key_params /
+  verify_seq / pitfalls`) and the overall "inspect → plan → run → verify" tool
+  coverage were inspired by [NullFlux / CFDriver](https://github.com/LZF1111/nullflux)
+  (Apache-2.0). No source files were copied; the code, architecture and
+  descriptions are original.
+- **Skill protocols** — the mesh-independence procedure (STEPS A–E), the
+  numerical-stats patterns and the PROCEED / REVISE / RERUN decision taxonomy
+  were adapted from
+  [AI-CFD-Scientist `cfd-skills`](https://github.com/csml-rpi/AI-CFD-Scientist/tree/main/cfd-skills).
+  The wording lives in `skills/` and was rewritten for this plugin.
+
+OpenFOAM itself is not redistributed: the plugin drives the user's installed
+OpenFOAM (GPL-3.0) in subprocesses.

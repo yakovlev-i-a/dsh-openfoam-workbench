@@ -4,9 +4,11 @@ This product includes software and ideas derived from the following projects.
 
 1. NullFlux / CFDriver (https://github.com/LZF1111/nullflux)
    Copyright (c) LZF. Licensed under the Apache License, Version 2.0.
-   The OpenFOAM tool logic, the experience-card format, and the workflow
-   structure are derived from this project, substantially rewritten,
-   translated (zh → en/ru) and simplified.
+   The experience-card format (title, domain, triggers, solver, physics, recipe,
+   key_params, verify_seq, pitfalls) and the general "inspect -> plan -> run ->
+   verify" workflow were adapted from this project. No source files were
+   copied: the code, architecture and tool descriptions are original to this
+   plugin.
 
 2. dsh-openfoam-doctor (https://github.com/bushizhanghan/dsh-openfoam-doctor)
    Copyright (c) bushizhanghan. Licensed under the MIT License.
