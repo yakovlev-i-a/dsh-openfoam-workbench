@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.3.9 · 61 tools · 11 skills · 65 tests**
+**v0.4.0 · 61 tools · 11 skills · 69 tests**
 
 ## Install
 
@@ -89,7 +89,10 @@ render              -> every mesh region (or region="fluid"), errors on an empty
 
 `mesh_verify` takes its verdict from what checkMesh prints (`Mesh OK.` /
 `Failed N mesh checks.`) and reports the stricter workbench thresholds
-(aspect ratio, non-orthogonality, skewness) as warnings. `checkMesh -allRegions`
+(aspect ratio, non-orthogonality, skewness) as warnings. `check` (the doctor)
+is region-aware too: it reads `system/<r>/fvSchemes|fvSolution`, `0/<r>/*` and
+`constant/<r>/*`, tags every finding with its region, and accepts
+`region="<name>"` to narrow the report. `checkMesh -allRegions`
 does not exist in OpenFOAM.org — the per-region call is the only honest one.
 
 ## What you get
