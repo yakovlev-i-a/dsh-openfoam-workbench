@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.2.0 · 57 tools · 10 skills · 29 tests**
+**v0.3.0 · 61 tools · 10 skills · 39 tests**
 
 ## Install
 
@@ -58,13 +58,34 @@ defaultDistribution: org
 `openfoam_solver_smoke` and `openfoam_version_info` take a `distribution` argument
 (`org` / `com`) and otherwise use `defaultDistribution`.
 
+## Multi-region (CHT) cases
+
+A multi-region case (`foamMultiRun`, `chtMultiRegionFoam`, `system/<region>/...`)
+is understood end to end, not treated as a broken single-region case:
+
+```text
+inspect_case        -> regions, regionSolvers, per-region fields/patches
+read_dict           -> file="fluid/fvSchemes", "system/fluid/...", "0/fluid/T", or region="fluid"
+mesh_verify         -> checkMesh -region <r> for every region, verdict from checkMesh itself
+run / run_async     -> mpirun -np N foamMultiRun (whitelisted launcher)
+run_progress        -> t, steps, s/step, ETA from a multi-region/parallel log
+solve_verify        -> RUNNING | STALLED | finished, no false divergence from the sigFpe banner
+render              -> every mesh region (or region="fluid"), errors on an empty scene
+```
+
+`mesh_verify` takes its verdict from what checkMesh prints (`Mesh OK.` /
+`Failed N mesh checks.`) and reports the stricter workbench thresholds
+(aspect ratio, non-orthogonality, skewness) as warnings. `checkMesh -allRegions`
+does not exist in OpenFOAM.org — the per-region call is the only honest one.
+
 ## What you get
 
-- **Tools** (`openfoam_*`, 57): env/version, tutorials, solver clone/build/smoke,
+- **Tools** (`openfoam_*`, 61): env/version, tutorials, solver clone/build/smoke,
   durable async runs (`run_solver_async` → `run_list` / `solver_status`),
-  meshing (STL → blockMesh/snappy → checkMesh), render (inline PNG),
-  verification (`solve_verify`, `mesh_verify`), doctor checks, diagnostics,
-  papers, experience.
+  run progress/ETA (`run_progress`), meshing (STL → blockMesh/snappy → checkMesh),
+  render (inline PNG, multi-region), verification (`solve_verify`, `mesh_verify`),
+  case editing (`dict_set`, `clean`), doctor checks, diagnostics, papers,
+  experience, and a usage self-audit (`usage_report`).
 - **Skills** (`SKILL.md`, load on demand, 10): case-builder, solver-development,
   code-modify, meshing, mesh-independence, stats, viz, analyze,
   paper-reproduction, self-evolution.
@@ -85,10 +106,11 @@ service, never in `settings.json` or in the bundle.
 ## Layout
 
 ```
-lib/index.js       # 57 tools + core section + skill registration
+lib/index.js       # 61 tools + core section + skill registration
 lib/of-engine.js   # OpenFOAM dict parser + 28 silent-failure rules (MIT)
+lib/of-case.js     # multi-region model: regions, dict paths, command whitelist, progress
 skills/            # 10 × SKILL.md (progressive disclosure)
-test/              # 18 engine tests + 11 tool tests + mock smoke
+test/              # 21 engine tests + 18 tool tests + mock smoke
 locale/            # en/ru plugin-card strings
 icon.svg           # plugin icon
 ```

@@ -1,0 +1,300 @@
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.51852e-11, global = -3.5290125e-12, cumulative = -3.4614306e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.2529819e-07, Final residual = 3.0107436e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.2719862e-07, Final residual = 3.0200237e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 7.4185498e-09, Final residual = 1.0102231e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.222662e-06, Final residual = 5.925697e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 7.4185498e-09, Final residual = 1.010222e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.3443809e-05, Final residual = 5.3278209e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9503993e-15, Final residual = 5.7585439e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 8.9104337e-05, Final residual = 7.2296477e-07, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 5.8272455e-06, Final residual = 3.6356861e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 6.1320533e-11, global = -6.8910162e-12, cumulative = -3.4621197e-08
+fluid GAMG:  Solving for p, Initial residual = 7.940128e-07, Final residual = 6.6623128e-08, No Iterations 1
+fluid GAMG:  Solving for p, Initial residual = 1.1861888e-07, Final residual = 1.8364415e-08, No Iterations 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 3.0973982e-11, global = -8.4490877e-13, cumulative = -3.4622042e-08
+      ExecutionTime = 228.69587 s  ClockTime = 254 s
+      
+fluid Time scales min/max:
+fluid Flow time scale min/max = 0.001, 0.001
+fluid     Composition = 2.9470899e+14, 4.4942328e+307
+fluid     Overall     = 0.001, 0.001
+      Time = 0.12s
+      
+      PIMPLE: Iteration 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 0.015039256, Final residual = 6.1341621e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 0.015086268, Final residual = 6.1531289e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.6940869e-06, Final residual = 2.8540059e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 0.0295922, Final residual = 1.2005721e-06, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.6940869e-06, Final residual = 2.8540059e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 0.00077686433, Final residual = 3.1489789e-08, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 2.4529591e-09, Final residual = 1.5719173e-26, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0063412546, Final residual = 2.2164445e-05, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.00018684688, Final residual = 8.6003958e-07, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 1.4443227e-09, global = -3.5744884e-10, cumulative = -3.4979491e-08
+fluid GAMG:  Solving for p, Initial residual = 3.4248601e-05, Final residual = 2.33591e-07, No Iterations 3
+fluid GAMG:  Solving for p, Initial residual = 5.5548829e-06, Final residual = 3.3185426e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.5730782e-11, global = -3.4232644e-12, cumulative = -3.4982914e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.2834244e-07, Final residual = 2.9143551e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.3026365e-07, Final residual = 2.9234047e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 8.7540537e-09, Final residual = 1.2860315e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.2273763e-06, Final residual = 5.7335192e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 8.7540537e-09, Final residual = 1.2860316e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.3295314e-05, Final residual = 4.7850013e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9487271e-15, Final residual = 5.7062224e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 8.9526724e-05, Final residual = 7.4416775e-07, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 5.8707991e-06, Final residual = 3.7063889e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 6.2238922e-11, global = -7.0144925e-12, cumulative = -3.4989928e-08
+fluid GAMG:  Solving for p, Initial residual = 8.0106162e-07, Final residual = 6.5998699e-08, No Iterations 1
+fluid GAMG:  Solving for p, Initial residual = 1.1855242e-07, Final residual = 1.8133861e-08, No Iterations 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 3.0450996e-11, global = -7.5492557e-13, cumulative = -3.4990683e-08
+      ExecutionTime = 230.56785 s  ClockTime = 257 s
+      
+fluid Time scales min/max:
+fluid Flow time scale min/max = 0.001, 0.001
+fluid     Composition = 2.9471029e+14, 4.4942328e+307
+fluid     Overall     = 0.001, 0.001
+      Time = 0.121s
+      
+      PIMPLE: Iteration 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 0.014919494, Final residual = 6.1415126e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 0.014966522, Final residual = 6.1606601e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.7027928e-06, Final residual = 2.8875599e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 0.029357663, Final residual = 1.2020209e-06, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.7027928e-06, Final residual = 2.8875599e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 0.00077369453, Final residual = 3.1672554e-08, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 2.4529256e-09, Final residual = 1.5884235e-26, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0064395699, Final residual = 2.2319301e-05, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0001881912, Final residual = 8.712739e-07, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 1.4563098e-09, global = -3.4736386e-10, cumulative = -3.5338047e-08
+fluid GAMG:  Solving for p, Initial residual = 3.4774352e-05, Final residual = 2.3639696e-07, No Iterations 3
+fluid GAMG:  Solving for p, Initial residual = 5.6427935e-06, Final residual = 3.3679896e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.6295291e-11, global = -3.3312749e-12, cumulative = -3.5341378e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.3183021e-07, Final residual = 2.8664246e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.3376907e-07, Final residual = 2.875392e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 1.1044686e-08, Final residual = 1.3751794e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.2312419e-06, Final residual = 5.6357736e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 1.1044686e-08, Final residual = 1.375179e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.3208495e-05, Final residual = 4.5565742e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9534719e-15, Final residual = 5.6990562e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 8.9980935e-05, Final residual = 7.5406456e-07, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 5.9615744e-06, Final residual = 3.8186336e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 6.3822474e-11, global = -6.273679e-12, cumulative = -3.5347652e-08
+fluid GAMG:  Solving for p, Initial residual = 8.2102106e-07, Final residual = 6.9385296e-08, No Iterations 1
+fluid GAMG:  Solving for p, Initial residual = 1.2289073e-07, Final residual = 1.9619315e-08, No Iterations 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 3.2790641e-11, global = -6.0057085e-13, cumulative = -3.5348253e-08
+      ExecutionTime = 232.61616 s  ClockTime = 259 s
+      
+      regIOobject::readIfModified() : 
+          Re-reading object controlDict from file "/media/yakovlev-i-a/retro-ssd/cht-elementary-tests/large-cell-L3-CHT/system/controlDict"
+fluid Time scales min/max:
+fluid Flow time scale min/max = 0.001, 0.001
+fluid     Composition = 2.9471175e+14, 4.4942328e+307
+fluid     Overall     = 0.001, 0.001
+      Time = 0.122s
+      
+      PIMPLE: Iteration 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 0.014801788, Final residual = 6.1497921e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 0.014848832, Final residual = 6.1691238e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.7136008e-06, Final residual = 2.9268535e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 0.029127131, Final residual = 1.2036633e-06, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.7136008e-06, Final residual = 2.9268535e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 0.00077048836, Final residual = 3.1779951e-08, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 2.4528921e-09, Final residual = 1.6043357e-26, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0065394689, Final residual = 2.2472787e-05, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.00018910349, Final residual = 8.8575611e-07, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 1.473138e-09, global = -3.4036393e-10, cumulative = -3.5688617e-08
+fluid GAMG:  Solving for p, Initial residual = 3.5300231e-05, Final residual = 2.3940928e-07, No Iterations 3
+fluid GAMG:  Solving for p, Initial residual = 5.7329666e-06, Final residual = 3.4187329e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.6858673e-11, global = -3.278256e-12, cumulative = -3.5691895e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.3504824e-07, Final residual = 2.9548325e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.37006e-07, Final residual = 2.9641435e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 1.3085437e-08, Final residual = 1.5717276e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.235316e-06, Final residual = 5.8060891e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 1.3085437e-08, Final residual = 1.5717269e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.3093582e-05, Final residual = 4.2983452e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9483552e-15, Final residual = 5.6597922e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 9.0257732e-05, Final residual = 7.3682456e-07, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 5.9003863e-06, Final residual = 3.8024636e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 6.3235652e-11, global = -6.8251965e-12, cumulative = -3.569872e-08
+fluid GAMG:  Solving for p, Initial residual = 8.0301677e-07, Final residual = 6.7019861e-08, No Iterations 1
+fluid GAMG:  Solving for p, Initial residual = 1.2085647e-07, Final residual = 1.8787347e-08, No Iterations 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 3.1243741e-11, global = -8.1491016e-13, cumulative = -3.5699535e-08
+      ExecutionTime = 234.748 s  ClockTime = 262 s
+      
+fluid Time scales min/max:
+fluid Flow time scale min/max = 0.001, 0.001
+fluid     Composition = 2.9471341e+14, 4.4942328e+307
+fluid     Overall     = 0.001, 0.001
+      Time = 0.123s
+      
+      PIMPLE: Iteration 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 0.014686094, Final residual = 6.1573516e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 0.014733155, Final residual = 6.1768649e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.7268997e-06, Final residual = 2.9715164e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 0.028900525, Final residual = 1.2051384e-06, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.7268997e-06, Final residual = 2.9715164e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 0.00076729177, Final residual = 3.1803826e-08, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 2.4528586e-09, Final residual = 1.6195252e-26, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.006647738, Final residual = 2.2610658e-05, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.00018970456, Final residual = 8.9789385e-07, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 1.4854354e-09, global = -3.2980164e-10, cumulative = -3.6029337e-08
+fluid GAMG:  Solving for p, Initial residual = 3.5782782e-05, Final residual = 2.4183795e-07, No Iterations 3
+fluid GAMG:  Solving for p, Initial residual = 5.8170734e-06, Final residual = 3.46645e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.7347664e-11, global = -3.1025604e-12, cumulative = -3.6032439e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.3895292e-07, Final residual = 2.9089884e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.4092847e-07, Final residual = 2.9182262e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 1.5980194e-08, Final residual = 1.8819523e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.2398021e-06, Final residual = 5.7137306e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 1.5980194e-08, Final residual = 1.8819517e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.3123251e-05, Final residual = 4.3398625e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9491307e-15, Final residual = 5.617112e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 9.1571174e-05, Final residual = 7.5260205e-07, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 6.0284182e-06, Final residual = 3.8964991e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 6.4457268e-11, global = -7.7480237e-12, cumulative = -3.6040187e-08
+fluid GAMG:  Solving for p, Initial residual = 8.3084716e-07, Final residual = 6.973443e-08, No Iterations 1
+fluid GAMG:  Solving for p, Initial residual = 1.2575677e-07, Final residual = 1.9772324e-08, No Iterations 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 3.270813e-11, global = -8.527299e-13, cumulative = -3.604104e-08
+      ExecutionTime = 236.71478 s  ClockTime = 264 s
+      
+fluid Time scales min/max:
+fluid Flow time scale min/max = 0.001, 0.001
+fluid     Composition = 2.9471528e+14, 4.4942328e+307
+fluid     Overall     = 0.001, 0.001
+      Time = 0.124s
+      
+      PIMPLE: Iteration 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 0.014572368, Final residual = 6.1519655e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 0.014619446, Final residual = 6.1716216e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.7430986e-06, Final residual = 3.0234171e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 0.028677765, Final residual = 1.204147e-06, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.7430986e-06, Final residual = 3.0234172e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 0.00076453408, Final residual = 3.1662591e-08, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 2.4528251e-09, Final residual = 1.6339384e-26, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0067690558, Final residual = 2.2767132e-05, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.00019047284, Final residual = 9.099027e-07, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 1.4969239e-09, global = -3.2179459e-10, cumulative = -3.6362834e-08
+fluid GAMG:  Solving for p, Initial residual = 3.6295976e-05, Final residual = 2.4450508e-07, No Iterations 3
+fluid GAMG:  Solving for p, Initial residual = 5.9085629e-06, Final residual = 3.5077883e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.7708562e-11, global = -3.042653e-12, cumulative = -3.6365877e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.4262686e-07, Final residual = 2.9718268e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.4461548e-07, Final residual = 2.9813417e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 1.9316821e-08, Final residual = 2.2996131e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.2425368e-06, Final residual = 5.8357025e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 1.9316821e-08, Final residual = 2.2996131e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.2934169e-05, Final residual = 4.2217983e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9449516e-15, Final residual = 5.5738247e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 9.1642782e-05, Final residual = 7.5039378e-07, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 5.8126725e-06, Final residual = 3.9245804e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 6.456055e-11, global = -6.7839313e-12, cumulative = -3.6372661e-08
+fluid GAMG:  Solving for p, Initial residual = 8.0222511e-07, Final residual = 6.7671583e-08, No Iterations 1
+fluid GAMG:  Solving for p, Initial residual = 1.212789e-07, Final residual = 1.9335199e-08, No Iterations 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 3.1807059e-11, global = -7.34058e-13, cumulative = -3.6373395e-08
+      ExecutionTime = 238.85948 s  ClockTime = 266 s
+      
+fluid Time scales min/max:
+fluid Flow time scale min/max = 0.001, 0.001
+fluid     Composition = 2.9472546e+14, 4.4942328e+307
+fluid     Overall     = 0.001, 0.001
+      Time = 0.125s
+      
+      PIMPLE: Iteration 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 0.01446057, Final residual = 6.1801023e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 0.014507665, Final residual = 6.2000078e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.762625e-06, Final residual = 3.0813822e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 0.028458775, Final residual = 1.2096836e-06, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.762625e-06, Final residual = 3.0813822e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 0.00076211054, Final residual = 3.1599581e-08, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 2.4527916e-09, Final residual = 1.6478102e-26, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0068980082, Final residual = 2.2902156e-05, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.00019107543, Final residual = 9.1999402e-07, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 1.5047485e-09, global = -3.1460935e-10, cumulative = -3.6688004e-08
+fluid GAMG:  Solving for p, Initial residual = 3.6725045e-05, Final residual = 2.4713038e-07, No Iterations 3
+fluid GAMG:  Solving for p, Initial residual = 5.9855637e-06, Final residual = 3.5477048e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.8026728e-11, global = -2.9861156e-12, cumulative = -3.6690991e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.5020015e-07, Final residual = 2.914701e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.5221231e-07, Final residual = 2.924109e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.3082444e-08, Final residual = 2.796031e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.2524206e-06, Final residual = 5.7216335e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.3082444e-08, Final residual = 2.7960297e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.3069784e-05, Final residual = 4.3394581e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9518888e-15, Final residual = 5.5488613e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 9.3723516e-05, Final residual = 7.7548007e-07, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 6.065899e-06, Final residual = 3.9739578e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 6.4993782e-11, global = -7.231772e-12, cumulative = -3.6698222e-08
+fluid GAMG:  Solving for p, Initial residual = 8.3266901e-07, Final residual = 6.9751405e-08, No Iterations 1
+fluid GAMG:  Solving for p, Initial residual = 1.253781e-07, Final residual = 2.0156003e-08, No Iterations 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 3.2965038e-11, global = -9.9966278e-13, cumulative = -3.6699222e-08
+      ExecutionTime = 240.666 s  ClockTime = 268 s
+      
+fluid Time scales min/max:
+fluid Flow time scale min/max = 0.001, 0.001
+fluid     Composition = 5.8943977e+14, 4.4942328e+307
+fluid     Overall     = 0.001, 0.001
+      Time = 0.126s
+      
+      PIMPLE: Iteration 1
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 0.014350658, Final residual = 6.1774587e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 0.01439777, Final residual = 6.1975149e-07, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.7859251e-06, Final residual = 3.1563508e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 0.028243483, Final residual = 1.2091896e-06, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.7859251e-06, Final residual = 3.1563508e-13, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 0.00075998026, Final residual = 3.1358841e-08, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 2.4527581e-09, Final residual = 1.6610228e-26, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0070362098, Final residual = 2.3063497e-05, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 0.0001926065, Final residual = 9.2653546e-07, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 1.5062869e-09, global = -3.0602535e-10, cumulative = -3.7005247e-08
+fluid GAMG:  Solving for p, Initial residual = 3.7225237e-05, Final residual = 2.4945926e-07, No Iterations 3
+fluid GAMG:  Solving for p, Initial residual = 6.071219e-06, Final residual = 3.587537e-08, No Iterations 3
+fluid diagonal:  Solving for rho, Initial residual = 0, Final residual = 0, No Iterations 0
+fluid time step continuity errors : sum local = 5.8323545e-11, global = -2.8918727e-12, cumulative = -3.7008139e-08
+solid PIMPLE: Iteration 2
+fluid DILUPBiCGStab:  Solving for CO, Initial residual = 6.5528329e-07, Final residual = 3.0039237e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for H2O, Initial residual = 6.5730978e-07, Final residual = 3.0137052e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CH4, Initial residual = 2.7309196e-08, Final residual = 3.34203e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for CO2, Initial residual = 1.2569462e-06, Final residual = 5.8961205e-10, No Iterations 1
+fluid DILUPBiCGStab:  Solving for O2, Initial residual = 2.7309196e-08, Final residual = 3.3420299e-15, No Iterations 1
+fluid DILUPBiCGStab:  Solving for h, Initial residual = 1.2990345e-05, Final residual = 4.360639e-10, No Iterations 1
+solid DICPCG:  Solving for e, Initial residual = 3.9422649e-15, Final residual = 5.5566666e-30, No Iterations 2
+fluid GAMG:  Solving for p, Initial residual = 9.4329495e-05, Final residual = 7.7785119e-07, No Iterations 2

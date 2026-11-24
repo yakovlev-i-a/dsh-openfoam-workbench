@@ -333,3 +333,44 @@ test('checkPhysics flags a floating pressure level, and not a duct with an outle
     for (const d of [closed, duct, referenced]) rmSync(d, { recursive: true, force: true })
   }
 })
+
+test('parseRunLog parses indented multi-region time lines and ignores the sigFpe banner', () => {
+  const text = `sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+Create mesh fluid for time = 0
+      Time = 0.001s
+fluid GAMG:  Solving for p, Initial residual = 0.01, Final residual = 1e-06, No Iterations 3
+      ExecutionTime = 9.1 s  ClockTime = 10 s
+      Time = 0.002s
+fluid GAMG:  Solving for p, Initial residual = 0.005, Final residual = 1e-06, No Iterations 3
+      ExecutionTime = 18.2 s  ClockTime = 20 s
+`
+  const r = parseRunLog(text)
+  assert.equal(r.diverged, false)
+  assert.deepEqual(r.times, [0.001, 0.002])
+  assert.equal(r.iterations, '0.002')
+  // the last visible block is still in progress -> the complete step decides
+  assert.equal(r.residualFloor, '0.01')
+  assert.equal(r.execSeconds, 18.2)
+})
+
+test('parseRunLog reads the trimmed real multi-region running log', () => {
+  const text = readFileSync(new URL('./fixtures/log.foamMultiRun.running', import.meta.url), 'utf8')
+  const r = parseRunLog(text)
+  assert.equal(r.finished, false)
+  assert.equal(r.diverged, false)
+  assert.deepEqual(r.errors, [])
+  assert.ok(r.times.length >= 5, `expected several time steps, got ${r.times.length}`)
+  assert.equal(r.iterations, String(r.times[r.times.length - 1]))
+  assert.ok(Number(r.residualFloor) > 0)
+})
+
+test('parseCheckMesh uses the verdict checkMesh prints, not only thresholds', () => {
+  const ok = parseCheckMesh('Max aspect ratio = 5.3\nMesh non-orthogonality Max: 37.9\n\nMesh OK.\n')
+  assert.equal(ok.meshOk, true)
+  assert.equal(ok.failed, false)
+  assert.deepEqual(ok.problems, [])
+  const bad = parseCheckMesh('***Concave cells (using face planes) found, number of cells: 264\nFailed 2 mesh checks.\n')
+  assert.equal(bad.meshOk, false)
+  assert.equal(bad.failed, true)
+  assert.equal(bad.failedChecks, 2)
+})

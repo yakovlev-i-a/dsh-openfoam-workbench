@@ -2,7 +2,7 @@
 // against synthetic cases (no OpenFOAM install needed).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { apply } from '../lib/index.js'
@@ -195,4 +195,157 @@ test('durable registry: dead pid without End becomes interrupted', async () => {
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
+})
+
+function multiRegionCase() {
+  return makeCase({
+    'system/controlDict': 'application foamMultiRun;\nstartTime 0;\nendTime 10;\nregionSolvers { fluid multicomponentFluid; solid solid; }\n',
+    'system/fluid/fvSchemes': 'ddtSchemes { default localEuler; }\n',
+    'system/solid/fvSchemes': 'ddtSchemes { default Euler; }\n',
+    'constant/fluid/polyMesh/boundary': BOUNDARY,
+    'constant/solid/polyMesh/boundary': '2\n(\n    solid_to_fluid { type mappedWall; nFaces 4; startFace 0; }\n    outlet_solid { type patch; nFaces 4; startFace 4; }\n)\n',
+    'constant/fluid/thermophysicalProperties': 'thermoType { type hePsiThermo; }\n',
+    '0/fluid/T': 'internalField uniform 300;\nboundaryField { inlet { type fixedValue; value uniform 300; } }\n',
+    '0/solid/T': 'internalField uniform 300;\n',
+  })
+}
+
+test('multi-region case: inspect_case and case_probe_facts expose regions', async () => {
+  const dir = multiRegionCase()
+  try {
+    const tools = registry()
+    const i = await tools.openfoam_inspect_case.execute({ casePath: dir })
+    assert.deepEqual(i.regions, ['fluid', 'solid'])
+    assert.equal(i.regionSolvers.fluid, 'multicomponentFluid')
+    assert.equal(i.regionDetails.length, 2)
+    assert.equal(i.regionDetails[0].patches.length, 3)
+    assert.ok(i.fields.includes('T'))
+    const p = await tools.openfoam_case_probe_facts.execute({ case_path: dir })
+    assert.deepEqual(p.regions, ['fluid', 'solid'])
+    assert.equal(p.region_governing.find((g) => g.region === 'fluid').compressible, true)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('read_dict resolves multi-region paths without double prefixes', async () => {
+  const dir = multiRegionCase()
+  try {
+    const tools = registry()
+    for (const f of ['fluid/fvSchemes', 'system/fluid/fvSchemes']) {
+      const r = await tools.openfoam_read_dict.execute({ casePath: dir, file: f })
+      assert.equal(r.ok, true, f)
+      assert.equal(r.dict.ddtSchemes.default, 'localEuler')
+    }
+    const c = await tools.openfoam_read_dict.execute({ casePath: dir, file: 'fluid/thermophysicalProperties' })
+    assert.equal(c.ok, true)
+    const zero = await tools.openfoam_read_dict.execute({ casePath: dir, file: '0/fluid/T' })
+    assert.equal(zero.ok, true)
+    assert.equal(zero.dict.internalField, 'uniform 300')
+    const reg = await tools.openfoam_read_dict.execute({ casePath: dir, file: 'fvSchemes', region: 'solid' })
+    assert.equal(reg.ok, true)
+    assert.equal(reg.dict.ddtSchemes.default, 'Euler')
+    const bad = await tools.openfoam_read_dict.execute({ casePath: dir, file: 'nope' })
+    assert.equal(bad.ok, false)
+    assert.ok(bad.hint.includes('multi-region'))
+    assert.ok(bad.available.length > 0)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('dict_set rewrites one entry atomically, keeps a backup and appends on demand', async () => {
+  const dir = makeCase({ 'system/controlDict': 'application icoFoam;\nwriteInterval 1;\n' })
+  try {
+    const tools = registry()
+    const dry = await tools.openfoam_dict_set.execute({ casePath: dir, file: 'controlDict', entry: 'writeInterval', value: '0.01', dryRun: true })
+    assert.equal(dry.ok, true)
+    assert.equal(dry.old, '1')
+    assert.ok(!readFileSync(join(dir, 'system/controlDict'), 'utf8').includes('0.01'))
+    const real = await tools.openfoam_dict_set.execute({ casePath: dir, file: 'controlDict', entry: 'writeInterval', value: '0.01' })
+    assert.equal(real.ok, true)
+    assert.ok(readFileSync(join(dir, 'system/controlDict'), 'utf8').includes('writeInterval 0.01;'))
+    assert.ok(existsSync(join(dir, 'system/controlDict.bak')))
+    const miss = await tools.openfoam_dict_set.execute({ casePath: dir, file: 'controlDict', entry: 'noSuchKey', value: '1' })
+    assert.equal(miss.ok, false)
+    assert.ok(miss.hint.includes('append'))
+    const added = await tools.openfoam_dict_set.execute({ casePath: dir, file: 'controlDict', entry: 'writeFormat', value: 'ascii', append: true })
+    assert.equal(added.ok, true)
+    assert.ok(readFileSync(join(dir, 'system/controlDict'), 'utf8').includes('writeFormat ascii;'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('clean lists artefacts in a dry run and removes them on demand', async () => {
+  const dir = makeCase({
+    'system/controlDict': 'application icoFoam;\n',
+    '0/U': '',
+    '1/U': '',
+    '2.5/U': '',
+    'log.run': 'x',
+    'postProcessing/forces/0/forces.dat': '0 0 0\n',
+  })
+  mkdirSync(join(dir, 'processor0'), { recursive: true })
+  try {
+    const tools = registry()
+    const dry = await tools.openfoam_clean.execute({ casePath: dir })
+    assert.equal(dry.dryRun, true)
+    assert.deepEqual(dry.candidates.map((c) => c.rel).sort(), ['1', '2.5', 'log.run'])
+    assert.ok(existsSync(join(dir, '1')))
+    const real = await tools.openfoam_clean.execute({ casePath: dir, what: ['logs', 'timeDirs', 'processorDirs', 'postProcessing'], dryRun: false })
+    assert.equal(real.ok, true)
+    for (const gone of ['1', '2.5', 'log.run', 'processor0', 'postProcessing']) assert.ok(!existsSync(join(dir, gone)), gone)
+    for (const kept of ['0', 'system']) assert.ok(existsSync(join(dir, kept)), kept)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('run_progress and solve_verify report RUNNING on a live multi-region log', async () => {
+  const dir = makeCase({ 'system/controlDict': 'application foamMultiRun;\nendTime 300;\n' })
+  try {
+    const log = join(dir, 'log.foamMultiRun')
+    writeFileSync(log, readFileSync(new URL('./fixtures/log.foamMultiRun.running', import.meta.url), 'utf8'))
+    const tools = registry()
+    const p = await tools.openfoam_run_progress.execute({ log_path: log })
+    assert.equal(p.ok, true)
+    assert.equal(p.state, 'running')
+    assert.ok(p.time > 0)
+    assert.ok(p.steps >= 5)
+    assert.ok(p.secondsPerStep > 0)
+    assert.equal(p.endTime, 300)
+    assert.ok(p.eta)
+    const v = await tools.openfoam_solve_verify.execute({ log_path: log })
+    assert.equal(v.state, 'running')
+    assert.equal(v.decision, 'RUNNING')
+    assert.equal(v.pass, null)
+    assert.equal(v.metrics.finished, false)
+    assert.equal(v.metrics.diverged, false)
+    assert.ok(v.metrics.timeSteps >= 5)
+    assert.equal(v.casePath, dir)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('usage_report counts tool calls and lists unused tools', async () => {
+  const tools = registry()
+  await tools.openfoam_usage_report.execute({ reset: true })
+  await tools.openfoam_compute_first_layer.execute({ U_ref: 1, L_ref: 1 })
+  const u = await tools.openfoam_usage_report.execute({})
+  assert.ok(u.called.some((c) => c.name === 'openfoam_compute_first_layer'))
+  assert.ok(u.unused.includes('openfoam_render'))
+  assert.ok(u.calls >= 2)
+})
+
+test('command whitelist allows mpirun-wrapped apps and rejects the rest', async () => {
+  const { commandAllowed } = await import('../lib/of-case.js')
+  const ok = commandAllowed('mpirun -np 5 foamMultiRun')
+  assert.equal(ok.ok, true)
+  assert.equal(ok.app, 'foamMultiRun')
+  assert.equal(commandAllowed('mpirun -np 0 foamMultiRun').ok, false)
+  assert.equal(commandAllowed('bash -c ls').ok, false)
+  assert.equal(commandAllowed('checkMesh && rm -rf /').ok, false)
+  assert.equal(commandAllowed('mySolver', ['mySolver']).ok, true)
 })
