@@ -10,6 +10,20 @@ description: Set up, run and verify a multi-region conjugate-heat-transfer case 
 - the mesh lives in `constant/<region>/polyMesh`, not `constant/polyMesh`
 - CHT tasks: conjugate heat transfer, cooled walls, combustion gas + solid, electronics cooling
 
+## Step 0 — which flavour is this case?
+- **OpenFOAM.org (14+)**: `regionSolvers { fluid fluid; solid solid; }` in
+  `system/controlDict`; mesh regions are exactly those names; run `foamMultiRun`.
+- **OpenFOAM.com (v25xx/v26xx)**: `constant/regionProperties` groups MESH regions:
+  `regions ( fluid (bottomAir topAir) solid (heater leftSolid) );` — the
+  parenthesised names are the mesh regions (`constant/<r>/polyMesh`, `0/<r>`),
+  `fluid`/`solid` are only solver groups. One application runs everything
+  (`chtMultiRegionSimpleFoam`, `chtMultiRegionFoam`), and initial fields usually
+  live in `0.orig/` until `restore0Dir` copies them to `0/`.
+- `openfoam_inspect_case` reports `regionGroups` for the com layout, and
+  `openfoam_read_dict("0/<region>/<field>")` falls back to `0.orig/`.
+- `openfoam_run("restore0Dir")` (or `restore0Dir -processor`) does the copy the
+  plugin-side way; it is a shell helper in OpenFOAM, not an executable.
+
 ## Step 1 — read the case as regions, not as one mesh
 `openfoam_inspect_case` → `regions`, `regionSolvers`, per-region `fields`/`patches`;
 `openfoam_case_probe_facts` → `region_governing` (e.g. fluid compressible multicomponent,

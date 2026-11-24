@@ -10,3 +10,7 @@ SESSION-NOTES.md
 
 # internal working document, never published
 DESIGN.md
+
+# local test cases / renders
+.tmp*/
+.tmp_*.png

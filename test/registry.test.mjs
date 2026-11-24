@@ -2,6 +2,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { makeRegistry, toLosslessJson } from '../lib/registry.js'
+import { apply } from '../lib/index.js'
 
 function fakeCtx() {
   const tools = {}
@@ -73,4 +74,23 @@ test('wrapped execute records a failure and rethrows', async () => {
   await assert.rejects(() => ctx.registered.openfoam_boom.execute({}), /boom/)
   const rep = reg.report()
   assert.equal(rep.called[0].failed, 1)
+})
+
+test('every registered tool has a working output.render (incl. the image tools)', () => {
+  const tools = []
+  apply({ systemPrompt: { section() {} }, skills: { register() {} }, tools: { register: (t) => tools.push(t) } }, { caseRoots: [] })
+  assert.equal(tools.length, 61)
+  const value = { ok: true, image: { id: 'x' }, a: { image: { id: 'a' } }, b: { image: { id: 'b' } }, findings: [], runs: [], metrics: {} }
+  for (const tool of tools) {
+    assert.equal(typeof tool.output.render, 'function', `${tool.name}: output.render is missing`)
+    const blocks = tool.output.render({}, value)
+    assert.ok(Array.isArray(blocks) && blocks.length > 0, `${tool.name}: render returned nothing`)
+    for (const b of blocks) assert.ok(b && typeof b.type === 'string', `${tool.name}: bad block`)
+  }
+  const byName = (n) => tools.find((t) => t.name === n)
+  const image = (n) => byName(n).output.render({}, { ok: true, image: { id: 'x' } })
+  assert.ok(image('openfoam_render').some((b) => b.type === 'image'), 'openfoam_render lost its image block')
+  assert.ok(image('openfoam_stl_render').some((b) => b.type === 'image'), 'openfoam_stl_render lost its image block')
+  const cmp = byName('openfoam_compare_render').output.render({}, { ok: true, a: { image: { id: 'a' } }, b: { image: { id: 'b' } } })
+  assert.equal(cmp.filter((b) => b.type === 'image').length, 2, 'compare_render must show both images')
 })

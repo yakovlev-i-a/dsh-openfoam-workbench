@@ -11,7 +11,7 @@ reproduction and an experience library — plus 10 on-demand CFD skills.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers) and
 **ParaView 6.2.0**:
 
-**v0.3.5 · 61 tools · 11 skills · 53 tests**
+**v0.3.6 · 61 tools · 11 skills · 58 tests**
 
 ## Install
 
@@ -125,7 +125,7 @@ lib/paperlib.js    # PDF/paper extraction helpers
 lib/explib.js      # experience cards + learned error patterns
 lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (61 total)
 skills/            # 11 × SKILL.md (progressive disclosure)
-test/              # 21 engine + 18 tool + 4 core/inventory + 6 registry + 4 skills
+test/              # 21 engine + 18 tool + 4 core/inventory + 7 registry + 4 skills + 4 case
 locale/            # en/ru plugin-card strings
 icon.svg           # plugin icon
 ```
