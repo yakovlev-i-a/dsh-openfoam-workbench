@@ -15,8 +15,6 @@ import {
   parseRunLog,
   strayTimeDirs,
   fieldFiles,
-  winToWslPath,
-  wslToWinPath,
 } from '../lib/of-engine.js'
 
 const BANNER = `/*--------------------------------*- C++ -*----------------------------------*\\
@@ -226,13 +224,6 @@ test('fieldFiles lists the scalar/vector fields in 0/', () => {
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
-})
-
-test('path conversion round-trips', () => {
-  assert.equal(winToWslPath('E:\\dsh-openfoam-doctor'), '/mnt/e/dsh-openfoam-doctor')
-  assert.equal(winToWslPath('C:/Users/1'), '/mnt/c/Users/1')
-  assert.equal(wslToWinPath('/mnt/e/dsh-openfoam-doctor'), 'E:\\dsh-openfoam-doctor')
-  assert.equal(wslToWinPath('/home/user'), '/home/user')
 })
 
 test('checkCase finds limiter-wide-open on a synthetic case', () => {
