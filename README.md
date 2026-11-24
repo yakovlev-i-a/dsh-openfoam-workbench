@@ -99,7 +99,6 @@ service, never in `settings.json` or in the bundle.
 
 ## Docs
 
-- [DESIGN.md](./DESIGN.md) — architecture, tool inventory, status, open questions.
 - [CORE.md](./CORE.md) — the thin always-on core text.
 - [NOTICE](./NOTICE) / [LICENSE](./LICENSE) — attribution (Apache-2.0 + MIT).
 
