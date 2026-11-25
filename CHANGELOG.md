@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.8.1
+
+- **`steps` describes the whole run.** On a log larger than `logTailBytes` the
+  tools counted the tail window and reported it as the total (224 MB / 74 318
+  steps came back as 1 331). `progressFrom` now takes a full-file count:
+  `steps` is the run total, `stepsInWindow` is what the tail saw, and
+  `logWindow.truncated` says the window was smaller. Counting costs ~0.25 s per
+  90 MB (measured) and is bounded by a 4 s budget; `solve_verify` exposes the
+  same fields next to `metrics.timeSteps`.
+
 ## v0.8.0
 
 Fixes from the first external review (BFER series, ESI v2512) except the two

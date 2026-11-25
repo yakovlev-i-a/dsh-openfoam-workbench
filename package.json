@@ -1,6 +1,6 @@
 {
   "name": "@yakovlev-i-a/dsh-openfoam-workbench",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": true,
   "type": "module",
   "description": "OpenFOAM workbench for DeepSeek Harness: 61 tools (env, solvers, meshing, multi-region runs, renders, papers, experience) and 11 on-demand CFD skills.",

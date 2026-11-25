@@ -120,3 +120,35 @@ test('firstFatalLine keeps the OpenFOAM message and drops the stack', () => {
   assert.ok(line.length < 300)
   assert.equal(firstFatalLine(''), '')
 })
+
+// 2.4: on a log larger than the tail window, steps must describe the whole run
+// and the window must say so.
+test('steps counts the whole log while the window is reported separately', async () => {
+  const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs')
+  const { tmpdir } = await import('node:os')
+  const { join } = await import('node:path')
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-steps-'))
+  try {
+    const log = join(root, 'big.log')
+    const lines = []
+    for (let i = 1; i <= 3000; i += 1) {
+      lines.push(`Time = ${i}`)
+      lines.push(`solving for Ux, Initial residual = ${(1e-3 / (i + 1)).toExponential(3)}, Final residual = 1e-12, No Iterations 2`)
+    }
+    lines.push('End')
+    writeFileSync(log, lines.join('\n') + '\n')
+    const tools = registry({ caseRoots: [root], logTailBytes: 4000 })
+    const progress = await tools.openfoam_run_progress.execute({ log_path: log })
+    assert.equal(progress.ok, true, JSON.stringify(progress).slice(0, 300))
+    assert.equal(progress.logScan.truncated, true, 'the fixture must exceed the tail window')
+    assert.equal(progress.stepsTotal, 3000)
+    assert.equal(progress.steps, 3000)
+    assert.ok(progress.stepsInWindow < 3000, `window should be smaller, got ${progress.stepsInWindow}`)
+    assert.deepEqual(progress.logWindow.truncated, true)
+    const verdict = await tools.openfoam_solve_verify.execute({ log_path: log })
+    assert.equal(verdict.steps, 3000)
+    assert.equal(verdict.metrics.timeSteps, 3000)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
