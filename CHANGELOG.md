@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.6.0
+
+- **Settings page.** `lib/settings-schema.js` exports a native schemastery
+  `Config` (resolved from the DSH installation, so the bundle stays
+  dependency-free) with fields for `foamRoots`, `foamBashs`, `defaultDistribution`,
+  `paraviewExe/Python`, `pythonPath`, `caseRoots`, `extraCommands`, `corePath`,
+  `logTailBytes`, `scaleAskAbove` and `language`. Without the host library the
+  export degrades to `undefined` and the plugin works as before.
+- **One language for human-facing tool text.** `lib/i18n.js` holds the
+  geometry-scale question/options template per language; `mesh_plan` and `check`
+  now emit the same question in the resolved language (Russian and English
+  shipped, others fall back to English). The Russian hardcode in `check` is gone.
+- Tests: settings schema (native marker, a field for every default, graceful
+  degradation) and language coverage for both gate call sites (79 total).
+
 ## v0.5.0
 
 - **Zero-configuration installs.** `cordis.patch.yml` ships an empty config; the

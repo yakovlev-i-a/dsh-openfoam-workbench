@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.5.0 · 61 tools · 11 skills · 75 tests**
+**v0.6.0 · 61 tools · 11 skills · 79 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -30,8 +30,14 @@ and looks for ParaView in `/opt` and on `PATH`. `openfoam_env_check` shows what
 was found; `defaultDistribution` picks the install used when a tool is called
 without `distribution=`.
 
-Override only what discovery gets wrong, in your **profile** patch (not in this
-repository), keyed by the row id:
+Everything is also editable from **Settings → Plugins → OpenFOAM Workbench** once
+DSH has mounted the plugin (`lib/settings-schema.js` exports a native schemastery
+`Config`: `foamRoots`, `caseRoots`, `paraviewPython`, `language`, `scaleAskAbove`,
+`logTailBytes`, `extraCommands`, …). The schema borrows the schemastery copy that
+ships with DSH, so the bundle keeps zero npm dependencies.
+
+Override in your **profile** patch (not in this repository) when you prefer YAML
+or when discovery gets a path wrong:
 
 ```yaml
 - id: openfoam-workbench

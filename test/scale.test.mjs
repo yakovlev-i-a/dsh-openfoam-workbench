@@ -55,6 +55,39 @@ test('caseBBox reads the polyMesh points and reports the largest extent', () => 
   }
 })
 
+test('the geometry-scale question is written in the configured language', async () => {
+  const dir = makeTree(mkdtempSync(join(tmpdir(), 'ofwb-scale-ru-')), {
+    'system/controlDict': 'application icoFoam;\nendTime 1;\ndeltaT 1;\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\n',
+    'constant/polyMesh/points': points([0, 0, 0], [5, 2, 1]),
+  })
+  try {
+    const ru = registry({ scaleAskAbove: 0.1, language: 'ru' })
+    const asked = await ru.openfoam_check.execute({ casePath: dir })
+    assert.match(asked.needs_input.question, /Геометрия 5\.000 м/)
+    assert.match(asked.needs_input.options[1], /миллиметры/)
+
+    const en = registry({ scaleAskAbove: 0.1, language: 'en' })
+    const askedEn = await en.openfoam_check.execute({ casePath: dir })
+    assert.match(askedEn.needs_input.question, /5\.000 m across/)
+
+    // the same template everywhere: mesh_plan uses it too
+    const ruPlan = registry({ scaleAskAbove: 0.1, language: 'ru', caseRoots: [join(dir, '..')] })
+    const stl = await ruPlan.openfoam_stl_generate.execute({ casePath: dir, name: 'big', shape: 'box', params: { lx: 5, ly: 2, lz: 1 } })
+    assert.equal(stl.ok, true)
+    const plan = await ruPlan.openfoam_mesh_plan.execute({
+      casePath: dir,
+      stl_path: join(dir, 'constant/triSurface/big.stl'),
+      domain: { type: 'external', upstream: 2, downstream: 3, lateral: 2, vertical_top: 2, vertical_bottom: 2 },
+      target_cell_size: 0.5,
+    })
+    assert.equal(plan.ok, true, JSON.stringify(plan).slice(0, 200))
+    assert.deepEqual(plan.needs_input, asked.needs_input)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
 test('check asks about units when the mesh box is bigger than scaleAskAbove', async () => {
   const dir = makeTree(mkdtempSync(join(tmpdir(), 'ofwb-scale-')), {
     'system/controlDict': 'application icoFoam;\nendTime 1;\ndeltaT 1;\n',
