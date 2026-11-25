@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.6.2
+
+- **PNG plugin icon.** `icon.png` (512×512, 143 KiB) replaces `icon.svg`; the
+  package export `./icon` points at it. DSH reads the icon as a base64 data URL
+  and caps raw bytes at 256 KiB, so the 1254×1254 source was downscaled and
+  re-encoded (PNG is explicitly supported alongside SVG/JPEG/WebP).
+
 ## v0.6.1
 
 - **`needs_input` is language-neutral.** The payload now carries the decision

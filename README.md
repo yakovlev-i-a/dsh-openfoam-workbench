@@ -179,7 +179,7 @@ lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (61 to
 skills/            # 11 × SKILL.md (progressive disclosure)
 test/              # 60 tests: engine, tools, registry, skills, case model, inventory, log tail
 locale/            # en/ru plugin-card strings
-icon.svg           # plugin icon
+icon.png           # plugin icon (512×512 PNG, < 256 KiB)
 ```
 
 ## Prior art & acknowledgements
