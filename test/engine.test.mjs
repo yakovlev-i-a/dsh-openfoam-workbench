@@ -15,6 +15,7 @@ import {
   parseRunLog,
   strayTimeDirs,
   fieldFiles,
+  checkBlockMeshDict,
 } from '../lib/of-engine.js'
 
 const BANNER = `/*--------------------------------*- C++ -*----------------------------------*\\
@@ -316,10 +317,15 @@ test('checkPhysics flags a floating pressure level, and not a duct with an outle
     '0/p': 'boundaryField { left { type zeroGradient; } right { type zeroGradient; } }\n',
     'system/fvSolution': 'pRefCell 0;\npRefValue 0;\nsolvers { p { solver GAMG; } }\n',
   })
+  const transmissive = makeCase({
+    '0/p': 'boundaryField { left { type zeroGradient; } right { type waveTransmissive; } }\n',
+    'system/fvSolution': 'solvers { p { solver GAMG; } }\n',
+  })
   try {
     assert.deepEqual(checkPhysics(closed).map((f) => f.rule), ['closed-domain-no-pref'])
     assert.deepEqual(checkPhysics(duct), [])
     assert.deepEqual(checkPhysics(referenced), [])
+    assert.deepEqual(checkPhysics(transmissive), [], 'a waveTransmissive outlet is a pressure reference, not a closed domain')
   } finally {
     for (const d of [closed, duct, referenced]) rmSync(d, { recursive: true, force: true })
   }
@@ -364,4 +370,40 @@ test('parseCheckMesh uses the verdict checkMesh prints, not only thresholds', ()
   assert.equal(bad.meshOk, false)
   assert.equal(bad.failed, true)
   assert.equal(bad.failedChecks, 2)
+})
+
+test('parseCheckMesh surfaces the threshold lines behind Failed N checks', () => {
+  const m = parseCheckMesh('Mesh stats\n    cells: 2000\n\nChecking geometry...\n    faces with face pyramid volume < 2e-11 : 10001\n    faces with skewness > 4 (internal) or 20 (boundary) : 0\nFailed 1 mesh checks.\n')
+  assert.equal(m.failed, true)
+  assert.equal(m.meshOk, false)
+  assert.ok(m.problems.some((p) => /face pyramid volume < 2e-11: 10001/.test(p)), JSON.stringify(m.problems))
+})
+
+test('blockMesh vertex heuristics do not fire on legit shared-vertex meshes', () => {
+  const bm = 'vertices\n(\n    (0 0 0) (1 0 0) (1 1 0) (0 1 0) (0 0 1) (1 0 1) (1 1 1) (0 1 1)\n    (2 0 0) (2 1 0) (2 0 1) (2 1 1)\n);\nblocks\n(\n    hex (0 1 2 3 4 5 6 7) (5 5 5)\n    hex (1 8 9 2 5 10 11 6) (5 5 5)\n);\n'
+  const dir = makeCase({ 'system/blockMeshDict': bm })
+  try {
+    const findings = checkBlockMeshDict(dir)
+    assert.ok(!findings.some((f) => f.rule === 'block-vertex-mismatch'), 'the *8 heuristic was removed')
+    const vertex = findings.find((f) => f.rule === 'vertex-count')
+    assert.ok(!vertex || vertex.severity === 'info', 'a non-multiple-of-8 count is advice, not an error')
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('u-empty-patch is one finding per case, not per empty patch', async () => {
+  const dir = makeCase({
+    '0/U': 'boundaryField { sides { type empty; } frontAndBack { type empty; } inlet { type fixedValue; value uniform (1 0 0); } }\ninternalField uniform (0 0 0);\n',
+  })
+  try {
+    const fs = fieldFiles(dir)
+    const { checkBoundaryFields } = await import('../lib/of-engine.js')
+    const findings = checkBoundaryFields(dir)
+    const empties = findings.filter((f) => f.rule === 'u-empty-patch')
+    assert.equal(empties.length, 1, JSON.stringify(empties))
+    assert.match(empties[0].title, /sides, frontAndBack/)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
 })

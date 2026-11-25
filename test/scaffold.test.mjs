@@ -67,6 +67,12 @@ test('org scaffold writes foamRun + incompressibleFluid and org constant files',
     assert.match(p, /outlet\s+\{\s*type\s+fixedValue;\s*value\s+uniform 0;/)
     assert.ok(existsSync(join(root, 'caseA/caseA.foam')), 'the case-named .foam file must exist')
     assert.equal(r.findingCounts.error || 0, 0, JSON.stringify(r.findings))
+    assert.equal(r.manifest, 'case-manifest.json')
+    const manifest = JSON.parse(readFileSync(join(root, 'caseA/case-manifest.json'), 'utf8'))
+    assert.equal(manifest.application, 'foamRun')
+    assert.equal(manifest.compressible, false)
+    assert.equal(manifest.turbulence, 'laminar')
+    assert.deepEqual(manifest.patches.map((p) => p.role), ['inlet', 'outlet', 'wall'])
   } finally {
     rmSync(root, { recursive: true, force: true })
   }

@@ -152,3 +152,17 @@ test('steps counts the whole log while the window is reported separately', async
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+// 3.5: list_solvers must see solvers below the category level (chtMultiRegionFoam).
+test('list_solvers recurses into applications/solvers and finds CHT', async () => {
+  const tools = registry({})
+  const env = await tools.openfoam_env_check.execute({})
+  if (!env.ok) return
+  const com = await tools.openfoam_list_solvers.execute({ distribution: 'com' })
+  if (com.ok) {
+    assert.ok(com.count > 40, 'com should list dozens of solvers, not 15 category dirs')
+    assert.ok(com.solvers.some((s) => s.name === 'chtMultiRegionFoam'), 'CHT solver must be visible')
+    const cht = await tools.openfoam_list_solvers.execute({ distribution: 'com', filter: 'cht' })
+    assert.ok(cht.solvers.length >= 1, 'filter=cht must match chtMultiRegionFoam')
+  }
+})

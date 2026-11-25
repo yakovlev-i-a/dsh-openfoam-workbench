@@ -152,3 +152,30 @@ test('mesh_plan creates <case>.foam and asks about units for a metre-sized STL',
     rmSync(dir, { recursive: true, force: true })
   }
 })
+
+test('caseBBox reads only the vertices block and applies scale', () => {
+  const dir = makeTree(mkdtempSync(join(tmpdir(), 'ofwb-bbox-scl-')), {
+    'system/blockMeshDict': [
+      'vertices',
+      '(',
+      '    (0 0 0) (0.1 0 0) (0.1 0.04 0) (0 0.04 0)',
+      '    (0 0 0.05) (0.1 0 0.05) (0.1 0.04 0.05) (0 0.04 0.05)',
+      ');',
+      'blocks',
+      '(',
+      '    hex (0 1 2 3 4 5 6 7) (30 10 10) simpleGrading (1 1 1);',
+      ');',
+      'scale 0.146;',
+    ].join('\n') + '\n',
+  })
+  try {
+    const b = caseBBox(dir)
+    assert.equal(b.ok, true, JSON.stringify(b))
+    // 0.1 * 0.146 = 0.0146 (NOT the 30 from the block resolution)
+    assert.ok(b.max[0] < 0.02, `expected a scaled ~0.0146 m, got ${JSON.stringify(b.max)}`)
+    assert.equal(b.scale, 0.146)
+    assert.ok(b.maxExtent < 0.02, 'extent must come from scaled vertices, not the hex resolution')
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})

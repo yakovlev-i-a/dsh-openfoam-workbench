@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.9.1
+
+Second-review fixes (1-9 from the agreed list).
+
+- **`limiter-wide-open` advice is legal**: OpenFOAM rejects `k > 1`
+  (`should be >= 0 and <= 1`); the fix now says `limitedLinear 1` only, with the
+  k in (0,1] scale stated.
+- **`caseBBox` reads only the `vertices` block and applies `scale`**: a hex block
+  resolution tuple `(30 10 10)` is no longer read as a vertex, so CHT and
+  multi-block cases stop reporting a 30 m box and a false `geometry-scale` ask.
+- **`closed-domain-no-pref`** recognises `waveTransmissive`, `fixedFluxPressure`,
+  `prghPressure`, `advective`, `supersonicFreestream`, `pinnedValue` as pressure
+  references (a transmissive outlet is not a closed domain).
+- **`u-empty-patch`** is one finding per case listing all empty patches.
+- **blockMesh vertex heuristics**: the wrong `block-vertex-mismatch` rule
+  (`hexCount*8 > vertexCount`) is removed and `vertex-count` is advice, not an
+  error (blocks share vertices).
+- **`mesh_verify`/doctor problems** now include the threshold lines behind
+  "Failed N mesh checks." (`faces with face pyramid volume < 2e-11: 10001`), so a
+  failure no longer comes back with an empty problems list.
+- **`list_solvers`** recurses `applications/{solvers,modules,legacy}` to the
+  `Make/files` level; com now lists 69 solvers including `chtMultiRegionFoam`.
+- **`resolvedFrom`** tracing on the path-bearing answers (inspect_case,
+  case_probe_facts, check) - `{kind, root, input}`.
+- **`openfoam_case_scaffold`** writes `case-manifest.json` (application,
+  algorithm, distribution, compressible, phases, turbulence, patches) and its
+  description states it writes no geometry; `paper_search` reports `degraded`
+  when a source failed.
+
 ## v0.9.0
 
 - **`openfoam_case_scaffold`**: a case can now be built from nothing. Writes
