@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.9.0
+
+- **`openfoam_case_scaffold`**: a case can now be built from nothing. Writes
+  `controlDict`, `fvSchemes`, `fvSolution`, the constant files and `0/U`, `0/p`
+  for incompressible **laminar** flow (SIMPLE steady or PIMPLE transient),
+  deriving the boundary conditions from the case's own patches (inlet/outlet/
+  wall/empty/symmetry, with `pRefCell` for closed domains) and falling back to
+  the `inlet/outlet/walls` set `mesh_plan` creates. Distribution-aware: org 14
+  gets `application foamRun; solver incompressibleFluid;` plus
+  `momentumTransport`/`physicalProperties`; com v2606 gets `application
+  simpleFoam;` plus `turbulenceProperties`/`transportProperties`. Runs the doctor
+  afterwards and returns its findings. Verified end to end on both: STL → mesh
+  plan → blockMesh → solver → `End` (2.2 s per run).
+- **`stl_generate` creates the case directory** instead of failing with
+  "case not found", so the first step of a from-scratch build works.
+- Turbulent/compressible/CHT requests are refused with a tutorial hint rather
+  than guessed.
+- README: a "Supported versions" matrix (org 14 vs com v2606) and an explicit
+  statement that other branches are best effort.
+
 ## v0.8.1
 
 - **`steps` describes the whole run.** On a log larger than `logTailBytes` the

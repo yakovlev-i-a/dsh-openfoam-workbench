@@ -55,3 +55,7 @@ runId and let the monitor refresh.
 ## Discipline
 - Keep answers short, prefer numbered lists.
 - Do not edit before the request is clear.
+
+- No case yet (own geometry, incompressible laminar): `openfoam_case_scaffold`
+  writes controlDict/fvSchemes/fvSolution/constant/0 from the case patches
+  (org: `foamRun` + `incompressibleFluid`; com: `simpleFoam`), then blockMesh.

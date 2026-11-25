@@ -16,6 +16,11 @@
       "parameters": "e7e77fe0bda1c69a"
     },
     {
+      "name": "openfoam_case_scaffold",
+      "description": "b3592c133728142e",
+      "parameters": "f7895817ef5b9e18"
+    },
+    {
       "name": "openfoam_check",
       "description": "8d9e17f61500cb44",
       "parameters": "ed95ff3c63656b24"
@@ -310,7 +315,7 @@
     "name": "openfoam-workbench:core",
     "order": 250,
     "interpolate": false,
-    "text": "cc83a8be41c071f8"
+    "text": "1d2e7629acc29b86"
   },
   "skills": [
     {

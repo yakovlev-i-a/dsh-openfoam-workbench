@@ -88,7 +88,7 @@ test('wrapped execute records a failure and rethrows', async () => {
 test('every registered tool has a working output.render (incl. the image tools)', () => {
   const tools = []
   apply({ systemPrompt: { section() {} }, skills: { register() {} }, tools: { register: (t) => tools.push(t) } }, { caseRoots: [] })
-  assert.equal(tools.length, 61)
+  assert.equal(tools.length, 62)
   const value = { ok: true, image: { id: 'x' }, a: { image: { id: 'a' } }, b: { image: { id: 'b' } }, findings: [], runs: [], metrics: {} }
   for (const tool of tools) {
     assert.equal(typeof tool.output.render, 'function', `${tool.name}: output.render is missing`)

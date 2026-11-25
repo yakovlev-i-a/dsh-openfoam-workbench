@@ -18,6 +18,7 @@ tools to inspect, set up, run and verify cases.
   (multi-region: `fluid/fvSchemes` or `region="fluid"`); change a live control ->
   openfoam_dict_set; clean a case -> openfoam_clean (dry run first).
 - find a case/template -> openfoam_find_tutorial + openfoam_clone_tutorial;
+  build one from scratch (incompressible laminar) -> openfoam_case_scaffold;
   what is this case -> openfoam_inspect_case / openfoam_case_probe_facts.
 - before a run -> openfoam_check; a failure -> openfoam_diagnose_error;
   mesh -> openfoam_mesh_verify; pictures -> openfoam_render + read_image.

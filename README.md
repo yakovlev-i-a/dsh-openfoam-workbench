@@ -1,7 +1,7 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
 Native **DeepSeek Harness** plugin for OpenFOAM: 61 tools and 11 on-demand skills
-covering case inspection, solver development, meshing, multi-region CHT runs,
+covering case scaffolding, inspection, solver development, meshing, multi-region CHT runs,
 durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one coherent surface — a thin always-on core
 prompt (`CORE.md`), procedural skills, and tools that enforce the conventions
@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.8.1 · 61 tools · 11 skills · 91 tests**
+**v0.9.0 · 62 tools · 11 skills · 98 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -26,6 +26,25 @@ minor versions.
 - **ParaView 6.x** with `pvpython` for renders and `-help` checks — optional:
   everything else works without it.
 - A POSIX shell (`bash -lc`) on Linux or macOS. Windows/WSL is not tested.
+
+## Supported versions
+
+Tested end to end (mesh → solver → verifier) on **OpenFOAM 14** (org) and
+**OpenFOAM v2606** (com). The two branches differ in ways the tools follow:
+
+| Aspect | org 14 | com v2606 |
+|---|---|---|
+| incompressible entry | `foamRun` + `solver incompressibleFluid;` | no `foamRun`: `simpleFoam`, `pimpleFoam`, … |
+| multi-region | `regionSolvers` + `foamMultiRun` | `regionProperties` groups, `restore0Dir`, `0.orig/` |
+| case files | `physicalProperties`, `momentumTransport` | `transportProperties`, `turbulenceProperties` |
+| initial fields | `0/` | `0.orig/` (and `0_orig/`, both accepted) |
+
+Other versions and branches are **best effort**. Discovery, the doctor and the
+scaffold accept both layouts and pick the org/com form from `distribution`, but
+a fork with different solver names, `regionProperties` verbs or field files will
+surface as a tool hint or a doctor finding rather than a silently wrong
+dictionary. Turbulent, compressible and CHT setups are not generated at all —
+use `openfoam_find_tutorial` + `openfoam_clone_tutorial` for those.
 
 ## Install
 
