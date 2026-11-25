@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.7.0
+
+Marketplace readiness.
+
+- **CI**: `.github/workflows/tests.yml` runs the unit suite on Node 20/22/24 for
+  every push and pull request (the suite is host-agnostic; host-dependent tests
+  skip themselves).
+- **Packaging**: `exports["./package.json"]` added (tools that resolve the
+  manifest by subpath no longer fail), icon and client verified through a
+  consumer-style resolution, `npm pack` ships 48 files / 243 KB.
+- **Docs**: Requirements section, marketplace install path, a committed render
+  as the README screenshot.
+- **`scripts/make-market-index.mjs`** builds a format-1 index entry pinned to a
+  commit (version, publishTimestamp, git source, engines, icon URL); a test runs
+  it through the real `@deepseek-ai/dsh-plugin-market-index` validator and
+  `marketInstallTarget`.
+
 ## v0.6.2
 
 - **PNG plugin icon.** `icon.png` (512×512, 143 KiB) replaces `icon.svg`; the

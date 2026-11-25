@@ -17,7 +17,25 @@ Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
 
+## Requirements
+
+- **DeepSeek Harness** `>=0.2.2-rc.1` — declared as `engines.dsh`, so the
+  installer refuses an older host instead of mounting a plugin it cannot support.
+- **OpenFOAM** installed locally (org, e.g. `openfoam14`, and/or com, `vYYMM`);
+  the plugin drives it in subprocesses and never vendors it.
+- **ParaView 6.x** with `pvpython` for renders and `-help` checks — optional:
+  everything else works without it.
+- A POSIX shell (`bash -lc`) on Linux or macOS. Windows/WSL is not tested.
+
 ## Install
+
+From the marketplace (once the plugin is listed):
+
+```text
+Discover → search "OpenFOAM" → Install → restart DSH
+```
+
+From a local checkout:
 
 ```bash
 dsh plugin install /path/to/dsh-openfoam-workbench
@@ -142,6 +160,13 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   (`needs_input`). In the Web UI the call summary of every `openfoam_*` row
   (`openfoam_x · …`) is blue, `#3b518c` on light and `#9db4e0` on dark
   (`client.js`, the browser half of this bundle; no per-tool registration).
+
+## Screenshots
+
+![Multi-region CHT case: temperature field rendered from the case directory](docs/media/cht-render.png)
+
+`openfoam_render` on `multiRegion/CHT/coolingCylinder2D` — 3045 cells, both
+regions, temperature. The render reads only the case directory (no GUI).
 
 ## Security
 
