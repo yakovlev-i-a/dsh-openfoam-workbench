@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.3 · 62 tools · 11 skills · 104 tests**
+**v0.9.4 · 62 tools · 11 skills · 104 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -205,6 +205,11 @@ service, never in `settings.json` or in the bundle.
   under 3 KB: a test fails if it grows past the budget or loses a routing marker.
   The `{{language}}` placeholder is filled from the `language` config or the OS
   locale, so one file serves every language.
+  The iron rules separate *verifiable facts* (the case, the installed OpenFOAM,
+  a run result — check with a tool) from *conceptual answers* (`why does the
+  pressure equation carry this correction?` — answer directly and cite the
+  source when the version matters), so the agent does not call a tool just to
+  satisfy a rule.
 - [NOTICE](./NOTICE) / [LICENSE](./LICENSE) — attribution (Apache-2.0 + MIT).
 - [market/index.json](./market/index.json) — the format-1 marketplace index
   pinned to a release commit (`node scripts/make-market-index.mjs --commit <sha>

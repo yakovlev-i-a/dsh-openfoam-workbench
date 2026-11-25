@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.9.4
+
+- **Iron rule 1 is no longer absolute.** "Every turn calls a tool" forced a tool
+  call even for conceptual questions ("why does the pressure equation carry this
+  correction?"), which produced theatre calls and less natural answers. It now
+  splits the two cases: verify with a tool when the answer depends on the user's
+  case, the installed OpenFOAM or a run result; answer a conceptual question
+  directly, citing the source only when the version matters. Rule 3
+  ("Check, don't guess") still pins the anti-hallucination side, and the routing
+  table is unchanged.
+
 ## v0.9.3
 
 - **Explicit `foamRoot` beats discovery.** Discovery filled `foamRoots` even when
