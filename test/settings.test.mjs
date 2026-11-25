@@ -6,7 +6,7 @@ import assert from 'node:assert/strict'
 import { execSync } from 'node:child_process'
 import { realpathSync } from 'node:fs'
 import { DEFAULTS } from '../lib/runtime.js'
-import { scaleGate, templatesFor } from '../lib/i18n.js'
+import { geometryScalePrompt } from '../lib/needs-input.js'
 
 function dshBin() {
   try {
@@ -17,19 +17,15 @@ function dshBin() {
   }
 }
 
-test('the geometry-scale question follows the resolved language', () => {
-  const ru = scaleGate('Russian', 0.14)
-  assert.match(ru.question, /Геометрия 0\.140 м/)
-  assert.equal(ru.options.length, 3)
-  assert.match(ru.options[0], /метры/)
-
-  const en = scaleGate('English', 2)
-  assert.match(en.question, /2\.000 m across/)
-  assert.match(en.options[1], /millimetres/)
-
-  // unknown languages fall back to English, never to a broken string
-  assert.equal(templatesFor('Klingon'), templatesFor('English'))
-  assert.match(scaleGate('Klingon', 0.5).question, /0\.500 m across/)
+test('the geometry-scale payload is language-neutral', () => {
+  const p = geometryScalePrompt({ extent: 5, askAbove: 0.1 })
+  assert.equal(p.kind, 'geometry-scale')
+  assert.deepEqual(p.data, { extent_m: 5, askAbove_m: 0.1 })
+  assert.deepEqual(p.options.map((o) => o.id), ['metres-ok', 'millimetres', 'other'])
+  assert.match(p.ask, /5\.000 m across/)
+  // no user-facing prose in a specific language: the agent phrases the question
+  assert.equal(p.question, undefined)
+  assert.ok(p.options.every((o) => typeof o.label === 'string' && o.label.length > 0))
 })
 
 test('Config is a native schemastery schema with a field for every default', async () => {

@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.6.1
+
+- **`needs_input` is language-neutral.** The payload now carries the decision
+  (`kind`, numbers in `data`, stable option ids with English labels) and one
+  English instruction for the model; the user-facing wording is the agent's job
+  (CORE.md: ask in `{{language}}`, translate the labels). `lib/i18n.js` and the
+  `responseLanguage` reads in `mesh_plan`/`check` are gone, so every future gate
+  needs one template, not one per language. The registry renders
+  `[<kind>] <ask>` + `id: label` options and still accepts the legacy
+  `{question, options}` shape.
+
 ## v0.6.0
 
 - **Settings page.** `lib/settings-schema.js` exports a native schemastery
