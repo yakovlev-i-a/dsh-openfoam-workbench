@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.9.3
+
+- **Explicit `foamRoot` beats discovery.** Discovery filled `foamRoots` even when
+  the profile set the legacy single `foamRoot`, and `rootFor` prefers
+  `foamRoots[distribution]`, so a configured install was silently replaced by
+  whatever was installed on the machine. Discovery now runs only when neither
+  `foamRoot` nor `foamRoots` is configured. This is also why the v0.9.1 CI
+  failure only reproduced without OpenFOAM installed. Regression test added.
+
 ## v0.9.2
 
 - **CI fix**: `openfoam_list_solvers` treated `applications/modules` like

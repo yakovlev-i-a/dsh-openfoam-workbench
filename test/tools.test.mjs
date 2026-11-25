@@ -411,3 +411,20 @@ test('the shipped CORE.md stays within the prompt budget and keeps the routing m
     assert.ok(text.includes(marker), `CORE.md lost the routing marker ${marker}`)
   }
 })
+
+test('an explicit foamRoot wins over environment discovery', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-explicit-'))
+  try {
+    mkdirSync(join(root, 'applications/modules/incompressibleFluid'), { recursive: true })
+    mkdirSync(join(root, 'applications/legacy/incompressible/icoFoam/Make'), { recursive: true })
+    writeFileSync(join(root, 'applications/legacy/incompressible/icoFoam/Make/files'), 'icoFoam.C\n\nEXE = $(FOAM_APPBIN)/icoFoam\n')
+    const tools = registry({ foamRoot: root })
+    const r = await tools.openfoam_list_solvers.execute({})
+    const names = r.solvers.map((s) => s.name)
+    assert.ok(names.includes('incompressibleFluid'), 'the fixture module must be listed, not a discovered install')
+    assert.ok(names.includes('icoFoam'))
+    assert.ok(!names.includes('chtMultiRegionFoam'), 'no discovered solver may leak in when foamRoot is set')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
