@@ -182,6 +182,9 @@ service, never in `settings.json` or in the bundle.
   The `{{language}}` placeholder is filled from the `language` config or the OS
   locale, so one file serves every language.
 - [NOTICE](./NOTICE) / [LICENSE](./LICENSE) — attribution (Apache-2.0 + MIT).
+- [market/index.json](./market/index.json) — the format-1 marketplace index
+  pinned to a release commit (`node scripts/make-market-index.mjs --commit <sha>
+  --out market/index.json`); host it over https and add that URL in Discover.
 
 ## Layout
 
