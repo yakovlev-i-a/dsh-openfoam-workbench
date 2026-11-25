@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.9.5
+
+- **No shell string is built from paths or commands.** Every OpenFOAM call
+  (`openfoam_run`, the async registry, `mesh_verify`, `stl_fit`, `wmake`,
+  `solver_smoke`, `version_info`, `env_check`) now runs through one static
+  script with the bashrc, working directory, log path and command passed as
+  positional parameters / argv (`FOAM_RUN_SCRIPT`, `FOAM_LOG_SCRIPT`,
+  `runFoam`, `spawnFoamLog`). A path containing `"`, `'`, `$()`, backticks,
+  `;` or newlines can no longer become shell code; the whitelist also returns
+  the parsed `argv` instead of a string to re-split.
+- `set --` clears the positional parameters before sourcing: OpenFOAM's com
+  `etc/bashrc` forwards `"$@"` into `etc/config.sh/setup`, so a non-empty list
+  made the probe hang (this surfaced as a 30 s stall per distribution in
+  `openfoam_env_check`).
+- Child processes run with `stdin: ignore`.
+- Security section in the README states explicitly that the plugin executes
+  local commands as the OS user and is not a sandbox.
+- Tests: injection regression suite (paths with `$()`, quotes, spaces,
+  backticks; bashrc path with substitution; argv literalness; whitelist argv).
+
 ## v0.9.4
 
 - **Iron rule 1 is no longer absolute.** "Every turn calls a tool" forced a tool

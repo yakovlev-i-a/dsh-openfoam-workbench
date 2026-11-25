@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.4 · 62 tools · 11 skills · 104 tests**
+**v0.9.5 · 62 tools · 11 skills · 110 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -193,6 +193,23 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
 regions, temperature. The render reads only the case directory (no GUI).
 
 ## Security
+
+The plugin **runs local OpenFOAM programs with the privileges of your OS user**
+and is **not a sandbox**: a solver or `wmake` call has the same access as a shell
+started by you.
+
+What it does to make that safe:
+
+- only whitelisted applications run (`BASE_APPS` plus the `extraCommands`
+  config), and a command containing shell metacharacters (`;`, `|`, `$()`,
+  backticks, newlines) is refused before anything is spawned;
+- the shell is always a **static script**: the bashrc, the working directory, the
+  log path and the command arrive as argv / positional parameters, never as text
+  spliced into the script, so a path containing quotes, `$()`, backticks or
+  spaces cannot become shell code (`lib/runtime.js`, `FOAM_RUN_SCRIPT`);
+- child processes get `stdin: ignore` and never inherit a terminal;
+- `clean` is a dry run by default, `dict_set` replaces one entry atomically and
+  keeps a `.bak`, and the source tools only read the OpenFOAM installation.
 
 No credentials ship with this repo. Put any API keys in DSH's `credentials`
 service, never in `settings.json` or in the bundle.

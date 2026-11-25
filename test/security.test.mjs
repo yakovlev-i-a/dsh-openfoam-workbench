@@ -1,0 +1,93 @@
+// Shell safety: paths and commands travel as argv, never as shell text.
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { FOAM_LOG_SCRIPT, FOAM_RUN_SCRIPT, runFoam, startSolverRun } from '../lib/runtime.js'
+import { commandAllowed } from '../lib/of-case.js'
+
+function scratch() {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-sec-'))
+  return { root, marker: join(root, 'INJECTED') }
+}
+
+test('the shell scripts are static: no interpolation slots for values', () => {
+  for (const script of [FOAM_RUN_SCRIPT, FOAM_LOG_SCRIPT]) {
+    assert.match(script, /b="\$1"/, 'the bashrc comes from a positional parameter')
+    assert.match(script, /d="\$2"/, 'the directory comes from a positional parameter')
+    assert.match(script, /^set --$/m, 'positional parameters must be cleared before sourcing (OpenFOAM forwards "$@")')
+    assert.doesNotMatch(script, /\$\{(b|d|l|log|dir|command|case)\}/, 'no value may be interpolated into the script')
+    assert.match(script, /\$\{cmd\[@\]\}/, 'the command is an array expansion')
+    assert.doesNotMatch(script, /openfoam-workbench\/\$/, 'the message text is static')
+  }
+})
+
+test('a working directory with $(), quotes and spaces is passed verbatim', async () => {
+  const { root, marker } = scratch()
+  const dir = join(root, `case $(touch ${marker}) 'quoted' \`x\` ; &`)
+  mkdirSync(dir, { recursive: true })
+  try {
+    const r = await runFoam(['/bin/pwd'], { bashrc: '/dev/null', dir })
+    assert.equal(r.ok, true, r.stderr)
+    assert.equal(r.stdout.trim(), dir, 'pwd must report the exact directory')
+    assert.equal(existsSync(marker), false, 'the injected command must not run')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('command arguments are quoted literally, not evaluated', async () => {
+  const { root, marker } = scratch()
+  try {
+    const payload = `a$(touch ${marker})b`
+    const r = await runFoam(['/bin/sh', '-c', 'printf %s "$1"', 'sh', payload], { bashrc: '/dev/null', dir: root })
+    assert.equal(r.ok, true, r.stderr)
+    assert.equal(r.stdout, payload, 'the argument must arrive as text')
+    assert.equal(existsSync(marker), false)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('a bashrc path with command substitution is not executed', async () => {
+  const { root, marker } = scratch()
+  try {
+    const r = await runFoam(['/bin/true'], { bashrc: `/nope/$(touch ${marker})/bashrc`, dir: root })
+    assert.equal(r.ok, false)
+    assert.equal(r.code, 97, 'a missing bashrc must fail with a named exit code')
+    assert.equal(existsSync(marker), false)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('the async registry spawns with the same static script', async () => {
+  const { root, marker } = scratch()
+  const dir = join(root, `run $(touch ${marker})`)
+  mkdirSync(dir, { recursive: true })
+  try {
+    const run = startSolverRun({ caseRoots: [root], runsDir: '' }, dir, ['/bin/true'], '/dev/null')
+    assert.equal(run.command, '/bin/true')
+    assert.deepEqual(run.argv, ['/bin/true'])
+    await new Promise((res) => setTimeout(res, 300))
+    assert.equal(existsSync(marker), false, 'the injected command must not run')
+    assert.ok(existsSync(run.log), 'the run log is created')
+    assert.ok(run.log.includes(join(dir, '.openfoam-runs')), 'the log stays beside the case')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('the whitelist rejects metacharacters and hands argv to the runner', () => {
+  for (const bad of ['blockMesh; rm -rf /', 'blockMesh $(id)', 'blockMesh `id`', 'blockMesh && id', 'blockMesh\nrm']) {
+    const r = commandAllowed(bad)
+    assert.equal(r.ok, false, `${JSON.stringify(bad)} must be refused`)
+  }
+  const ok = commandAllowed('checkMesh -region fluid -allGeometry')
+  assert.equal(ok.ok, true)
+  assert.deepEqual(ok.argv, ['checkMesh', '-region', 'fluid', '-allGeometry'])
+  const mpi = commandAllowed('mpirun -np 4 foamRun')
+  assert.equal(mpi.ok, true)
+  assert.deepEqual(mpi.argv, ['mpirun', '-np', '4', 'foamRun'])
+})
