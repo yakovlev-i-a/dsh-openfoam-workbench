@@ -1,14 +1,18 @@
 # dsh-openfoam-workbench bundle: mount the OpenFOAM Workbench plugin.
-# EDIT THESE PATHS for your machine before installing.
+#
+# The configuration is deliberately machine-neutral: OpenFOAM installs are
+# discovered at startup (directories under /opt, /usr/lib/openfoam, /usr/local
+# and ~/OpenFOAM that contain etc/bashrc), ParaView is looked up in /opt and on
+# PATH, and cases resolve from the workspace working directory.
+#
+# Optional overrides (put them in your profile patch, keyed by the row id
+# `openfoam-workbench`, so this bundle stays untouched):
+#   foamRoots: { org: /opt/openfoam14, com: /usr/lib/openfoam/openfoam2606 }
+#   defaultDistribution: org
+#   paraviewPython: /opt/paraview/bin/pvpython
+#   caseRoots: [/path/to/cases]
+#   language: ru            # '' follows the OS locale; 'ru'/'en'/... forces one
 - insert:
     - id: openfoam-workbench
       name: '@yakovlev-i-a/dsh-openfoam-workbench'
-      config:
-        foamRoots:
-          org: /opt/openfoam14
-          com: /usr/lib/openfoam/openfoam2606
-        defaultDistribution: org
-        paraviewExe: /opt/paraview/bin/paraview
-        paraviewPython: /opt/paraview/bin/pvpython
-        caseRoots:
-          - /media/yakovlev-i-a/adata-legend-512/openfoam-dev
+      config: {}

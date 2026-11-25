@@ -34,7 +34,7 @@ Multi-region cases take `region="fluid"`. Before finishing a long task, call
 openfoam_usage_report: an unused tool family means the work went around the plugin.
 
 ## Language
-Reply to the user in Russian; code, identifiers and comments in English.
+Reply to the user in {{language}}; code, identifiers and comments in English.
 
 ## Verified experience
 Before a long task, `openfoam_experience_recall(task)`; after a verified success,

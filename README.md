@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.4.4 · 61 tools · 11 skills · 70 tests**
+**v0.5.0 · 61 tools · 11 skills · 75 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -23,11 +23,27 @@ minor versions.
 dsh plugin install /path/to/dsh-openfoam-workbench
 ```
 
-**Edit `cordis.patch.yml` first** — it ships with the author's machine paths
-(`foamRoots.org`/`foamRoots.com`, `/opt/paraview`, a `caseRoots`). Point them at
-your own OpenFOAM distribution(s) — org and/or com — a headless-capable ParaView
-(6.x), and your working directory. `defaultDistribution` picks the one used when a
-tool is called without `distribution=`. Restart DSH after install or changes.
+**Zero configuration.** The bundle ships no paths: at startup the plugin scans
+`/opt`, `/usr/lib/openfoam`, `/usr/local` and `~/OpenFOAM` for directories that
+contain `etc/bashrc` (org `openfoam14` and com `vYYMM` are told apart by name),
+and looks for ParaView in `/opt` and on `PATH`. `openfoam_env_check` shows what
+was found; `defaultDistribution` picks the install used when a tool is called
+without `distribution=`.
+
+Override only what discovery gets wrong, in your **profile** patch (not in this
+repository), keyed by the row id:
+
+```yaml
+- id: openfoam-workbench
+  name: '@yakovlev-i-a/dsh-openfoam-workbench'
+  config:
+    foamRoots: { org: /opt/openfoam14, com: /usr/lib/openfoam/openfoam2606 }
+    paraviewPython: /opt/paraview/bin/pvpython
+    caseRoots: [/path/to/cases]   # relative case paths resolve from cwd otherwise
+    language: ru                  # '' = OS locale, 'ru'/'en'/... or a name forces one
+```
+
+Restart DSH after install or after changing the patch.
 
 ## Update
 
@@ -131,6 +147,8 @@ service, never in `settings.json` or in the bundle.
   section text is a function, re-evaluated on every model step), so editing this
   file changes the agent on the next message, without restarting DSH. Keep it
   under 3 KB: a test fails if it grows past the budget or loses a routing marker.
+  The `{{language}}` placeholder is filled from the `language` config or the OS
+  locale, so one file serves every language.
 - [NOTICE](./NOTICE) / [LICENSE](./LICENSE) — attribution (Apache-2.0 + MIT).
 
 ## Layout
