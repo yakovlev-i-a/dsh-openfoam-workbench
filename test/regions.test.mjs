@@ -19,7 +19,7 @@ function makeTree(root, files) {
 function multiRegionCase() {
   return makeTree(mkdtempSync(join(tmpdir(), 'ofwb-regions-')), {
     'system/controlDict': 'application foamMultiRun;\nendTime 1;\ndeltaT 0.01;\n',
-    'system/fluid/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { default none; div(phi,U) bounded Gauss limitedLinear 1; }\n',
+    'system/fluid/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { default none; div(phi,U) bounded Gauss limitedLinear 0.05; }\n',
     'system/solid/fvSchemes': 'ddtSchemes { default steadyState; }\ndivSchemes { default Gauss linear; }\n',
     'system/fluid/fvSolution': 'PIMPLE { nCorrectors 2; }\n',
     'system/solid/fvSolution': 'PIMPLE { nCorrectors 2; }\n',
@@ -36,7 +36,7 @@ test('checkCase tags findings with their region and checks region dicts', () => 
     const findings = checkCase(dir, { regions: ['fluid', 'solid'] })
     assert.ok(findings.every((f) => !f.region || ['fluid', 'solid'].includes(f.region)))
     const limiter = findings.filter((f) => f.rule === 'limiter-wide-open')
-    assert.equal(limiter.length, 1, 'only the fluid region uses limitedLinear 1')
+    assert.equal(limiter.length, 1, 'only the fluid region disables the limiter (k<0.1)')
     assert.equal(limiter[0].region, 'fluid')
     assert.ok(!findings.some((f) => f.rule === 'missing-file'), 'region fvSchemes exist, so nothing is missing')
   } finally {

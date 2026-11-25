@@ -71,7 +71,7 @@ test('patch_diff returns patches and diffs against a snapshot', async () => {
 test('check flags limiter=1 on a synthetic case', async () => {
   const dir = makeCase({
     'system/controlDict': 'application icoFoam;\nstartTime 0;\nendTime 100;\ndeltaT 1;\nwriteControl timeStep;\nwriteInterval 10;\n',
-    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { default none; div(phi,k) bounded Gauss limitedLinear 1; }\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { default none; div(phi,k) bounded Gauss limitedLinear 0.05; }\n',
     '0/k': 'boundaryField { inlet { type fixedValue; value uniform 0; } }\n',
   })
   try {

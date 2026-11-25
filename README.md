@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.6.1 · 61 tools · 11 skills · 79 tests**
+**v0.8.0 · 61 tools · 11 skills · 90 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -110,6 +110,11 @@ Two conventions are enforced by the tools, not by the prompt:
   `run_solver_async` and `render` create the ParaView entry file named after the
   case directory (`case.foam` is *not* accepted as a substitute). `inspect_case`
   reports `foamFile`, `list_cases` reports whether it exists.
+- **Relative paths** — a relative `casePath` resolves against the first
+  `caseRoots` entry (the session working directory is only the fallback when
+  `caseRoots` is empty); absolute paths always work. Run records and logs live
+  next to their case in `<case>/.openfoam-runs`, unless `runsDir` pins a
+  directory.
 - **Geometry-scale gate** — `mesh_plan` and `check` compare the bounding box with
   `scaleAskAbove` (default `0.1` m). Above it the result carries a
   language-neutral `needs_input` payload — `{kind, ask, data, options: [{id, label}]}`

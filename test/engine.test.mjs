@@ -226,10 +226,10 @@ test('fieldFiles lists the scalar/vector fields in 0/', () => {
   }
 })
 
-test('checkCase finds limiter-wide-open on a synthetic case', () => {
+test('checkCase warns when limitedLinear k disables the limiter', () => {
   const dir = makeCase({
     'system/controlDict': 'application icoFoam;\nstartTime 0;\nendTime 100;\ndeltaT 1;\nwriteControl timeStep;\nwriteInterval 10;\npurgeWrite 0;\n',
-    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { default none; div(phi,k) bounded Gauss limitedLinear 1; div((nuEff*dev2(T(grad(U))))) Gauss linear; }\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { default none; div(phi,k) bounded Gauss limitedLinear 0.05; div((nuEff*dev2(T(grad(U))))) Gauss linear; }\n',
     '0/k': 'boundaryField { inlet { type fixedValue; value uniform 0; } }\n',
   })
   try {

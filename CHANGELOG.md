@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.8.0
+
+Fixes from the first external review (BFER series, ESI v2512) except the two
+feature requests, which land in v0.9.0.
+
+- **`limiter-wide-open` was inverted.** `limitedLinear k` computes
+  `psi = clamp(2r/k, 0, 1)` (`limitedLinear.H`), so k -> 0 is the disabled
+  limiter and k = 1 is the conservative default. The rule now warns only below
+  0.1 and its advice no longer asks for a weaker scheme.
+- **Run registry next to the case.** Records and logs go to
+  `<case>/.openfoam-runs` (discovered across `caseRoots`), never into whatever
+  `caseRoots[0]` happens to be; `runsDir` is a documented setting.
+- **Log arguments.** `log_path` and `path` are interchangeable on
+  `run_progress`, `solve_verify` and `residual_series`; a wrong name returns
+  "log_path (alias: path) is required — got: ...", and "case not found" lists
+  the searched roots.
+- **`mesh_verify` verdict.** `failed` mirrors `pass`, and a checkMesh that
+  cannot run now reports the OpenFOAM message in `problems`/`regions[].error`.
+- **`0_orig`.** Initial fields are found in `0/`, `0.orig/` or `0_orig/` by
+  inspect_case, case_probe_facts, the doctor and `restore0Dir`; `probe_facts`
+  reads patch names from `polyMesh/boundary` (it used to disagree with
+  inspect_case) and accepts `case_path`/`casePath`.
+- **`read_source`** lists similarly named files and points at
+  `openfoam_find_source` instead of a bare "not found".
+- The four log tools now say which one to call (metrics vs progress vs verdict
+  vs series).
+- Release guard: a test fails when the README status line and `package.json`
+  disagree, when the CHANGELOG lacks the current version, or when the package
+  `files` list misses CHANGELOG/LICENSE/NOTICE/client.
+
 ## v0.7.0
 
 Marketplace readiness.
