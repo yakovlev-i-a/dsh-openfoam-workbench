@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.9.2
+
+- **CI fix**: `openfoam_list_solvers` treated `applications/modules` like
+  `applications/solvers` and only accepted directories that hold `Make/files`.
+  Module directories are solvers in their own right (org layout), so the tool
+  now lists them directly and walks only `applications/solvers` and
+  `applications/legacy` down to the `Make/files` level. Verified: org 42
+  solvers, com 69 including `chtMultiRegionFoam`.
+
 ## v0.9.1
 
 Second-review fixes (1-9 from the agreed list).
