@@ -24,6 +24,6 @@ test('registered tools, core section and skills match the inventory fixture', ()
     skills: skills.map((s) => ({ name: s.name, description: sha(String(s.description || '')) })).sort((a, b) => a.name.localeCompare(b.name)),
   }
   assert.deepEqual(actual, expected)
-  assert.equal(actual.tools.length, 65)
+  assert.equal(actual.tools.length, 64)
   assert.equal(actual.skills.length, 11)
 })

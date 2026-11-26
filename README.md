@@ -1,6 +1,6 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-Native **DeepSeek Harness** plugin for OpenFOAM: 65 tools and 11 on-demand skills
+Native **DeepSeek Harness** plugin for OpenFOAM: 64 tools and 11 on-demand skills
 covering case scaffolding, inspection, solver development, meshing, multi-region CHT runs,
 durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one coherent surface — a thin always-on core
@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.19 · 65 tools · 11 skills · 161 tests**
+**v0.9.20 · 64 tools · 11 skills · 157 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -31,8 +31,10 @@ minor versions.
 
 Three small cases with stored reference quantities live in `test/golden/`:
 `cavity` (incompressible, 400 cells, both families), `pitzDaily` (compressible,
-org 14) and `sphereCht` (the sphere-in-box CHT case built by the scaffold itself,
-org 14). Run them against an installation with:
+org 14) and `sphereCht` (the sphere-in-box CHT case, org 14). `sphereCht` starts
+from a **stored mesh fixture** (`test/golden/meshes/sphereCht`, gzipped polyMesh
+that both families read), so both branches solve exactly the same mesh and only
+the dictionaries are generated per run. Run them against an installation with:
 
 ```bash
 node scripts/run-golden.mjs --distribution org     # verify

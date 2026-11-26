@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.9.20
+
+Golden cases start from **stored meshes**, and the tool surface stays at 64.
+
+- `test/golden/meshes/` — two fixtures (gzipped `polyMesh`): `sphereFlow`
+  (snappy: 100 mm cube minus 50 mm sphere, 17587 cells, level 1-2) and
+  `sphereCht` (blockMesh + sphere cell zone + `splitMeshRegions`: 7448 fluid /
+  552 solid). Both families read the same files, so a golden run is deterministic
+  and takes seconds.
+- `sphereCht` golden now copies the fixture and only generates dictionaries
+  (`zero` mesh commands at run time); the runner reads `.gz` boundaries.
+- **`openfoam_create_zone` removed** (the 65th tool): the golden path no longer
+  needs it, the underlying commands (`createZones`, `topoSet`, `setsToZones`) are
+  whitelisted, and a tool that only writes one small dictionary and calls a
+  whitelisted command does not justify the extra surface. `caps.splitRegions`
+  keeps the org/com difference as data.
+- Verified: org runs `cavity`, `pitzDaily`, `sphereCht` green; com runs `cavity`
+  green (skips carry their reasons).
+
 ## v0.9.19
 
 Cell zones are now a capability, which is the step that unblocks multi-region

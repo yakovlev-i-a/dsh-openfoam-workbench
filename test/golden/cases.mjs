@@ -117,8 +117,6 @@ export const CASES = {
     args: ['both'],
     prepare: ({ caseDir }) => {
       mkdirSync(join(caseDir, 'system'), { recursive: true })
-      writeFileSync(join(caseDir, 'system/blockMeshDict'), SPHERE_BOX_BLOCKMESH)
-      writeFileSync(join(caseDir, 'system/createZonesDict'), SPHERE_ZONES)
       writeFileSync(join(caseDir, 'system/controlDict'), [
         'FoamFile { version 2.0; format ascii; class dictionary; object controlDict; }',
         '',
@@ -134,8 +132,8 @@ export const CASES = {
         '',
       ].join('\n'))
     },
-    steps: ['blockMesh', 'zone', 'splitMeshRegions'],
-    zone: { name: 'solid', shape: 'sphere', params: { centre: [0, 0, 0], radius: 0.025 } },
+    meshFixture: 'sphereCht',
+    steps: [],
     cht: {
       regions: [{ name: 'fluid', kind: 'fluid' }, { name: 'solid', kind: 'solid' }],
       Uinlet: 5, Tinlet: 500, Tsolid: 300,

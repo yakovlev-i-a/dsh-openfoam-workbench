@@ -5,6 +5,7 @@
 // a handful of quantities and compares them with test/golden/expected/<dist>.json.
 // `--update` re-blesses the expected values; that must be a reviewed change.
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { gunzipSync } from 'node:zlib'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { CASES, copyTutorial, resolveTutorial } from '../test/golden/cases.mjs'
@@ -15,7 +16,6 @@ import { caseRegions } from '../lib/of-case.js'
 import { probeCaps } from '../lib/versions.js'
 import { scaffoldFiles } from '../lib/scaffold.js'
 import { scaffoldCht } from '../lib/scaffold-cht.js'
-import { zonePlan } from '../lib/zones.js'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TOL = { cells: 0, maxNonOrtho: 0.01, finalTime: 1e-3, default: 0.05 }
@@ -53,7 +53,10 @@ async function run(cfg, dist, argv, dir) {
 }
 
 function readTextSafe(p) {
-  try { return readFileSync(p, 'utf8') } catch { return '' }
+  try { return readFileSync(p, 'utf8') } catch {}
+  // the stored fixtures keep polyMesh as .gz; OpenFOAM reads both
+  try { return gunzipSync(readFileSync(p + '.gz')).toString('utf8') } catch {}
+  return ''
 }
 
 /** Which command starts the solver this case ends up with. */
@@ -200,6 +203,12 @@ async function runCase(cfg, dist, name, spec, opts) {
   } else {
     spec.prepare({ caseDir, dist })
     record('prepare', { ok: true, argv: 'case files' })
+    if (spec.meshFixture) {
+      const src = join(ROOT, 'test/golden/meshes', spec.meshFixture, 'constant')
+      if (!existsSync(src)) return { name, skipped: `mesh fixture not found: ${spec.meshFixture}` }
+      copyTutorial(src, join(caseDir, 'constant'))
+      record('mesh fixture', { ok: true, argv: spec.meshFixture })
+    }
   }
 
   const caps = await probeCaps(bashrcFor(cfg, dist), dist)
@@ -210,22 +219,6 @@ async function runCase(cfg, dist, name, spec, opts) {
       const argv = ['splitMeshRegions', ...caps.splitRegions]
       const r = record(argv.join(' '), await run(cfg, dist, argv, caseDir))
       if (!r.ok) return { name, steps, error: `${argv.join(' ')} failed`, log: r.text.slice(-1500) }
-      continue
-    }
-    if (step === 'zone') {
-      if (!spec.zone) return { name, steps, error: 'the recipe asks for a zone but does not describe it' }
-      const plan = zonePlan({ caps, name: spec.zone.name, shape: spec.zone.shape, params: spec.zone.params })
-      if (plan.error) return { name, steps, error: plan.error }
-      mkdirSync(join(caseDir, 'system'), { recursive: true })
-      for (const [rel, body] of Object.entries(plan.prereq || {})) {
-        if (!existsSync(join(caseDir, rel))) writeFileSync(join(caseDir, rel), body)
-      }
-      writeFileSync(join(caseDir, plan.dictRel), plan.dictText)
-      for (const argv of plan.commands) {
-        const r = record(argv.join(' '), await run(cfg, dist, argv, caseDir))
-        if (!r.ok) return { name, steps, error: `${argv.join(' ')} failed`, log: r.text.slice(-1500) }
-      }
-      record('zone', { ok: true, argv: `${spec.zone.name} via ${plan.tool}` })
       continue
     }
     const argv = step.split(' ')
