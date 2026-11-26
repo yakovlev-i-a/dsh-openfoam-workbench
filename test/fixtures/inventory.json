@@ -18,7 +18,7 @@
     {
       "name": "openfoam_case_scaffold",
       "description": "006e6d7635c70e3e",
-      "parameters": "f7895817ef5b9e18"
+      "parameters": "48ed88e68cfa64cd"
     },
     {
       "name": "openfoam_check",
@@ -114,6 +114,11 @@
       "name": "openfoam_experience_save",
       "description": "dcbb0adcfd4b92c5",
       "parameters": "740777fb1dfbf15b"
+    },
+    {
+      "name": "openfoam_field_stats",
+      "description": "e99ad35f132d8356",
+      "parameters": "95bdf1d568ddac4c"
     },
     {
       "name": "openfoam_find_source",
@@ -320,7 +325,7 @@
     "name": "openfoam-workbench:core",
     "order": 250,
     "interpolate": false,
-    "text": "f578fab7dc2aec97"
+    "text": "0519f1877533b51d"
   },
   "skills": [
     {

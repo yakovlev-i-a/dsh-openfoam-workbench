@@ -25,7 +25,8 @@ tools to inspect, set up, run and verify cases.
   build one from scratch (incompressible laminar) -> openfoam_case_scaffold;
   what is this case -> openfoam_inspect_case / openfoam_case_probe_facts.
 - before a run -> openfoam_check; a failure -> openfoam_diagnose_error;
-  mesh -> openfoam_mesh_verify; pictures -> openfoam_render + read_image.
+  mesh -> openfoam_mesh_verify; field min/max -> openfoam_field_stats;
+  pictures -> openfoam_render + read_image.
 - runs -> openfoam_run (short) / openfoam_run_solver_async (long, incl.
   `mpirun -np N foamMultiRun`); progress/ETA -> openfoam_run_progress or
   openfoam_solver_status; verdict -> openfoam_solve_verify.

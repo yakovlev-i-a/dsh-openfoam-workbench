@@ -1,7 +1,7 @@
 // Case-creation conventions: the <case>.foam file and the geometry-scale gate.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, rmSync, readdirSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, rmSync, readdirSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { apply } from '../lib/index.js'
@@ -177,5 +177,64 @@ test('caseBBox reads only the vertices block and applies scale', () => {
     assert.ok(b.maxExtent < 0.02, 'extent must come from scaled vertices, not the hex resolution')
   } finally {
     rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('the scale gate ignores floating-point noise at the threshold', async () => {
+  const { scaleGateApplies } = await import('../lib/needs-input.js')
+  assert.equal(scaleGateApplies(0.1, 0.1), false)
+  assert.equal(scaleGateApplies(0.10000000005, 0.1), false, '5e-11 above the limit is noise')
+  assert.equal(scaleGateApplies(0.11, 0.1), true)
+  assert.equal(scaleGateApplies(5, 0), false, '0 disables the gate')
+
+  const dir = makeTree(mkdtempSync(join(tmpdir(), 'ofwb-scale-exact-')), {
+    'system/controlDict': 'application icoFoam;\nendTime 1;\ndeltaT 1;\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\n',
+    'constant/polyMesh/points': points([0, 0, 0], [0.1, 0.05, 0.05]),
+  })
+  try {
+    const tools = registry({ scaleAskAbove: 0.1 })
+    const r = await tools.openfoam_check.execute({ casePath: dir })
+    assert.equal(r.needs_input, undefined, 'exactly at the threshold must not ask')
+    assert.ok(!r.findings.some((f) => f.rule === 'geometry-scale'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('mesh_plan writes a runnable snappy dict and a placeholder controlDict', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-plan2-'))
+  const caseDir = join(root, 'box')
+  mkdirSync(caseDir)
+  try {
+    const tools = registry({ scaleAskAbove: 0, caseRoots: [root] })
+    const stl = await tools.openfoam_stl_generate.execute({ casePath: 'box', name: 'ball', shape: 'sphere', params: { r: 0.02, segments: 32, rings: 16 } })
+    assert.equal(stl.ok, true)
+    const plan = await tools.openfoam_mesh_plan.execute({
+      casePath: 'box',
+      stl_path: 'constant/triSurface/ball.stl',
+      domain: { type: 'box', bbox_min: [-0.05, -0.05, -0.05], bbox_max: [0.05, 0.05, 0.05] },
+      target_cell_size: 0.01,
+      location_in_mesh: [-0.045, 0, 0],
+    })
+    assert.equal(plan.ok, true, JSON.stringify(plan).slice(0, 200))
+    const snappy = readFileSync(join(caseDir, 'system/snappyHexMeshDict'), 'utf8')
+    assert.match(snappy, /errorReduction\s+0\.75;/)
+    assert.match(snappy, /nSmoothScale\s+4;/)
+    assert.match(snappy, /maxIter\s+100;/)
+    assert.ok(plan.written.includes('system/controlDict'), 'the placeholder controlDict must be reported')
+    assert.ok(plan.notes.some((n) => /placeholder system\/controlDict/.test(n)))
+    const cd = readFileSync(join(caseDir, 'system/controlDict'), 'utf8')
+    assert.match(cd, /application\s+foamRun;/)
+    // a second plan must not overwrite the existing controlDict
+    const again = await tools.openfoam_mesh_plan.execute({
+      casePath: 'box', stl_path: 'constant/triSurface/ball.stl',
+      domain: { type: 'box', bbox_min: [-0.05, -0.05, -0.05], bbox_max: [0.05, 0.05, 0.05] },
+      target_cell_size: 0.01, location_in_mesh: [-0.045, 0, 0],
+    })
+    assert.equal(again.ok, true)
+    assert.ok(!again.written.includes('system/controlDict'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
   }
 })

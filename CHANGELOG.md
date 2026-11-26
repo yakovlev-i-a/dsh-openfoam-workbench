@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.9.13
+
+All findings from the sphere-in-box live test (F1-F12), plus a first step towards
+a version-capability layer.
+
+- **`lib/versions.js`**: one capability object per installation (`family`, `modular`,
+  `snappyQualityKeys`, `fieldStats`, `postProcess`, `features`, `thermoFile`,
+  `turbulenceFile`, `regionModel`, `zeroDir`) from the distribution/version.
+- **F1/F9** whitelist: `surfaceFeatureExtract`, `surfaceFeatures`, `foamPostProcess`.
+  Parentheses are allowed in command arguments again (`-func cellMax(U)`); `;`,
+  `|`, `&`, backticks, `$` and redirects stay forbidden.
+- **F3** `mesh_plan` emits `errorReduction 0.75`, `nSmoothScale 4`, `maxIter 100`
+  (org 14 aborted in the morphing phase without them).
+- **F2** `mesh_plan` writes a placeholder `system/controlDict` when the case has
+  none, so `blockMesh` can start; it says so in `notes` and never overwrites one.
+- **F7** the doctor reports unknown `patchField` types (`unknown-bc-type`) and
+  knows that `alphat*WallFunction` exists only as `compressible::...`.
+- **F12** the doctor flags compressible cases without an energy-flux scheme, and
+  `div(phi,e)` without the pressure-work term `div(phi,(p|rho))`.
+- **F6** `no-nonortho-correctors` reads the algorithm the case actually uses
+  (transient -> PIMPLE/PISO, steady -> SIMPLE).
+- **F10** `openfoam_case_scaffold` takes `family` and refuses anything but
+  incompressible-laminar instead of silently writing an incompressible case.
+- **F11** patch roles use the `type` when given and know sphere/ball/obstacle/
+  airfoil/blade/... names, so a sphere gets `noSlip`.
+- **F8** new read-only `openfoam_field_stats` (min/max, magnitude) built on the
+  distribution's `postProcess`/`foamPostProcess` and `cellMin`/`cellMax`.
+- **F5** the geometry-scale gate ignores floating-point noise at the threshold.
+
 ## v0.9.12
 
 - **Live approval verified end to end** on a real profile: `dict_set` on

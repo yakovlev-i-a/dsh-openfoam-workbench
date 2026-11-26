@@ -209,3 +209,9 @@ test('experience cards cannot be deleted through a path', () => {
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+test('the meshing and post-processing utilities the plugin needs are whitelisted', () => {
+  for (const cmd of ['surfaceFeatureExtract', 'surfaceFeatures', 'foamPostProcess -func cellMax(U)']) {
+    assert.equal(commandAllowed(cmd).ok, true, cmd)
+  }
+})

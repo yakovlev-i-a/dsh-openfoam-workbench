@@ -167,3 +167,34 @@ test('a case without a directory is created', async () => {
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+test('scaffold refuses a compressible family instead of writing an incompressible case', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-scaf-fam-'))
+  try {
+    makeCase(root, 'caseF', [['inlet', 'patch'], ['outlet', 'patch'], ['walls', 'wall']])
+    const tools = registry({ caseRoots: [root], defaultDistribution: 'org' })
+    const r = await tools.openfoam_case_scaffold.execute({ casePath: 'caseF', family: 'compressible' })
+    assert.equal(r.ok, false)
+    assert.match(r.error, /incompressible laminar cases only/)
+    assert.match(r.hint, /clone_tutorial/)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('patch roles use the type when given and know sphere/airfoil names', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-scaf-patch-'))
+  try {
+    makeCase(root, 'caseP', [['inlet', 'patch'], ['outlet', 'patch'], ['walls', 'wall']], { mesh: false })
+    const tools = registry({ caseRoots: [root], defaultDistribution: 'org' })
+    const r = await tools.openfoam_case_scaffold.execute({
+      casePath: 'caseP',
+      patches: [{ name: 'inlet', type: 'patch' }, { name: 'outlet', type: 'patch' }, { name: 'sphere', type: 'wall' }],
+    })
+    assert.equal(r.ok, true, JSON.stringify(r).slice(0, 200))
+    assert.equal(r.patches.find((p) => p.name === 'sphere').role, 'wall')
+    assert.match(readFileSync(join(root, 'caseP/0/U'), 'utf8'), /sphere\s+\{\s*type\s+noSlip;/)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})

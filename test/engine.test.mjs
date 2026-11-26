@@ -16,6 +16,8 @@ import {
   strayTimeDirs,
   fieldFiles,
   checkBlockMeshDict,
+  checkFvSchemes,
+  checkFvSolution,
 } from '../lib/of-engine.js'
 
 const BANNER = `/*--------------------------------*- C++ -*----------------------------------*\\
@@ -405,5 +407,76 @@ test('u-empty-patch is one finding per case, not per empty patch', async () => {
     assert.match(empties[0].title, /sides, frontAndBack/)
   } finally {
     rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('transient cases take non-orthogonal correctors from PIMPLE, not SIMPLE', () => {
+  const transient = makeCase({
+    'system/controlDict': 'application foamRun;\nsolver fluid;\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\n',
+    'system/fvSolution': 'solvers { p { solver GAMG; } }\nSIMPLE { nNonOrthogonalCorrectors 0; }\nPIMPLE { nCorrectors 2; nNonOrthogonalCorrectors 1; }\n',
+    'system/snappyHexMeshDict': 'castellatedMesh true;\n',
+  })
+  const steady = makeCase({
+    'system/controlDict': 'application foamRun;\n',
+    'system/fvSchemes': 'ddtSchemes { default steadyState; }\n',
+    'system/fvSolution': 'solvers { p { solver GAMG; } }\nSIMPLE { nNonOrthogonalCorrectors 0; }\n',
+    'system/snappyHexMeshDict': 'castellatedMesh true;\n',
+  })
+  try {
+    assert.deepEqual(checkFvSolution(transient).filter((f) => f.rule === 'no-nonortho-correctors'), [])
+    assert.equal(checkFvSolution(steady).filter((f) => f.rule === 'no-nonortho-correctors').length, 1)
+  } finally {
+    rmSync(transient, { recursive: true, force: true })
+    rmSync(steady, { recursive: true, force: true })
+  }
+})
+
+test('unknown patchField types are reported, compressible:: variants are accepted', async () => {
+  const { checkBoundaryFields } = await import('../lib/of-engine.js')
+  const bad = makeCase({
+    '0/alphat': 'boundaryField { walls { type alphatWallFunction; value uniform 0; } }\ninternalField uniform 0;\n',
+  })
+  const good = makeCase({
+    '0/alphat': 'boundaryField { walls { type compressible::alphatWallFunction; Prt 0.85; value uniform 0; } }\ninternalField uniform 0;\n',
+  })
+  const plain = makeCase({
+    '0/U': 'boundaryField { inlet { type fixedValue; value uniform (1 0 0); } }\ninternalField uniform (0 0 0);\n',
+  })
+  try {
+    const f = checkBoundaryFields(bad).filter((x) => x.rule === 'unknown-bc-type')
+    assert.equal(f.length, 1)
+    assert.match(f[0].title, /alphatWallFunction/)
+    assert.deepEqual(checkBoundaryFields(good).filter((x) => x.rule === 'unknown-bc-type'), [])
+    assert.deepEqual(checkBoundaryFields(plain).filter((x) => x.rule === 'unknown-bc-type'), [])
+  } finally {
+    for (const d of [bad, good, plain]) rmSync(d, { recursive: true, force: true })
+  }
+})
+
+test('a compressible case without an energy or pressure-work scheme is flagged', () => {
+  const noEnergy = makeCase({
+    'system/controlDict': 'application foamRun;\nsolver fluid;\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { div(phi,U) Gauss upwind; }\n',
+  })
+  const internal = makeCase({
+    'system/controlDict': 'application foamRun;\nsolver fluid;\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { div(phi,U) Gauss upwind; div(phi,e) Gauss upwind; }\n',
+  })
+  const complete = makeCase({
+    'system/controlDict': 'application foamRun;\nsolver fluid;\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { div(phi,U) Gauss upwind; div(phi,e) Gauss upwind; div(phi,(p|rho)) Gauss upwind; }\n',
+  })
+  const enthalpy = makeCase({
+    'system/controlDict': 'application rhoPimpleFoam;\n',
+    'system/fvSchemes': 'ddtSchemes { default Euler; }\ndivSchemes { div(phi,U) Gauss upwind; div(phi,h) Gauss limitedLinear 1; }\n',
+  })
+  try {
+    assert.ok(checkFvSchemes(noEnergy).some((f) => f.rule === 'no-energy-flux-scheme'))
+    assert.ok(checkFvSchemes(internal).some((f) => f.rule === 'no-pressure-work-scheme'))
+    assert.deepEqual(checkFvSchemes(complete).filter((f) => /scheme/.test(f.rule)), [])
+    assert.deepEqual(checkFvSchemes(enthalpy).filter((f) => /scheme/.test(f.rule)), [])
+  } finally {
+    for (const d of [noEnergy, internal, complete, enthalpy]) rmSync(d, { recursive: true, force: true })
   }
 })
