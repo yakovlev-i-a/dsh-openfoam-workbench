@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.9.22
+
+A clean com v2606 install fixed the segfaults, and com now passes the whole
+golden matrix.
+
+- The com crashes were **the local installation**, not the case or the plugin: a
+  fresh `openfoam2606` from the official apt repository runs `rhoPimpleFoam` and
+  `chtMultiRegionFoam` normally. `scripts/reinstall-com.sh` documents the purge +
+  reinstall (the apt install ships no tutorials; `openfoam2606-tutorials` is a
+  separate package).
+- **Compressible golden `sphereBox` on both families**: org and com agree within
+  ~0.1 % (`p` 99.88-100.07 kPa, `T.max` 300.036 K, `U.max` ~17.5 m/s), which also
+  showed that the earlier org setup (separate `p`/`p_rgh` pair) over-pressurised
+  the box; both families now use one `p` field with a wave-transmissive outlet.
+- **CHT golden `sphereCht` on both families**: com gets its own mesh fixture
+  (`sphereChtCom`, built by com's `splitMeshRegions`; the mapped-patch metadata is
+  not portable), plus com-side dictionary requirements: solid `p` field,
+  enthalpy solvers (`h`/`hFinal`), `heRhoThermo` keys, interface condition
+  `compressible::turbulentTemperatureCoupledBaffleMixed`. Solid heats 300 ->
+  313.1-313.9 K on com (org: 311.4-312.2 K), gas max 500 K on both.
+- Only `pitzDaily` stays org-only, with the reason recorded (the apt install has
+  no tutorials directory).
+- 161 tests.
+
 ## v0.9.21
 
 - **`openfoam_case_scaffold` family `compressible`**: family-aware rho-thermo

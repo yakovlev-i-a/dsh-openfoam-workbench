@@ -10,5 +10,26 @@
       0
     ],
     "finalTime": 0.3
+  },
+  "sphereBox": {
+    "cells": 17587,
+    "maxNonOrtho": 28.082507,
+    "p.min": 99879.99,
+    "p.max": 100067.76,
+    "T.max": 300.03623,
+    "U.max": [
+      17.491067,
+      7.9816909,
+      7.9702612
+    ],
+    "finalTime": 0.01
+  },
+  "sphereCht": {
+    "fluid.cells": 7448,
+    "solid.cells": 552,
+    "solid.T.min": 313.13813,
+    "solid.T.max": 313.86767,
+    "fluid.T.max": 500.00548,
+    "finalTime": 0.02
   }
 }

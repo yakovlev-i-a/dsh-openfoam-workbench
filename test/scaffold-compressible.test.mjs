@@ -10,15 +10,15 @@ const patches = [
   { name: 'sphere', type: 'wall' },
 ]
 
-test('org compressible scaffold: foamRun + fluid module, internal energy, p_rgh', () => {
+test('org compressible scaffold: foamRun + fluid module, internal energy', () => {
   const r = scaffoldCompressible({ caps: versionCaps('org', '14'), patches })
   const control = r.files['system/controlDict']
   assert.match(control, /application\s+foamRun;/)
   assert.match(control, /solver\s+fluid;/)
   assert.match(r.files['constant/physicalProperties'], /hePsiThermo/)
   assert.match(r.files['constant/physicalProperties'], /sensibleInternalEnergy/)
-  assert.ok(r.files['0/p_rgh'], 'the modular solver carries p_rgh')
-  assert.match(r.files['0/p'], /calculated/)
+  assert.ok(!r.files['0/p_rgh'], 'one pressure field for both families')
+  assert.match(r.files['0/p'], /waveTransmissive/)
   assert.match(r.files['system/fvSchemes'], /div\(phi,\(p\|rho\)\)/)
   assert.match(r.files['system/fvSchemes'], /div\(phi,e\)/)
 })
@@ -38,5 +38,5 @@ test('the gas starts at rest and the inlet drives the flow', () => {
   const r = scaffoldCompressible({ caps: versionCaps('org', '14'), patches, Uinlet: 40 })
   assert.match(r.files['0/U'], /internalField\s+uniform \(0 0 0\);/)
   assert.match(r.files['0/U'], /inlet[\s\S]*fixedValue;[\s\S]*uniform \(40 0 0\)/)
-  assert.match(r.files['0/p'], /outlet[\s\S]*calculated/)
+  assert.match(r.files['0/p'], /outlet[\s\S]*waveTransmissive/)
 })

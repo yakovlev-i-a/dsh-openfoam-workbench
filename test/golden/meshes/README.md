@@ -9,6 +9,7 @@ transparently.
 |---|---|---|
 | `sphereFlow/` | `blockMesh` 20x20x20 over the 100 mm cube + `snappyHexMesh` (sphere d=50 mm, level 1-2, `-overwrite`) | 17587 |
 | `sphereCht/` | `blockMesh` + `createZones` sphere cell zone + `splitMeshRegions -cellZones all -defaultRegion fluid` in org 14 | 7448 fluid / 552 solid |
+| `sphereChtCom/` | `blockMesh` + `topoSet`/`setsToZones` sphere zone + `splitMeshRegions -cellZones -overwrite` in com v2606 (default region renamed `domain0` -> `fluid`) | 7448 fluid / 552 solid |
 
 `sphereCht/constant/<region>/polyMesh` are per-region meshes as
 `splitMeshRegions` writes them in org 14; the interface patches are

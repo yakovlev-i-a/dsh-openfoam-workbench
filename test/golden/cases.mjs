@@ -104,10 +104,10 @@ export const CASES = {
     tutorial: { org: 'fluid/pitzDaily', com: 'compressible/rhoPimpleFoam/LES/pitzDaily' },
     blockMeshFrom: { org: 'resources/blockMesh/pitzDaily' },
     controlOverride: { endTime: 0.01, writeInterval: 100 },
-    // On this com v2606 build rhoPimpleFoam segfaults while cloning the tutorial's
-    // thermophysical dictionary (reproduced outside the harness), so this case is
-    // org-only until the com solver behaves.
-    skip: { com: 'rhoPimpleFoam segfaults on the shipped tutorial in this com build' },
+    // The apt install on this machine ships no tutorials directory
+    // (openfoam2606-tutorials is a separate package), and the compressible path on
+    // com is covered by sphereBox anyway.
+    skip: { com: 'com install has no tutorials directory; compressible is covered by sphereBox' },
     qoi: ['cells', 'maxNonOrtho', 'T.min', 'T.max', 'U.max', 'finalTime'],
   },
 
@@ -136,10 +136,6 @@ export const CASES = {
     },
     steps: [],
     compressible: { Uinlet: 10, Tinlet: 300, pInitial: 1e5, endTime: 0.01, deltaT: 1e-5, writeInterval: 0.005 },
-    // com v2606 on this machine: rhoPimpleFoam segfaults in dictionary::clone()
-    // while building the termo objects - the same crash as with the shipped
-    // tutorials, so it is this build, not the case.
-    skip: { com: 'rhoPimpleFoam segfaults in dictionary::clone() in this com build (also on shipped tutorials)' },
     qoi: ['cells', 'maxNonOrtho', 'p.min', 'p.max', 'T.max', 'U.max', 'finalTime'],
   },
 
@@ -164,7 +160,7 @@ export const CASES = {
         '',
       ].join('\n'))
     },
-    meshFixture: 'sphereCht',
+    meshFixture: { org: 'sphereCht', com: 'sphereChtCom' },
     steps: [],
     cht: {
       regions: [{ name: 'fluid', kind: 'fluid' }, { name: 'solid', kind: 'solid' }],
@@ -177,7 +173,6 @@ export const CASES = {
     // (same class as rhoPimpleFoam), and org's interface patch metadata
     // (mappedWall without sampleMode) is not portable to com; a com run needs its
     // own fixture built by com and a working cht solver.
-    skip: { com: 'chtMultiRegionFoam segfaults after field setup in this com build; needs a com-built fixture' },
     // com builds the zone with topoSet + setsToZones (openfoam_create_zone now
     // handles that) but the CHT field layer differs: com injects per-region
     // boundary conditions through `changeDictionary -region` from a shared 0.orig

@@ -205,10 +205,12 @@ async function runCase(cfg, dist, name, spec, opts) {
     spec.prepare({ caseDir, dist })
     record('prepare', { ok: true, argv: 'case files' })
     if (spec.meshFixture) {
-      const src = join(ROOT, 'test/golden/meshes', spec.meshFixture, 'constant')
-      if (!existsSync(src)) return { name, skipped: `mesh fixture not found: ${spec.meshFixture}` }
+      const fixture = typeof spec.meshFixture === 'string' ? spec.meshFixture : spec.meshFixture[dist]
+      if (!fixture) return { name, skipped: `no mesh fixture for ${dist}` }
+      const src = join(ROOT, 'test/golden/meshes', fixture, 'constant')
+      if (!existsSync(src)) return { name, skipped: `mesh fixture not found: ${fixture}` }
       copyTutorial(src, join(caseDir, 'constant'))
-      record('mesh fixture', { ok: true, argv: spec.meshFixture })
+      record('mesh fixture', { ok: true, argv: fixture })
     }
   }
 
