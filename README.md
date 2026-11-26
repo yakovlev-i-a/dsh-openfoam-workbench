@@ -76,33 +76,46 @@ it followed.
 
 ## Install
 
-From the marketplace (once the plugin is listed):
+DSH imports plugin bundles at boot, so every install below ends with a restart of
+the host that boots the profile (`dsh web` for the Web UI, `dsh` for the terminal
+one). `--profile web` is the profile that serves the Web UI; drop it to use the
+default profile.
+
+**1. Pinned to a release commit — recommended, reproducible.**
+
+```bash
+dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#826d5c5
+```
+
+DSH accepts a 40-hex commit after `#`; `826d5c5` is what the `v0.9.28` tag points
+at. A branch name also works but gives you whatever `main` is at that moment.
+
+**2. From the release tarball — a versioned artefact, no git clone.**
+
+```bash
+dsh plugin --profile web add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/download/v0.9.28/yakovlev-i-a-dsh-openfoam-workbench-0.9.28.tgz
+```
+
+**3. From a local checkout — development.**
+
+```bash
+dsh plugin --profile web add /path/to/dsh-openfoam-workbench
+# or link it, so edits are picked up after a restart:
+dsh plugin --profile web add link:/path/to/dsh-openfoam-workbench
+```
+
+**4. From the marketplace**, once the catalog entry is merged:
+`Discover → search "OpenFOAM" → Install`.
+
+After the restart, verify the plugin is live:
 
 ```text
-Discover → search "OpenFOAM" → Install → restart DSH
+openfoam_env_check      # plugin.version and the OpenFOAM installations it found
 ```
 
-From this repository, pinned to a commit (no registry involved):
-
-```bash
-dsh plugin add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<40-hex-commit>
-```
-
-From the tarball attached to a release (a versioned artefact, also no registry):
-
-```bash
-dsh plugin add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/download/v0.9.28/yakovlev-i-a-dsh-openfoam-workbench-0.9.28.tgz
-```
-
-npm distribution was withdrawn: `0.0.0-stage`, `0.9.26` and `0.9.27` are
-deprecated there with a message pointing to the git install, and the registry is
-not used again until that changes.
-
-From a local checkout:
-
-```bash
-dsh plugin install /path/to/dsh-openfoam-workbench
-```
+npm distribution was withdrawn: the package is gone from the registry and
+`package.json` keeps `private: true`, so the git spec and the release tarball are
+the supported install paths until that changes.
 
 **Zero configuration.** The bundle ships no paths: at startup the plugin scans
 `/opt`, `/usr/lib/openfoam`, `/usr/local` and `~/OpenFOAM` for directories that
@@ -140,11 +153,16 @@ started with:
 ```bash
 # linked install ("...": "link:/path/to/dsh-openfoam-workbench") — no reinstall:
 git -C /path/to/dsh-openfoam-workbench pull --ff-only
-# git or tarball install: install the new tag the same way
+# git or tarball install: add the new tag or tarball the same way as the first time
 dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<new-40-hex-commit>
 # then restart the host that boots the profile:
 dsh web
 ```
+
+A `git` or tarball install has no registry metadata, so `dsh plugin update` does
+not track it; re-adding the new tag (or tarball) is the update. `openfoam_env_check`
+reports the version that is actually loaded, which is the quickest way to see
+that the restart picked up the new code.
 
 `openfoam_env_check`/`openfoam_version_info` return `plugin.version` from
 `package.json`, so a stale in-memory copy is visible without guessing.
