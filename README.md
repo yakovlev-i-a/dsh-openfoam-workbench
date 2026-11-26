@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.14 · 64 tools · 11 skills · 148 tests**
+**v0.9.15 · 64 tools · 11 skills · 149 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -29,8 +29,10 @@ minor versions.
 
 ## Supported versions
 
-The plugin is validated end to end on two installations, and describes every
-other one through a capability object rather than a version table:
+The tool targets **org 14** and **com v2606**: those are the installations it is
+tested end to end on. Every other release is described through a capability
+object (probed from the installation) and lands in `partial`/`unknown` until it
+is added to the test matrix:
 
 | family | tested | support | notes |
 |---|---|---|---|

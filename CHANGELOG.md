@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.9.15
+
+The second live test — a conjugate-heat-transfer sphere-in-box (solid sphere
+conducting heat, small `Cv` to heat fast) — plus the fixes it exposed.
+
+- **`openfoam_field_stats` takes `region`**, so per-region extrema work in CHT
+  cases (`-region solid`).
+- **Doctor: multi-region field/patch consistency** (`checkRegionFieldPatches`):
+  a `boundaryField` entry that names no patch of the region is a warning, a
+  patch without an entry is an error, and a `coupled`/`mapped` condition on a
+  plain wall patch is an error — the exact trap of `splitMeshRegions` naming
+  interface patches `<region>_to_<other>` while templates still say `wall`.
+- **Whitelist**: `createZones`, `foamSetupCHT`, `setsToZones`; the classic
+  compressible solvers are spelled correctly now (`rhoPimpleFoam` was
+  `rhopimpleFoam`, so it could never run).
+- README states the targets explicitly: **org 14 and com v2606** are tested;
+  other releases stay `partial`/`unknown` until added.
+
 ## v0.9.14
 
 Version-capability layer, wired through the tools that generate content.

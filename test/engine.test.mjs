@@ -480,3 +480,52 @@ test('a compressible case without an energy or pressure-work scheme is flagged',
     for (const d of [noEnergy, internal, complete, enthalpy]) rmSync(d, { recursive: true, force: true })
   }
 })
+
+test('multi-region fields must name the patches the region actually has', async () => {
+  const { checkRegionFieldPatches } = await import('../lib/of-engine.js')
+  const dir = mkdtempSync(join(tmpdir(), 'ofwb-region-'))
+  try {
+    mkdirSync(join(dir, 'constant/fluid/polyMesh'), { recursive: true })
+    mkdirSync(join(dir, '0/fluid'), { recursive: true })
+    writeFileSync(join(dir, 'constant/fluid/polyMesh/boundary'), [
+      'FoamFile { version 2.0; }',
+      '',
+      '3',
+      '(',
+      '    inlet',
+      '    {',
+      '        type            patch;',
+      '        nFaces          10;',
+      '        startFace       0;',
+      '    }',
+      '    walls',
+      '    {',
+      '        type            wall;',
+      '        nFaces          10;',
+      '        startFace       10;',
+      '    }',
+      '    fluid_to_solid',
+      '    {',
+      '        type            mappedWall;',
+      '        nFaces          10;',
+      '        startFace       20;',
+      '    }',
+      ')',
+      '',
+    ].join('\n'))
+    writeFileSync(join(dir, '0/fluid/T'), 'internalField uniform 300;\nboundaryField\n{\n    inlet { type fixedValue; value uniform 300; }\n    wall { type coupledTemperature; }\n    walls { type coupledTemperature; }\n}\n')
+    const found = checkRegionFieldPatches(dir, 'fluid')
+    const unknown = found.filter((f) => f.rule === 'region-field-unknown-patch')
+    const missing = found.filter((f) => f.rule === 'region-field-missing-patch')
+    const coupled = found.filter((f) => f.rule === 'coupled-bc-on-wall')
+    assert.equal(unknown.length, 1)
+    assert.equal(unknown[0].severity, 'warn', 'a stray entry is ignored by the solver')
+    assert.match(unknown[0].title, /wall/)
+    assert.equal(missing.length, 1)
+    assert.match(missing[0].title, /fluid_to_solid/)
+    assert.equal(coupled.length, 1, 'coupledTemperature on a plain wall must be an error')
+    assert.match(coupled[0].title, /coupledTemperature on patch wall/)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
