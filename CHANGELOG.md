@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.9.10
+
+Security pass from the third audit: the write gate and the file layer.
+
+- **No dictionary-entry injection**: `entry` must be a plain OpenFOAM key
+  (`[A-Za-z_][A-Za-z0-9_.:]*`), and `value` must be a single line without `;`
+  and with balanced braces. `value="50;\nlibs (\"...\")"` was previously
+  written as a low-impact change and is now refused by name.
+- **Executable directives are critical**: a value containing `#codeStream`,
+  `#calc`, `#eval`, `#include` or `codeStream` requires approval regardless of
+  the entry it is written to.
+- **Path containment**: `containedPath()` refuses `..`, absolute paths and
+  symlinks that leave the case, and `read_dict`/`dict_set`/`dict_undo` use it, so
+  `system/../../outside.txt` is no longer readable or writable. Experience card
+  ids are validated as slugs before deletion.
+- **`clean` requires a case marker** (`system/controlDict`, `system/blockMeshDict`
+  or `constant/polyMesh`); a directory named `2024` with `build.log` is no longer
+  treated as a time directory unless `force: true`.
+- **`commandAllowed` refuses context-changing arguments** (`-libs`, `-case`,
+  `-roots`, `-hostRoots`), not just non-whitelisted applications.
+- **Paper downloads are size-capped** (50 MB) and use the package version in the
+  User-Agent.
+- **Metadata**: the market index ru description is generated from the package
+  description (it said 61 tools), the stray `.tmp-pack.json` is gone, and
+  `.gitignore` covers files as well as directories.
+
 ## v0.9.9
 
 Hotfix: the plugin failed to mount in a real DSH profile.

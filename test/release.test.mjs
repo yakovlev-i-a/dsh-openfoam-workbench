@@ -65,7 +65,11 @@ test('every published description carries the current tool count', () => {
   try { tags = execFileSync('git', ['tag', '--points-at', 'HEAD'], { cwd: root, encoding: 'utf8' }) } catch {}
   if (tags.split('\n').map((t) => t.trim()).includes('v' + pkg.version)) {
     const index = JSON.parse(readFileSync(new URL('market/index.json', root), 'utf8'))
-    assert.equal(index.plugins[0].description.en, pkg.description, 'market/index.json was generated from an older description')
+    const description = index.plugins[0].description
+    assert.equal(description.en, pkg.description, 'market/index.json was generated from an older description')
+    const ruCount = /(\d+)\s+инструмент/.exec(description.ru || '')
+    assert.ok(ruCount, 'the ru description must state the tool count')
+    assert.equal(Number(ruCount[1]), count, 'the ru description is stale')
   }
 })
 

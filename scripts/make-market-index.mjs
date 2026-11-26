@@ -20,6 +20,7 @@ const arg = (name, fallback) => {
 }
 
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
+const toolCount = (/(\d+) tools/.exec(pkg.description || '') || [])[1] || ''
 const commit = arg('--commit', execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim())
 if (!/^[0-9a-f]{40}$/.test(commit)) throw new Error(`--commit must be a 40-char lowercase sha, got: ${commit}`)
 
@@ -38,7 +39,7 @@ const index = {
       title: { en: 'OpenFOAM Workbench', ru: 'OpenFOAM Workbench' },
       description: {
         en: pkg.description,
-        ru: 'Плагин OpenFOAM для DeepSeek Harness: 61 инструмент и 11 навыков — осмотр кейса, разработка солверов, сетки, многорегиональные CHT-расчёты, фоновые запуски, рендеры, воспроизведение статей и библиотека опыта.',
+        ru: `Плагин OpenFOAM для DeepSeek Harness: ${toolCount} инструментов и 11 навыков — осмотр кейса, разработка солверов, сетки, многорегиональные CHT-расчёты, фоновые запуски, рендеры, воспроизведение статей и библиотека опыта.`,
       },
       icon,
       author: 'yakovlev-i-a',
