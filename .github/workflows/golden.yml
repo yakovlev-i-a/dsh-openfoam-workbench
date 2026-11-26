@@ -28,4 +28,8 @@ jobs:
           DIST: ${{ matrix.distribution }}
         run: |
           set -euo pipefail
-          docker run --rm -v "$PWD":/w -w /w -e HOME=/tmp -e DIST="$DIST" "$IMAGE" bash /w/scripts/ci-golden.sh
+          # --entrypoint: the images define their own entrypoint (a login shell),
+          # which would swallow the command and exit silently.
+          docker run --rm --entrypoint bash \
+            -v "$PWD":/w -w /w -e HOME=/tmp -e DIST="$DIST" \
+            "$IMAGE" -c 'bash /w/scripts/ci-golden.sh' 
