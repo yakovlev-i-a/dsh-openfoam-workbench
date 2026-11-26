@@ -15,3 +15,5 @@ DESIGN.md
 .tmp*
 # golden runs write their working cases here
 /test/golden/work/
+# release tarballs are build artefacts, attached to the GitHub release
+*.tgz
