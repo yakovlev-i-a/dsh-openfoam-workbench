@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.9.17
+
+Golden cases: stored reference quantities for real OpenFOAM runs.
+
+- `test/golden/` — three cases with a recipe (`cases.mjs`): `cavity`
+  (incompressible, both families), `pitzDaily` (compressible, org 14) and
+  `sphereCht` (the sphere-in-box CHT case that the scaffold itself builds).
+- `scripts/run-golden.mjs` — discovers installations, prepares/clones each case,
+  runs mesh + solver, extracts the quantities (cells, non-orthogonality, field
+  min/max, final time) and compares with `test/golden/expected/<distribution>.json`
+  (`--update` re-blesses, a reviewed change).
+- `test/golden-schema.test.mjs` — catches a broken expected file or a declared
+  quantity without a value in the normal (OpenFOAM-free) test job.
+- `.github/workflows/golden.yml` — the same script inside OpenFOAM containers,
+  matrix `org` (dicehub/openfoam:14) and `com` (dicehub/openfoam:opencfd-2606).
+- Verified locally: `org` runs all three cases green; `com` runs `cavity` green
+  with **identical** QoI to org (0.344284, 0.0485151), `pitzDaily` is skipped
+  with a recorded reason (rhoPimpleFoam segfaults in this com build) and
+  `sphereCht` is skipped (com has no `createZones`; use topoSet + setsToZones).
+- Fixed on the way: the incompressible scaffold wrote `simpleFoam` for transient
+  cases (now `pimpleFoam`), the pressure reference was missing from the PIMPLE
+  block, and a closed domain got no `pRefCell` in the algorithm actually used.
+
 ## v0.9.16
 
 - **`openfoam_case_scaffold` with `family: "cht"`** writes a complete

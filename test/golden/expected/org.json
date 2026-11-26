@@ -1,0 +1,34 @@
+{
+  "cavity": {
+    "cells": 400,
+    "maxNonOrtho": 0,
+    "p.min": -0.0221311,
+    "p.max": 0.049434,
+    "U.max": [
+      0.344284,
+      0.0485151,
+      0
+    ],
+    "finalTime": 0.3
+  },
+  "pitzDaily": {
+    "cells": 12225,
+    "maxNonOrtho": 5.95045,
+    "T.min": 298.042,
+    "T.max": 300.622,
+    "U.max": [
+      13.0343,
+      6.87927,
+      2.17633e-10
+    ],
+    "finalTime": 0.01
+  },
+  "sphereCht": {
+    "fluid.cells": 7448,
+    "solid.cells": 552,
+    "solid.T.min": 311.41198,
+    "solid.T.max": 312.16122,
+    "fluid.T.max": 501.15917,
+    "finalTime": 0.02
+  }
+}

@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.16 · 64 tools · 11 skills · 153 tests**
+**v0.9.17 · 64 tools · 11 skills · 157 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -26,6 +26,23 @@ minor versions.
 - **ParaView 6.x** with `pvpython` for renders and `-help` checks — optional:
   everything else works without it.
 - A POSIX shell (`bash -lc`) on Linux or macOS. Windows/WSL is not tested.
+
+## Golden cases
+
+Three small cases with stored reference quantities live in `test/golden/`:
+`cavity` (incompressible, 400 cells, both families), `pitzDaily` (compressible,
+org 14) and `sphereCht` (the sphere-in-box CHT case built by the scaffold itself,
+org 14). Run them against an installation with:
+
+```bash
+node scripts/run-golden.mjs --distribution org     # verify
+node scripts/run-golden.mjs --update               # re-bless after a reviewed change
+```
+
+`--update` must be a deliberate, reviewed commit: the values are the regression
+contract. `.github/workflows/golden.yml` runs the same script inside OpenFOAM
+containers for the `org` and `com` matrix entries; a case whose tutorial is not
+usable on a distribution is recorded with a reason in `test/golden/cases.mjs`.
 
 ## Supported versions
 

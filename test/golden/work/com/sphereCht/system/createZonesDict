@@ -1,0 +1,2 @@
+FoamFile { version 2.0; format ascii; class dictionary; object createZonesDict; }
+solid { type sphere; zoneType cell; centre (0 0 0); radius 0.025; }
