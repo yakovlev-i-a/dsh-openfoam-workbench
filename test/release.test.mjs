@@ -53,6 +53,22 @@ test('the marketplace index pins a real commit that carries its own version', ()
   }
 })
 
+test('every published description carries the current tool count', () => {
+  const inventory = JSON.parse(readFileSync(new URL('test/fixtures/inventory.json', root), 'utf8'))
+  const count = inventory.tools.length
+  const fromDescription = /(\d+) tools/.exec(pkg.description || '')
+  assert.ok(fromDescription, 'package.json description must state the tool count')
+  assert.equal(Number(fromDescription[1]), count, 'package.json description is stale')
+  // The index is regenerated after the release commit and tagged; only then must
+  // its description match (during the release window it still describes HEAD~1).
+  let tags = ''
+  try { tags = execFileSync('git', ['tag', '--points-at', 'HEAD'], { cwd: root, encoding: 'utf8' }) } catch {}
+  if (tags.split('\n').map((t) => t.trim()).includes('v' + pkg.version)) {
+    const index = JSON.parse(readFileSync(new URL('market/index.json', root), 'utf8'))
+    assert.equal(index.plugins[0].description.en, pkg.description, 'market/index.json was generated from an older description')
+  }
+})
+
 test('the README intro and the tool count in it agree with the registry', () => {
   const intro = /plugin for OpenFOAM: (\d+) tools/.exec(readme)
   assert.ok(intro, 'the README intro must state the tool count')

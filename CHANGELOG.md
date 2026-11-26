@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.9.8
+
+Second reliability pass from the v0.9.7 audit.
+
+- **TOCTOU guard**: the change is computed from a snapshot whose hash is kept;
+  right before the journal and the write (i.e. after a possibly long approval
+  wait) the file is re-read and compared, and a concurrent modification aborts
+  the change instead of overwriting the newer content. The refusal tells the
+  agent to re-read and prepare the edit again.
+- **`undo` is depth-aware**: the top-level entry is removed only at brace depth
+  0, so an identical `key ...;` inside a nested dictionary is left alone.
+- **Strict `purgeWrite`**: only a literal zero (`0`, `0.0`, `00`) is low impact;
+  `-1`, `abc` and an empty value are high. `runTimeModifiable` moved to high as
+  well (it changes how dictionaries are re-read during a run).
+- **Metadata**: `package.json` description now states 63 tools (the market index
+  is regenerated from it), and two guards check the description count and the
+  index description.
+- Approval answers now report `approval: {outcome, hasAgent, hasCallId}` so the
+  live smoke test can be verified without guessing.
+
 ## v0.9.7
 
 Reliability release: no new tools, only the defects the v0.9.6 review found.

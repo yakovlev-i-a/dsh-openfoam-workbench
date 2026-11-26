@@ -287,3 +287,47 @@ test('no write happens when the undo journal cannot be recorded', async () => {
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+test('a file that changes while approval is pending is not overwritten (TOCTOU)', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-imp-toctou-'))
+  try {
+    makeCase(root)
+    const cfg = join(root, 'caseA/system/controlDict')
+    // The answerer edits the file while the human "thinks", then approves.
+    const racing = {
+      request: async () => {
+        writeFileSync(cfg, readFileSync(cfg, 'utf8').replace('endTime         10;', 'endTime         99;'))
+        return 'allowed-once'
+      },
+    }
+    const tools = registry({ caseRoots: [root] }, racing)
+    const exec = { agent: { id: 'test-agent' }, callId: 'call-1', signal: new AbortController().signal }
+    const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' }, exec)
+    assert.equal(r.ok, false)
+    assert.match(r.error, /file changed after the change was prepared/)
+    const after = readFileSync(cfg, 'utf8')
+    assert.match(after, /endTime\s+99;/, 'the concurrent edit must survive')
+    assert.doesNotMatch(after, /libfoo\.so/, 'the stale edit must not be written')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('undo of an appended key removes only the top-level line', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-imp-depth-'))
+  try {
+    makeCase(root)
+    const cfg = join(root, 'caseA/system/controlDict')
+    writeFileSync(cfg, readFileSync(cfg, 'utf8') + 'nestedDict\n{\n    stopAt endTime;\n}\n')
+    const tools = registry({ caseRoots: [root] })
+    const added = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'stopAt', value: 'endTime', append: true, apply: true })
+    assert.equal(added.applied, true, JSON.stringify(added))
+    const undone = await tools.openfoam_dict_undo.execute({ casePath: 'caseA', changeId: added.changeId })
+    assert.equal(undone.ok, true, JSON.stringify(undone))
+    const text = readFileSync(cfg, 'utf8')
+    assert.match(text, /nestedDict\n\{\n    stopAt endTime;\n\}/, 'the nested entry must survive')
+    assert.equal((text.match(/^stopAt endTime;$/gm) || []).length, 0, 'the top-level entry must be gone')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
