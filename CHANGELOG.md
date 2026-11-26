@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.9.9
+
+Hotfix: the plugin failed to mount in a real DSH profile.
+
+- `lib/index.js` read the optional approval service as `ctx.approval`, but the
+  restricted Cordis context throws on any property that is not declared in
+  `inject`, so `apply()` aborted with `cannot get property "approval" without
+  inject` and the whole entry stayed inactive (no tools, no skills, no core
+  section). The lookup now goes through `ctx.get('approval')`, which returns
+  `undefined` when the service is absent.
+- Regression test: `apply()` is mounted against a Proxy context that throws on
+  every uninjected property; the tool set must still register.
+
 ## v0.9.8
 
 Second reliability pass from the v0.9.7 audit.

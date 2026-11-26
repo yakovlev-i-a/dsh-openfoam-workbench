@@ -428,3 +428,24 @@ test('an explicit foamRoot wins over environment discovery', async () => {
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+test('apply never reads an uninjected service property', () => {
+  const tools = {}
+  const target = {
+    systemPrompt: { section() {} },
+    skills: { register() {} },
+    tools: { register(t) { tools[t.name] = t } },
+    get: () => undefined,
+  }
+  // Cordis' restricted context throws on any property that is not injected;
+  // reading ctx.approval directly would abort the whole plugin mount.
+  const ctx = new Proxy(target, {
+    get(obj, prop) {
+      if (prop in obj) return obj[prop]
+      throw new Error(`cannot get property "${String(prop)}" without inject`)
+    },
+  })
+  apply(ctx, { caseRoots: [] })
+  assert.ok(tools.openfoam_dict_set, 'the tool set must mount')
+  assert.ok(tools.openfoam_dict_undo)
+})
