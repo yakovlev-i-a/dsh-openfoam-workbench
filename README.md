@@ -147,25 +147,39 @@ Restart DSH after install or after changing the patch.
 
 ## Update
 
-DSH imports plugin code at boot, so a running instance keeps the version it
-started with:
+There is **no automatic update**, deliberately: a git or tarball install carries
+no registry metadata, so nothing polls for new versions, and the plugin itself
+never phones home. A running DSH instance also keeps the code it booted with, so
+installing new files without a restart changes nothing in memory.
+
+Pick the line that matches how the plugin was installed, then restart the host:
+
+| installed as | update |
+|---|---|
+| `git+https://…#<sha>` | `dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<new-sha>` |
+| release tarball | `dsh plugin --profile web add <new tarball URL>` |
+| local checkout or `link:` | `git -C /path/to/dsh-openfoam-workbench pull --ff-only` |
+| marketplace | *Update* on the plugin card, once the plugin is listed |
+
+Then restart the host that boots the profile — that is the step that loads the
+new code:
 
 ```bash
-# linked install ("...": "link:/path/to/dsh-openfoam-workbench") — no reinstall:
-git -C /path/to/dsh-openfoam-workbench pull --ff-only
-# git or tarball install: add the new tag or tarball the same way as the first time
-dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<new-40-hex-commit>
-# then restart the host that boots the profile:
 dsh web
 ```
 
-A `git` or tarball install has no registry metadata, so `dsh plugin update` does
-not track it; re-adding the new tag (or tarball) is the update. `openfoam_env_check`
-reports the version that is actually loaded, which is the quickest way to see
-that the restart picked up the new code.
+`dsh plugin update` only tracks registry packages; with npm withdrawn there are
+none, so re-adding the tag (or the tarball) is the update.
 
-`openfoam_env_check`/`openfoam_version_info` return `plugin.version` from
-`package.json`, so a stale in-memory copy is visible without guessing.
+Where the new version comes from:
+
+- the releases page — <https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases>
+  (each release carries the tarball and the commit its tag points at);
+- the market index — `market/index.json` in this repository has `version` and
+  `source.commit` for the latest release;
+- in a session — `openfoam_env_check` prints `plugin.version`, so a stale
+  in-memory copy is visible without guessing: if it still shows the old number,
+  the restart has not happened or the install did not replace the package.
 
 ## Multiple distributions
 
