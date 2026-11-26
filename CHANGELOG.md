@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.9.30
+
+The rest of the field report: patch keys, tutorial search, and the verdict of a
+failed run.
+
+- `openfoam_check` treats `boundaryField` keys as `wordRe` patterns, the way
+  OpenFOAM does: `".*"`, `"(inlet|outlet)"` and `"wall.*"` no longer produce a
+  false "no boundaryField entry" plus "no such patch" pair on a case that runs.
+  A key that matches no patch is still an error, and a macro key (`$…`) withholds
+  the coverage verdict instead of guessing. The coupled-BC-on-wall rule expands a
+  key to the patches it covers.
+- `openfoam_find_tutorial` splits the query into tokens and matches them against
+  the case path **and** the text of `system/controlDict` (`application`, `solver`,
+  `regionSolvers`, `fvModels`), so `cht multiRegion regionSolvers` finds
+  `multiRegion/CHT/*`; results report which tokens matched and whether every
+  token did (`matchedAll`).
+- `openfoam_solve_verify` and `openfoam_run_progress` no longer print an ETA for
+  a failed run: the state is `failed`, the decision `FAILED`, and the result
+  carries `reason` (sigfpe/fatal/nan/segv/diverged) plus `firstErrorLine`
+  `{line, text}` and a reason string quoting it. The org `sigFpe` startup banner
+  is not mistaken for a failure.
+- 187 tests (6 new).
+
 ## v0.9.29
 
 Case libraries, and the environment a case needs to run (field report from an

@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.29 · 65 tools · 11 skills · 181 tests**
+**v0.9.30 · 65 tools · 11 skills · 187 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
