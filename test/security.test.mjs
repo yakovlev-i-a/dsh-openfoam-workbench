@@ -72,7 +72,8 @@ test('the async registry spawns with the same static script', async () => {
     const run = startSolverRun({ caseRoots: [root], runsDir: '' }, dir, ['/bin/true'], '/dev/null')
     assert.equal(run.command, '/bin/true')
     assert.deepEqual(run.argv, ['/bin/true'])
-    await new Promise((res) => setTimeout(res, 300))
+    // the spawn + log creation is asynchronous: poll instead of a fixed sleep
+    for (let i = 0; i < 100 && !existsSync(run.log); i++) await new Promise((res) => setTimeout(res, 50))
     assert.equal(existsSync(marker), false, 'the injected command must not run')
     assert.ok(existsSync(run.log), 'the run log is created')
     assert.ok(run.log.includes(join(dir, '.openfoam-runs')), 'the log stays beside the case')
