@@ -36,6 +36,11 @@ test('the marketplace index pins a real commit that carries its own version', ()
   try {
     indexedPkg = JSON.parse(execFileSync('git', ['show', version.source.commit + ':package.json'], { cwd: root, encoding: 'utf8' }))
   } catch {
+    // A shallow clone cannot see release commits; CI fetches the full history
+    // (fetch-depth: 0), so only a genuinely unknown commit is a failure.
+    let shallow = false
+    try { shallow = execFileSync('git', ['rev-parse', '--is-shallow-repository'], { cwd: root, encoding: 'utf8' }).trim() === 'true' } catch {}
+    if (shallow) return
     assert.fail(`market/index.json pins ${version.source.commit}, which is not in this repository`)
   }
   assert.equal(indexedPkg.version, version.version, 'the index must describe the version that commit actually carries')
