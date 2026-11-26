@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.9.6
+
+- **Impact-based write policy** (`lib/impact.js`): the decision comes from the
+  entry semantics, not the file. `controlDict` output keys apply; boundary and
+  initial conditions, `fvSchemes`, `fvSolution`, `constant/*`, `deltaT` and
+  `application` **preview** (`applied: false`, rendered as `NOT APPLIED`) until
+  `apply: true`; `controlDict` `libs`/`functions` request user approval through
+  the DSH `ctx.approval` seam and fail closed when it is not mounted.
+  `writeMode: impact | apply | preview` (Settings) overrides it.
+- **`expect`** refuses a write whose current value differs, and every applied
+  change gets a `changeId` + `afterHash`.
+- **`openfoam_dict_undo`** (63rd tool) reverts a change and refuses when the file
+  changed after it, so a later edit is never silently discarded.
+- CORE.md: a write tool answering `applied: false` has changed nothing - apply it
+  or say so.
+- Tests: classification (0/U and 0/Yi high, writeInterval low, deltaT high,
+  unknown high, libs critical), mode overrides, expect, undo + stale undo, and
+  approval allowed-once / rejected / missing-service fail-closed.
+
 ## v0.9.5
 
 - **No shell string is built from paths or commands.** Every OpenFOAM call

@@ -38,6 +38,8 @@ If a result carries `needs_input`, ask the user with `ask_user_question` in
 until they answer.
 Multi-region cases take `region="fluid"`. Before finishing a long task, call
 openfoam_usage_report: an unused tool family means the work went around the plugin.
+A write tool that answers `applied: false` (preview) or asks for approval has
+not changed anything: apply it explicitly, or tell the user it was not applied.
 
 ## Language
 Reply to the user in {{language}}; code, identifiers and comments in English.

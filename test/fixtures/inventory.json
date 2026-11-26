@@ -57,8 +57,13 @@
     },
     {
       "name": "openfoam_dict_set",
-      "description": "e0763450930e8ef0",
-      "parameters": "7b66f103567b354c"
+      "description": "e709fe21ba4b8251",
+      "parameters": "87377fdfb5de9bba"
+    },
+    {
+      "name": "openfoam_dict_undo",
+      "description": "33c845b3cae51b29",
+      "parameters": "2bc6fe6a167238bd"
     },
     {
       "name": "openfoam_dry_compile",
@@ -315,7 +320,7 @@
     "name": "openfoam-workbench:core",
     "order": 250,
     "interpolate": false,
-    "text": "29cb867e6b1a8b25"
+    "text": "f578fab7dc2aec97"
   },
   "skills": [
     {
