@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.9.11
+
+- **The approval service is resolved when it is needed, not at mount time.** The
+  `approval` service is mounted by the base bundle after this plugin, so
+  `ctx.get('approval')` during `apply()` returned `undefined` and every critical
+  change failed closed with "service is not mounted". The plugin now keeps a
+  getter and resolves the service inside the tool call; the refusal also reports
+  `approval: {hasService, hasAgent, hasCallId}` so a live smoke test shows
+  exactly what is missing (on this host: agent ✓, callId ✓).
+
 ## v0.9.10
 
 Security pass from the third audit: the write gate and the file layer.
