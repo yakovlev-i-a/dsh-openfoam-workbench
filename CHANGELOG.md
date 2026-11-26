@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.9.19
+
+Cell zones are now a capability, which is the step that unblocks multi-region
+work on both families.
+
+- **`caps.zoneTool`** (`createZones` on org, `topoSet` on com) and
+  **`caps.splitRegions`** (`-cellZones all -defaultRegion fluid` vs
+  `-cellZones -overwrite`), both probed from the installation.
+- **New tool `openfoam_create_zone`**: carves one cell zone out of a single mesh
+  from a sphere/box/cylinder, distribution-aware, writes the dictionaries the
+  mechanism needs (com also needs `fvSchemes`/`fvSolution` placeholders before
+  splitting). Verified: org `createZones` -> `solid`, com `topoSet`+`setsToZones`
+  -> `solid`.
+- **Golden recipe `sphereCht` is mechanism-agnostic**: `blockMesh` -> `zone` ->
+  `splitMeshRegions`, all through the capability; org stays green.
+- **CHT scaffold knows the com layout** as far as it is understood:
+  `thermophysicalProperties`, `turbulenceProperties`, case-level `constant/g`,
+  `heRhoThermo` + `sensibleEnthalpy` and `div(phi,h)`/`div(phid,p)` schemes for
+  com; org keeps `hePsiThermo` + internal energy.
+- Remaining com blocker, recorded with the exact reason: com injects per-region
+  boundary conditions with `changeDictionary -region` from a shared `0.orig` and
+  names the interface condition `turbulentTemperatureCoupledBaffleMixed`, so
+  `coupledTemperature` is not accepted on a `mappedWall`.
+
 ## v0.9.18
 
 The golden matrix is proven in CI, not just locally.

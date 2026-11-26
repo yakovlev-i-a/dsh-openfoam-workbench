@@ -134,7 +134,8 @@ export const CASES = {
         '',
       ].join('\n'))
     },
-    steps: ['blockMesh', 'createZones', 'splitMeshRegions -cellZones all -defaultRegion fluid'],
+    steps: ['blockMesh', 'zone', 'splitMeshRegions'],
+    zone: { name: 'solid', shape: 'sphere', params: { centre: [0, 0, 0], radius: 0.025 } },
     cht: {
       regions: [{ name: 'fluid', kind: 'fluid' }, { name: 'solid', kind: 'solid' }],
       Uinlet: 5, Tinlet: 500, Tsolid: 300,
@@ -142,8 +143,12 @@ export const CASES = {
       endTime: 0.02, deltaT: 1e-4, writeInterval: 0.01,
     },
     qoi: ['fluid.cells', 'solid.cells', 'solid.T.min', 'solid.T.max', 'fluid.T.max', 'finalTime'],
-    // com has no createZones; the zone would be built with topoSet + setsToZones.
-    skip: { com: 'createZones is not shipped with com (use topoSet + setsToZones)' },
+    // com builds the zone with topoSet + setsToZones (openfoam_create_zone now
+    // handles that) but the CHT field layer differs: com injects per-region
+    // boundary conditions through `changeDictionary -region` from a shared 0.orig
+    // and names the interface condition turbulentTemperatureCoupledBaffleMixed,
+    // not coupledTemperature. Until that step exists the case is org-only.
+    skip: { com: 'com CHT needs changeDictionary -region field injection (turbulentTemperatureCoupledBaffleMixed), not coupledTemperature' },
   },
 }
 

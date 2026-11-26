@@ -51,6 +51,11 @@
       "parameters": "42755b2de130cbfb"
     },
     {
+      "name": "openfoam_create_zone",
+      "description": "4d87846a48d78fb6",
+      "parameters": "d0001c9fa2ffe74e"
+    },
+    {
       "name": "openfoam_diagnose_error",
       "description": "c984c21a7a7930ae",
       "parameters": "9dbd108976fe989d"

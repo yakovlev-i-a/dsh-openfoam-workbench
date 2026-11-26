@@ -1,0 +1,23 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+
+
+actions
+(
+    {
+        name        solid;
+        type        cellSet;
+        action      new;
+        source      sphereToCell;
+        sourceInfo
+        {
+            centre (0 0 0);
+        radius 0.025;
+        }
+    }
+);

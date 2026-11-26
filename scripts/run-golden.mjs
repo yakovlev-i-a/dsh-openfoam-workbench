@@ -15,6 +15,7 @@ import { caseRegions } from '../lib/of-case.js'
 import { probeCaps } from '../lib/versions.js'
 import { scaffoldFiles } from '../lib/scaffold.js'
 import { scaffoldCht } from '../lib/scaffold-cht.js'
+import { zonePlan } from '../lib/zones.js'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TOL = { cells: 0, maxNonOrtho: 0.01, finalTime: 1e-3, default: 0.05 }
@@ -205,6 +206,28 @@ async function runCase(cfg, dist, name, spec, opts) {
 
   // Mesh first: scaffolds read the patches the mesh creates.
   for (const step of spec.steps || ['blockMesh']) {
+    if (step === 'splitMeshRegions') {
+      const argv = ['splitMeshRegions', ...caps.splitRegions]
+      const r = record(argv.join(' '), await run(cfg, dist, argv, caseDir))
+      if (!r.ok) return { name, steps, error: `${argv.join(' ')} failed`, log: r.text.slice(-1500) }
+      continue
+    }
+    if (step === 'zone') {
+      if (!spec.zone) return { name, steps, error: 'the recipe asks for a zone but does not describe it' }
+      const plan = zonePlan({ caps, name: spec.zone.name, shape: spec.zone.shape, params: spec.zone.params })
+      if (plan.error) return { name, steps, error: plan.error }
+      mkdirSync(join(caseDir, 'system'), { recursive: true })
+      for (const [rel, body] of Object.entries(plan.prereq || {})) {
+        if (!existsSync(join(caseDir, rel))) writeFileSync(join(caseDir, rel), body)
+      }
+      writeFileSync(join(caseDir, plan.dictRel), plan.dictText)
+      for (const argv of plan.commands) {
+        const r = record(argv.join(' '), await run(cfg, dist, argv, caseDir))
+        if (!r.ok) return { name, steps, error: `${argv.join(' ')} failed`, log: r.text.slice(-1500) }
+      }
+      record('zone', { ok: true, argv: `${spec.zone.name} via ${plan.tool}` })
+      continue
+    }
     const argv = step.split(' ')
     const r = record(step, await run(cfg, dist, argv, caseDir))
     if (!r.ok) return { name, steps, error: `${step} failed`, log: r.text.slice(-1500) }
@@ -236,7 +259,13 @@ async function runCase(cfg, dist, name, spec, opts) {
   if (spec.cht) {
     const regions = caseRegions(caseDir)
     const found = regions.length ? regions : spec.cht.regions.map((r) => r.name)
-    const withPatches = spec.cht.regions.map((r) => ({
+    const detected = caseRegions(caseDir)
+    const resolved = spec.cht.regions.map((r) => {
+      if (r.kind === 'solid') return { ...r, name: r.name }
+      const other = detected.find((n) => n !== r.name && n !== 'solid')
+      return { ...r, name: detected.includes(r.name) ? r.name : (other || r.name) }
+    })
+    const withPatches = resolved.map((r) => ({
       ...r,
       patches: parseBoundaryPatches(readTextSafe(join(caseDir, 'constant', r.name, 'polyMesh', 'boundary'))),
     }))
