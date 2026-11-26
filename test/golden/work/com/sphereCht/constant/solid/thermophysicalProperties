@@ -19,17 +19,17 @@ thermoType
 {
     type            heSolidThermo;
     mixture         pureMixture;
-    transport       constIsoSolid;
-    thermo          eConst;
+    transport       constIso;
+    thermo          hConst;
     equationOfState rhoConst;
     specie          specie;
-    energy          sensibleInternalEnergy;
+    energy          sensibleEnthalpy;
 }
 
 mixture
 {
     specie { nMoles 1; molWeight 63.5; }
     transport { kappa 50; }
-    thermodynamics { hf 0; Cv 0.5; }
+    thermodynamics { Hf 0; Cp 0.5; }
     equationOfState { rho 1000; }
 }

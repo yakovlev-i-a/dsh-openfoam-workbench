@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.9.21
+
+- **`openfoam_case_scaffold` family `compressible`**: family-aware rho-thermo
+  (`hePsiThermo` + internal energy + `p`/`p_rgh` for org's `foamRun fluid`;
+  `heRhoThermo` + enthalpy + `p` for com's `rhoPimpleFoam`), with the working
+  scheme set (`div(phi,(p|rho))` vs `div(phi,h)`/`div(phid,p)`), `constant/g`,
+  `pRef`, laminar transport, and the gas initialised at rest so the inlet drives
+  the flow instead of an impulsive pressure wave.
+- **Golden case `sphereBox`**: compressible gas around the sphere on the stored
+  snappy mesh (17587 cells); QoI recorded on org 14. The values are regression
+  references of this transient blocked-duct run, not a validated benchmark.
+- **CHT scaffold is family-complete as far as the solvers allow**: interface
+  temperature is `coupledTemperature` on org and
+  `compressible::turbulentTemperatureCoupledBaffleMixed` (with `Tnbr`,
+  `kappaMethod`, `sampleMode`) on com; com thermo keys (`Hf`, `heRhoThermo`,
+  `constIso`/`hConst`) and a fixed-value inlet are used where com's dictionary
+  API differs.
+- Two com findings recorded, both build-level, not case-level:
+  `rhoPimpleFoam` and `chtMultiRegionFoam` **segfault** in this com v2606
+  installation (`dictionary::clone()`), and org's `mappedWall` interface
+  metadata is not portable to com (needs a com-built fixture).
+- 161 tests.
+
 ## v0.9.20
 
 Golden cases start from **stored meshes**, and the tool surface stays at 64.

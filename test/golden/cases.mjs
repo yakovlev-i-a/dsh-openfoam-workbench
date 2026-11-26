@@ -111,6 +111,38 @@ export const CASES = {
     qoi: ['cells', 'maxNonOrtho', 'T.min', 'T.max', 'U.max', 'finalTime'],
   },
 
+  // Compressible gas around the same sphere, on the stored snappy mesh. The QoI are
+  // regression values of this transient blocked-duct run, not a validated benchmark.
+  sphereBox: {
+    title: 'sphere in a box (compressible)',
+    args: ['both'],
+    meshFixture: 'sphereFlow',
+    prepare: ({ caseDir }) => {
+      mkdirSync(join(caseDir, 'system'), { recursive: true })
+      writeFileSync(join(caseDir, 'system/controlDict'), [
+        'FoamFile { version 2.0; format ascii; class dictionary; object controlDict; }',
+        '',
+        'application     foamRun;',
+        '',
+        'startFrom       startTime;',
+        'startTime       0;',
+        'stopAt          endTime;',
+        'endTime         0.002;',
+        'deltaT          2e-6;',
+        'writeControl    runTime;',
+        'writeInterval   0.001;',
+        '',
+      ].join('\n'))
+    },
+    steps: [],
+    compressible: { Uinlet: 10, Tinlet: 300, pInitial: 1e5, endTime: 0.01, deltaT: 1e-5, writeInterval: 0.005 },
+    // com v2606 on this machine: rhoPimpleFoam segfaults in dictionary::clone()
+    // while building the termo objects - the same crash as with the shipped
+    // tutorials, so it is this build, not the case.
+    skip: { com: 'rhoPimpleFoam segfaults in dictionary::clone() in this com build (also on shipped tutorials)' },
+    qoi: ['cells', 'maxNonOrtho', 'p.min', 'p.max', 'T.max', 'U.max', 'finalTime'],
+  },
+
   // The project's own CHT case: box minus sphere, solid sphere heated by the gas.
   sphereCht: {
     title: 'sphere in a box (conjugate heat transfer)',
@@ -141,12 +173,16 @@ export const CASES = {
       endTime: 0.02, deltaT: 1e-4, writeInterval: 0.01,
     },
     qoi: ['fluid.cells', 'solid.cells', 'solid.T.min', 'solid.T.max', 'fluid.T.max', 'finalTime'],
+    // com v2606 on this machine: chtMultiRegionFoam segfaults after the field setup
+    // (same class as rhoPimpleFoam), and org's interface patch metadata
+    // (mappedWall without sampleMode) is not portable to com; a com run needs its
+    // own fixture built by com and a working cht solver.
+    skip: { com: 'chtMultiRegionFoam segfaults after field setup in this com build; needs a com-built fixture' },
     // com builds the zone with topoSet + setsToZones (openfoam_create_zone now
     // handles that) but the CHT field layer differs: com injects per-region
     // boundary conditions through `changeDictionary -region` from a shared 0.orig
     // and names the interface condition turbulentTemperatureCoupledBaffleMixed,
     // not coupledTemperature. Until that step exists the case is org-only.
-    skip: { com: 'com CHT needs changeDictionary -region field injection (turbulentTemperatureCoupledBaffleMixed), not coupledTemperature' },
   },
 }
 

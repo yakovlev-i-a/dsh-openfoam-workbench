@@ -16,6 +16,7 @@ import { caseRegions } from '../lib/of-case.js'
 import { probeCaps } from '../lib/versions.js'
 import { scaffoldFiles } from '../lib/scaffold.js'
 import { scaffoldCht } from '../lib/scaffold-cht.js'
+import { scaffoldCompressible } from '../lib/scaffold-compressible.js'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TOL = { cells: 0, maxNonOrtho: 0.01, finalTime: 1e-3, default: 0.05 }
@@ -247,6 +248,19 @@ async function runCase(cfg, dist, name, spec, opts) {
       writeFileSync(file, body)
     }
     record('scaffold', { ok: true, argv: `${Object.keys(plan.files).length} files` })
+  }
+
+  if (spec.compressible) {
+    const patches = parseBoundaryPatches(readTextSafe(join(caseDir, 'constant', 'polyMesh', 'boundary')))
+      .map((p) => ({ name: p.name, type: p.type }))
+    const plan = scaffoldCompressible({ caps, patches, ...spec.compressible })
+    if (!plan.warnings.length === false) record('scaffold warnings', { ok: true, argv: plan.warnings.join('; ') })
+    for (const [rel, body] of Object.entries(plan.files)) {
+      const file = join(caseDir, rel)
+      mkdirSync(dirname(file), { recursive: true })
+      writeFileSync(file, body)
+    }
+    record('scaffold compressible', { ok: true, argv: `${Object.keys(plan.files).length} files` })
   }
 
   if (spec.cht) {

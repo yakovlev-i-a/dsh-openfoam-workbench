@@ -21,9 +21,12 @@ internalField   uniform 300;
 
 boundaryField
 {
-    solid_to_domain0
+    solid_to_fluid
     {
-        type            coupledTemperature;
+        type            compressible::turbulentTemperatureCoupledBaffleMixed;
+        Tnbr            T;
+        kappaMethod     solidThermo;
+        sampleMode      nearestPatchFace;
         value           uniform 300;
     }
 }

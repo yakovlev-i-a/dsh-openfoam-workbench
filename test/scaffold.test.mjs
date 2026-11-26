@@ -168,15 +168,29 @@ test('a case without a directory is created', async () => {
   }
 })
 
-test('scaffold refuses a compressible family instead of writing an incompressible case', async () => {
+test('scaffold writes a compressible case when asked', async () => {
   const root = mkdtempSync(join(tmpdir(), 'ofwb-scaf-fam-'))
   try {
     makeCase(root, 'caseF', [['inlet', 'patch'], ['outlet', 'patch'], ['walls', 'wall']])
     const tools = registry({ caseRoots: [root], defaultDistribution: 'org' })
     const r = await tools.openfoam_case_scaffold.execute({ casePath: 'caseF', family: 'compressible' })
+    assert.equal(r.ok, true, JSON.stringify(r).slice(0, 200))
+    assert.equal(r.application, 'foamRun')
+    assert.ok(r.created.includes('constant/physicalProperties'))
+    assert.ok(r.created.includes('0/T'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('scaffold refuses an unknown family', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-scaf-fam2-'))
+  try {
+    makeCase(root, 'caseG', [['inlet', 'patch'], ['outlet', 'patch'], ['walls', 'wall']])
+    const tools = registry({ caseRoots: [root], defaultDistribution: 'org' })
+    const r = await tools.openfoam_case_scaffold.execute({ casePath: 'caseG', family: 'multiphase' })
     assert.equal(r.ok, false)
     assert.match(r.error, /incompressible laminar or CHT cases/)
-    assert.match(r.hint, /clone_tutorial/)
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
