@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.9.28
+
+npm distribution withdrawn.
+
+- The registry is no longer part of the release: `package.json` is `private`
+  again, `publishConfig` and `.github/workflows/publish.yml` are gone, and the
+  README documents the git spec and the release tarball as the install paths.
+- The three versions that had reached npm (`0.0.0-stage`, `0.9.26`, `0.9.27`) are
+  **deprecated** with a message pointing at the git install; removing them
+  outright needs a 2FA session (a bypass-2FA token may not unpublish), so it is
+  left as a manual step if the account ever enrols a security key.
+- Each release now carries `yakovlev-i-a-dsh-openfoam-workbench-<version>.tgz`,
+  installable with `dsh plugin add <tarball-url>` — versioned without a registry.
+- 174 tests.
+
 ## v0.9.27
 
 - The npm account enables publishing only with proof of presence: the first

@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.27 · 65 tools · 11 skills · 174 tests**
+**v0.9.28 · 65 tools · 11 skills · 174 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -82,17 +82,21 @@ From the marketplace (once the plugin is listed):
 Discover → search "OpenFOAM" → Install → restart DSH
 ```
 
-From this repository, pinned to a commit (works today, no registry needed):
+From this repository, pinned to a commit (no registry involved):
 
 ```bash
 dsh plugin add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<40-hex-commit>
 ```
 
-From npm (after the first `npm publish`):
+From the tarball attached to a release (a versioned artefact, also no registry):
 
 ```bash
-dsh plugin add @yakovlev-i-a/dsh-openfoam-workbench@0.9.27
+dsh plugin add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/download/v0.9.28/yakovlev-i-a-dsh-openfoam-workbench-0.9.28.tgz
 ```
+
+npm distribution was withdrawn: `0.0.0-stage`, `0.9.26` and `0.9.27` are
+deprecated there with a message pointing to the git install, and the registry is
+not used again until that changes.
 
 From a local checkout:
 
@@ -136,9 +140,8 @@ started with:
 ```bash
 # linked install ("...": "link:/path/to/dsh-openfoam-workbench") — no reinstall:
 git -C /path/to/dsh-openfoam-workbench pull --ff-only
-# package install (git source; the package is not published to npm because
-# package.json keeps "private": true):
-dsh plugin --profile web update @yakovlev-i-a/dsh-openfoam-workbench
+# git or tarball install: install the new tag the same way
+dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<new-40-hex-commit>
 # then restart the host that boots the profile:
 dsh web
 ```
