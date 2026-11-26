@@ -2,10 +2,9 @@ name: golden
 
 # Golden cases against real OpenFOAM installations: org 14 and com v2606.
 #
-# The OpenFOAM images do not ship git/node, so they are used as plain docker
-# images on the runner (checkout and Node stay on the host) instead of as a job
-# `container:`. Start it manually until the matrix has been proven once; then
-# switch it to `push`.
+# The OpenFOAM images ship neither git nor node, so they run as plain docker
+# images (checkout and the workflow itself stay on the host). Start the workflow
+# manually until the matrix has been proven once; then it can move to `push`.
 on:
   workflow_dispatch:
 
@@ -23,27 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: node 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
       - name: golden cases (${{ matrix.distribution }})
+        env:
+          IMAGE: ${{ matrix.image }}
+          DIST: ${{ matrix.distribution }}
         run: |
           set -euo pipefail
-          docker run --rm \
-            -v "$PWD":/w -w /w \
-            -e HOME=/tmp \
-            "${{ matrix.image }}" \
-            bash -lc '
-              set -e
-              if ! command -v node >/dev/null 2>&1; then
-                if command -v apt-get >/dev/null 2>&1; then
-                  apt-get update -qq && apt-get install -y -qq curl ca-certificates xz-utils >/dev/null
-                fi
-                curl -fsSL https://nodejs.org/dist/v22.11.0/node-v22.11.0-linux-x64.tar.xz -o /tmp/node.tar.xz
-                mkdir -p /opt/node22 && tar -xJf /tmp/node.tar.xz -C /opt/node22 --strip-components=1
-                export PATH=/opt/node22/bin:$PATH
-              fi
-              node --version
-              node scripts/run-golden.mjs --distribution '"${{ matrix.distribution }}"'
+          docker run --rm -v "$PWD":/w -w /w -e HOME=/tmp -e DIST="$DIST" "$IMAGE" bash /w/scripts/ci-golden.sh
