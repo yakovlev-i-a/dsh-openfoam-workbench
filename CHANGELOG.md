@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.9.16
+
+- **`openfoam_case_scaffold` with `family: "cht"`** writes a complete
+  conjugate-heat-transfer case once the region meshes exist:
+  - per-region `system/<r>/{fvSchemes,fvSolution}` and `constant/<r>/*`
+    (fluid: `hePsiThermo` air + laminar momentum/thermophysical transport + `g`/`pRef`;
+    solid: `heSolidThermo` with `{rho, Cv, kappa}` from the call), `0/<r>/*`;
+  - `coupledTemperature` on the `<region>_to_<other>` interface patches and
+    physical conditions on the outer walls/inlets/outlets, chosen from the
+    patch roles of the region's own `polyMesh/boundary`;
+  - org glue `system/regionSolvers` + `#includeIfPresent` controlDict for
+    `foamMultiRun`; com glue `constant/regionProperties` + `chtMultiRegionFoam`;
+  - the root `system/fvSolution` that `foamMultiRun` requires.
+- Verified end to end on a fresh sphere-in-box case: `blockMesh` -> `createZones`
+  -> `splitMeshRegions` -> scaffold -> `foamMultiRun` with **no manual edits**
+  (solid 300 -> 311-312 K, gas 482-501 K over 0.02 s).
+- Doctor: `coupledTemperature`/`coupledPressure`/... are known patch-field types,
+  and region field findings name the field path with its region.
+- 153 tests (CHT scaffold: org/com glue, interface BC placement, refusals).
+
 ## v0.9.15
 
 The second live test — a conjugate-heat-transfer sphere-in-box (solid sphere

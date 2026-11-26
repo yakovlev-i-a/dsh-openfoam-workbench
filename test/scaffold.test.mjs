@@ -175,7 +175,7 @@ test('scaffold refuses a compressible family instead of writing an incompressibl
     const tools = registry({ caseRoots: [root], defaultDistribution: 'org' })
     const r = await tools.openfoam_case_scaffold.execute({ casePath: 'caseF', family: 'compressible' })
     assert.equal(r.ok, false)
-    assert.match(r.error, /incompressible laminar cases only/)
+    assert.match(r.error, /incompressible laminar or CHT cases/)
     assert.match(r.hint, /clone_tutorial/)
   } finally {
     rmSync(root, { recursive: true, force: true })
