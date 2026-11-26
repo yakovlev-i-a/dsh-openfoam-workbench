@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.9.27
+
+- The npm account enables publishing only with proof of presence: the first
+  attempt (web-login session, no 2FA) staged `0.9.26` and the staged version
+  blocked republishing that number (`E409 Cannot publish over previously staged
+  version`). `0.9.27` is the same content published with a granular access token
+  that has `bypass_2fa`.
+- 174 tests.
+
 ## v0.9.26
 
 Packaging for distribution.

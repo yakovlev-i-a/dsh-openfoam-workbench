@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.26 · 65 tools · 11 skills · 174 tests**
+**v0.9.27 · 65 tools · 11 skills · 174 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -91,7 +91,7 @@ dsh plugin add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<4
 From npm (after the first `npm publish`):
 
 ```bash
-dsh plugin add @yakovlev-i-a/dsh-openfoam-workbench@0.9.26
+dsh plugin add @yakovlev-i-a/dsh-openfoam-workbench@0.9.27
 ```
 
 From a local checkout:
