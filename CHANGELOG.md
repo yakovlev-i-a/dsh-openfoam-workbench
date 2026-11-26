@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.9.26
+
+Packaging for distribution.
+
+- `package.json`: `private` is now `false` with `publishConfig.access: public`, so
+  the package can be published to npm as
+  `@yakovlev-i-a/dsh-openfoam-workbench` (still `0.x`, as agreed).
+- README documents all three install paths: a commit-pinned git spec, the npm
+  package, and a local checkout.
+- Repository metadata moved to the current state (65 tools) and the
+  `dsh-plugin` topic is set for discovery.
+- 174 tests.
+
 ## v0.9.25
 
 `strict` routing with an audited exception path.
