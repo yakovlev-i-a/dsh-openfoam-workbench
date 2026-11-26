@@ -152,7 +152,8 @@ defaultDistribution: org
 
 ## Case conventions
 
-Two conventions are enforced by the tools, not by the prompt:
+Two conventions are enforced by these tools (for any work that goes through
+them), not by the prompt:
 
 - **`<case-dir-name>.foam`** — `clone_tutorial`, `mesh_plan`, `run`,
   `run_solver_async` and `render` create the ParaView entry file named after the
@@ -260,6 +261,23 @@ What it does to make that safe:
 - child processes get `stdin: ignore` and never inherit a terminal;
 - `clean` is a dry run by default, `dict_set` replaces one entry atomically and
   keeps a `.bak`, and the source tools only read the OpenFOAM installation.
+
+### What these gates do and do not cover
+
+The write policy above applies to **this plugin's tools**. An agent that also has
+generic shell/file tools can change a case without them — `bash -c 'echo ... >>
+system/controlDict'` never reaches `dict_set`, its impact classification or its
+approval request. So treat them as **defense in depth**, not as the barrier:
+
+- the effective boundary is the DSH sandbox and permission mode (for example
+  `workspace-write`, which refuses writes outside the workspace) plus the
+  approval answerer for what you choose to review;
+- within a case, the plugin's gates make the *normal* path safe (one-entry
+  atomic edits, previews for physics changes, approval for code execution,
+  containment checks) and leave an audit trail (`changeId`, `afterHash`,
+  `.openfoam-changes/`);
+- when a case matters, review what the agent actually ran: `openfoam_run_list`,
+  the change journal and `git diff` in the workspace.
 
 No credentials ship with this repo. Put any API keys in DSH's `credentials`
 service, never in `settings.json` or in the bundle.
