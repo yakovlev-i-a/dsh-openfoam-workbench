@@ -271,7 +271,19 @@ async function main() {
     return 0
   }
   const cfg = makeCfg()
-  const dists = args.distributions.length ? args.distributions : Object.keys(cfg.foamRoots)
+  const known = Object.keys(cfg.foamRoots)
+  if (args.distributions.length) {
+    const missing = args.distributions.filter((d) => !known.includes(d))
+    if (missing.length) {
+      console.error(`no OpenFOAM installation found for: ${missing.join(', ')} (discovered: ${known.join(', ') || 'none'})`)
+      return 2
+    }
+  }
+  const dists = args.distributions.length ? args.distributions : known
+  if (!dists.length) {
+    console.error('no OpenFOAM installation discovered; set WM_PROJECT_DIR or install one')
+    return 2
+  }
   const names = args.cases.length ? args.cases : Object.keys(CASES)
   let failed = 0
   for (const dist of dists) {
