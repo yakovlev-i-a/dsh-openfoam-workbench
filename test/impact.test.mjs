@@ -198,6 +198,7 @@ test('critical changes fail closed without an approval answerer, and pass with a
     const denied = await deny.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' }, exec)
     assert.equal(denied.ok, false)
     assert.match(denied.error, /approval rejected/)
+    assert.equal(denied.approval.outcome, 'rejected')
 
     const allowed = { request: async () => 'allowed-once' }
     const allow = registry({ caseRoots: [root] }, allowed)

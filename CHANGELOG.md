@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.9.12
+
+- **Live approval verified end to end** on a real profile: `dict_set` on
+  `controlDict.libs` requested approval with `{hasService, hasAgent, hasCallId}`
+  all true, `allowed-once` applied the write, `rejected` left the file unchanged,
+  and `openfoam_dict_undo` restored the previous value afterwards.
+- The result carries the **actual** outcome (`allowed-once` / `rejected` /
+  `cancelled` / `unavailable`) instead of a generic "refused".
+
 ## v0.9.11
 
 - **The approval service is resolved when it is needed, not at mount time.** The
