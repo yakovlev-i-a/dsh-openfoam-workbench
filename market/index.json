@@ -13,7 +13,7 @@
         "en": "OpenFOAM workbench for DeepSeek Harness: 65 tools (env, solvers, meshing, multi-region runs, renders, papers, experience) and 11 on-demand CFD skills.",
         "ru": "Плагин OpenFOAM для DeepSeek Harness: 65 инструментов и 11 навыков — осмотр кейса, разработка солверов, сетки, многорегиональные CHT-расчёты, фоновые запуски, рендеры, воспроизведение статей и библиотека опыта."
       },
-      "icon": "https://raw.githubusercontent.com/yakovlev-i-a/dsh-openfoam-workbench/7dc3695d7639c7a58c2faafb2ce757540cd6c667/icon.png",
+      "icon": "https://raw.githubusercontent.com/yakovlev-i-a/dsh-openfoam-workbench/ac1b481b36326857c85862605c211b997822b174/icon.png",
       "author": "yakovlev-i-a",
       "homepage": "https://github.com/yakovlev-i-a/dsh-openfoam-workbench",
       "repository": {
@@ -21,12 +21,12 @@
       },
       "versions": [
         {
-          "version": "0.9.26",
-          "publishTimestamp": 1795683620,
+          "version": "0.9.27",
+          "publishTimestamp": 1795685219,
           "source": {
             "type": "git",
             "url": "https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git",
-            "commit": "7dc3695d7639c7a58c2faafb2ce757540cd6c667"
+            "commit": "ac1b481b36326857c85862605c211b997822b174"
           },
           "engines": {
             "dsh": ">=0.2.2-rc.1"
