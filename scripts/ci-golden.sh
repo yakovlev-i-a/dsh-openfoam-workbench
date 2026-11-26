@@ -18,15 +18,25 @@ fi
 # The image may not export WM_PROJECT_DIR for a non-interactive shell: locate the
 # installation and hand it to the runner, which also uses it for discovery.
 if [ -z "${WM_PROJECT_DIR:-}" ]; then
-  for f in /opt/openfoam*/etc/bashrc /usr/lib/openfoam/openfoam*/etc/bashrc \
-           /usr/local/openfoam*/etc/bashrc "$HOME"/OpenFOAM/*/etc/bashrc \
-           /home/*/OpenFOAM/*/etc/bashrc /root/OpenFOAM/*/etc/bashrc; do
+  for f in /opt/[Oo]pen[Ff][Oo][Aa][Mm]*/etc/bashrc /opt/openfoam*/etc/bashrc \
+           /usr/lib/openfoam/openfoam*/etc/bashrc /usr/local/[Oo]pen[Ff][Oo][Aa][Mm]*/etc/bashrc \
+           "$HOME"/[Oo]pen[Ff][Oo][Aa][Mm]*/etc/bashrc /home/*/[Oo]pen[Ff][Oo][Aa][Mm]*/etc/bashrc \
+           /root/[Oo]pen[Ff][Oo][Aa][Mm]*/etc/bashrc; do
     if [ -f "$f" ]; then
       export WM_PROJECT_DIR="$(cd "$(dirname "$f")/.." && pwd)"
-      export WM_PROJECT_VERSION="$(basename "$WM_PROJECT_DIR" | sed -e 's/^[Oo]pen[Ff][Oo][Aa][Mm]-//')"
       break
     fi
   done
+fi
+if [ -z "${WM_PROJECT_DIR:-}" ]; then
+  # last resort: the images install wherever the build user kept the source
+  found="$(find / -maxdepth 6 -type f -name bashrc -path '*[Oo]pen[Ff][Oo][Aa][Mm]*/etc/bashrc' 2>/dev/null | head -1)"
+  if [ -n "$found" ]; then
+    export WM_PROJECT_DIR="$(cd "$(dirname "$found")/.." && pwd)"
+  fi
+fi
+if [ -n "${WM_PROJECT_DIR:-}" ]; then
+  export WM_PROJECT_VERSION="$(basename "$WM_PROJECT_DIR" | sed -e 's/^[Oo]pen[Ff][Oo][Aa][Mm]-//')"
 fi
 echo "installation: ${WM_PROJECT_DIR:-none}"
 
