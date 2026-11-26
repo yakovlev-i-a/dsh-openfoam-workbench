@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.9.25
+
+`strict` routing with an audited exception path.
+
+- **`enforceToolRouting: 'strict'`**: a `bash`/`write`/`edit` call that writes a
+  case dictionary is refused with a message that names the plugin tool *and* the
+  escalation call.
+- **`openfoam_escalate({ target, operation, toolsTried, why, ttlMinutes })`**
+  (65th tool) grants **one single-use token** for one target, valid 10 minutes.
+  The request is verified against the call history: at least one named plugin
+  tool must have been called **and failed** in the last 15 minutes, so the
+  exception carries evidence instead of a claim. The hook consumes the token on
+  the next matching write, so one escalation authorises exactly one write.
+- **`escalationAuthority: 'auto' | 'ask'`** (default `auto`, as agreed for the
+  first release): `auto` issues the token from the verified evidence, `ask`
+  routes the decision to the DSH approval answerer and fails closed without it.
+- `openfoam_usage_report` gains an `escalations` section (active, used, expired
+  and the recent request/consume events), next to the `routing` section, so
+  "which tools were tried, why it failed, what was let through" is an artifact.
+- 174 tests (evidence verification, single use, TTL and target scoping,
+  auto/ask authority, strict vs warn vs deny).
+
 ## v0.9.24
 
 Steering the agent onto the plugin's tools, in layers.

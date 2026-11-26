@@ -1,6 +1,6 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-Native **DeepSeek Harness** plugin for OpenFOAM: 64 tools and 11 on-demand skills
+Native **DeepSeek Harness** plugin for OpenFOAM: 65 tools and 11 on-demand skills
 covering case scaffolding, inspection, solver development, meshing, multi-region CHT runs,
 durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one coherent surface — a thin always-on core
@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.24 · 64 tools · 11 skills · 169 tests**
+**v0.9.25 · 65 tools · 11 skills · 174 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -272,11 +272,17 @@ approval request. So treat them as **defense in depth**, not as the barrier:
 - the effective boundary is the DSH sandbox and permission mode (for example
   `workspace-write`, which refuses writes outside the workspace) plus the
   approval answerer for what you choose to review;
-- `enforceToolRouting` (Settings: `off` / `warn` / `deny`, default `warn`) makes
-  the plugin watch DSH's `tools/pre-execute` seam: a `bash`/`write`/`edit` call
-  that writes a case dictionary is recorded (and with `deny`, refused with a
-  message naming the plugin tool). Text matching on shell commands is evadable,
-  so this is a strong deterrent plus a signal, not a proof;
+- `enforceToolRouting` (Settings: `off` / `warn` / `deny` / `strict`, default
+  `warn`) makes the plugin watch DSH's `tools/pre-execute` seam: a
+  `bash`/`write`/`edit` call that writes a case dictionary is recorded, refused
+  (`deny`) or refused-unless-escalated (`strict`);
+- `strict` has an audited way out: `openfoam_escalate({target, toolsTried, why})`
+  grants one single-use, 10-minute token for that target, but only when the named
+  plugin tools were really called and failed in the last 15 minutes (the call
+  history is the evidence). `escalationAuthority` decides who issues it:
+  `auto` (the plugin, recorded in `openfoam_usage_report`) or `ask` (the DSH
+  approval answerer, fail-closed without it). Text matching on shell commands is
+  evadable, so the guard is a strong deterrent plus a signal, not a proof;
 - within a case, the plugin's gates make the *normal* path safe (one-entry
   atomic edits, previews for physics changes, approval for code execution,
   containment checks) and leave an audit trail (`changeId`, `afterHash`,
