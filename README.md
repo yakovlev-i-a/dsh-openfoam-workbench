@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.13 · 64 tools · 11 skills · 143 tests**
+**v0.9.14 · 64 tools · 11 skills · 148 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -29,22 +29,23 @@ minor versions.
 
 ## Supported versions
 
-Tested end to end (mesh → solver → verifier) on **OpenFOAM 14** (org) and
-**OpenFOAM v2606** (com). The two branches differ in ways the tools follow:
+The plugin is validated end to end on two installations, and describes every
+other one through a capability object rather than a version table:
 
-| Aspect | org 14 | com v2606 |
-|---|---|---|
-| incompressible entry | `foamRun` + `solver incompressibleFluid;` | no `foamRun`: `simpleFoam`, `pimpleFoam`, … |
-| multi-region | `regionSolvers` + `foamMultiRun` | `regionProperties` groups, `restore0Dir`, `0.orig/` |
-| case files | `physicalProperties`, `momentumTransport` | `transportProperties`, `turbulenceProperties` |
-| initial fields | `0/` | `0.orig/` (and `0_orig/`, both accepted) |
+| family | tested | support | notes |
+|---|---|---|---|
+| org (OpenFOAM Foundation) | 14 | `full` | modular `foamRun` + solver module, `physicalProperties`/`momentumTransport`, `surfaceFeatures` |
+| com (ESI/OpenCFD) | v2606 | `full` | legacy applications (`simpleFoam`, `rhoPimpleFoam`), `transportProperties`/`turbulenceProperties`, `surfaceFeatureExtract` |
+| org 10-13 | – | `partial` | modular conventions assumed; templates and rules use the same layout |
+| com 2312-2512 | – | `partial` | legacy conventions assumed |
+| anything older or unknown | – | `unknown` | best effort; `openfoam_check` adds an `untested-version` warning |
 
-Other versions and branches are **best effort**. Discovery, the doctor and the
-scaffold accept both layouts and pick the org/com form from `distribution`, but
-a fork with different solver names, `regionProperties` verbs or field files will
-surface as a tool hint or a doctor finding rather than a silently wrong
-dictionary. Turbulent, compressible and CHT setups are not generated at all —
-use `openfoam_find_tutorial` + `openfoam_clone_tutorial` for those.
+Capabilities are detected from the installation itself (`openfoam_version_info`
+and `openfoam_env_check` return a `caps` object: modular form, post-processing
+and feature utilities, transport/turbulence file names, 0/ vs 0.orig, support
+level). `openfoam_mesh_plan`, `openfoam_case_scaffold` and `openfoam_check`
+report the same capabilities, so a generated case always says which conventions
+it followed.
 
 ## Install
 

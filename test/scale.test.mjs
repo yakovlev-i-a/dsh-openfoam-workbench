@@ -238,3 +238,35 @@ test('mesh_plan writes a runnable snappy dict and a placeholder controlDict', as
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+test('mesh_plan dictionaries follow the capabilities (features dict, scale keyword)', async () => {
+  const { planMesh, stlGenerate, stlToAscii } = await import('../lib/meshlib.js')
+  const { versionCaps } = await import('../lib/versions.js')
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-plan-caps-'))
+  try {
+    mkdirSync(join(root, 'constant/triSurface'), { recursive: true })
+    const tris = stlGenerate({ shape: 'sphere', params: { r: 0.02, segments: 32, rings: 16 } })
+    assert.ok(Array.isArray(tris) && tris.length > 100)
+    writeFileSync(join(root, 'constant/triSurface/s.stl'), stlToAscii('s', tris))
+    const args = {
+      stl_path: join(root, 'constant/triSurface/s.stl'),
+      domain: { type: 'box', bbox_min: [-0.05, -0.05, -0.05], bbox_max: [0.05, 0.05, 0.05] },
+      target_cell_size: 0.01,
+      location_in_mesh: [-0.045, 0, 0],
+    }
+    const org = planMesh({ caseRoots: [root] }, args, versionCaps('org', '14'))
+    assert.equal(org.featureDictName, 'surfaceFeaturesDict')
+    assert.match(org.featureDict, /surfaces \("s.stl"\);/)
+    assert.match(org.blockMeshDict, /scale 1;/)
+    assert.match(org.snappyHexMeshDict, /errorReduction/)
+
+    const com = planMesh({ caseRoots: [root] }, args, versionCaps('com', 'v2606'))
+    assert.equal(com.featureDictName, 'surfaceFeatureExtractDict')
+    assert.match(com.featureDict, /extractionMethod extractFromSurface;/)
+
+    const old = planMesh({ caseRoots: [root] }, args, versionCaps('org', '9'))
+    assert.match(old.blockMeshDict, /convertToMeters 1;/)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})

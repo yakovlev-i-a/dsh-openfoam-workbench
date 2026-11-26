@@ -198,3 +198,19 @@ test('patch roles use the type when given and know sphere/airfoil names', async 
     rmSync(root, { recursive: true, force: true })
   }
 })
+
+test('scaffold conventions follow capabilities, not just the distribution label', async () => {
+  const { scaffoldFiles } = await import('../lib/scaffold.js')
+  const { versionCaps } = await import('../lib/versions.js')
+  const patches = [{ name: 'inlet', type: 'patch' }, { name: 'outlet', type: 'patch' }, { name: 'walls', type: 'wall' }]
+  const org = scaffoldFiles({ caps: versionCaps('org', '14'), patches })
+  assert.equal(org.application, 'foamRun')
+  assert.ok(org.files['constant/physicalProperties'] && org.files['constant/momentumTransport'])
+  assert.equal(org.modular, true)
+  const com = scaffoldFiles({ caps: versionCaps('com', 'v2606'), patches })
+  assert.equal(com.application, 'simpleFoam')
+  assert.ok(com.files['constant/transportProperties'] && com.files['constant/turbulenceProperties'])
+  const old = scaffoldFiles({ caps: versionCaps('org', '9'), patches })
+  assert.equal(old.application, 'simpleFoam', 'org 9 has no foamRun')
+  assert.ok(old.files['constant/transportProperties'])
+})

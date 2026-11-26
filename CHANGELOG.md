@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.9.14
+
+Version-capability layer, wired through the tools that generate content.
+
+- **`lib/versions.js` v2**: one capability object per installation — `family`,
+  `modular`, `support` (full/partial/unknown), `blockMeshScale`,
+  `featuresUtility`/`featuresDict`/`featuresDictStyle`, `postProcess`,
+  `fieldStats`, `transportFile`, `turbulenceFile`, `regionModel`, `zeroDir`.
+  `probeCaps()` asks the installation itself (version + which utilities exist)
+  and caches the result; `versionCaps()` gives the same object without probing.
+- **`openfoam_mesh_plan`** is capability-driven: `scale` vs `convertToMeters`,
+  snappy quality keys, and the feature dictionary the family expects
+  (`surfaceFeaturesDict` on org, `surfaceFeatureExtractDict` on com). The result
+  reports `caps` and an advisory on partial/unknown releases.
+- **`openfoam_case_scaffold`** takes `caps`: modular (`foamRun` + `solver`) vs
+  legacy (`simpleFoam`), `physicalProperties`/`momentumTransport` vs
+  `transportProperties`/`turbulenceProperties`; org 9 now falls back to the
+  legacy form instead of assuming the modular one.
+- **`openfoam_check`** reports `caps` and adds an `untested-version` warning when
+  the release is outside the support matrix.
+- **`openfoam_env_check`/`openfoam_version_info`** return `caps` per
+  distribution; README documents the support matrix and the capability model.
+- Tests: capability matrix (org 14/9, com v2606/v2512), scaffold and mesh_plan
+  conventions per capability, feature-dictionary naming.
+
 ## v0.9.13
 
 All findings from the sphere-in-box live test (F1-F12), plus a first step towards
