@@ -142,7 +142,7 @@ test('an executable directive in the value is critical, not high', async () => {
   try {
     const dir = makeCase(root)
     const tools = toolsFor(root) // no approval service, no agent identity
-    const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: '0/U', entry: 'internalField', value: '#codeStream #{ code = 1 }' })
+    const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: '0/U', entry: 'internalField', value: '#calc 1+1' })
     assert.equal(r.ok, false)
     assert.equal(r.impact, 'critical')
     assert.match(r.error, /approval/)
@@ -213,5 +213,61 @@ test('experience cards cannot be deleted through a path', () => {
 test('the meshing and post-processing utilities the plugin needs are whitelisted', () => {
   for (const cmd of ['surfaceFeatureExtract', 'surfaceFeatures', 'foamPostProcess -func cellMax(U)']) {
     assert.equal(commandAllowed(cmd).ok, true, cmd)
+  }
+})
+
+test('a value cannot smuggle an entry through braces', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-brace-'))
+  try {
+    const dir = makeCase(root)
+    const tools = toolsFor(root)
+    for (const value of ['{ } libs ("libevil.so")', '{}', '{ x }']) {
+      const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'writeInterval', value })
+      assert.equal(r.ok, false, value)
+      assert.match(r.error, /braces are not allowed/)
+      assert.equal(readFileSync(join(dir, 'system/controlDict'), 'utf8'), 'application foamRun;\nwriteInterval 100;\n')
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('every dictionary directive is critical, not just #calc', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-directive-'))
+  try {
+    makeCase(root)
+    const tools = toolsFor(root) // no approval service: critical must refuse
+    for (const value of ['#includeEtc "caseDicts/setConstraintTypes"', '#includeIfPresent "/etc/passwd"', '#includeFunc patchAverage', '#remove writeInterval', '#inputMode merge']) {
+      const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'writeInterval', value, apply: true })
+      assert.equal(r.ok, false, value)
+      assert.equal(r.impact, 'critical', value)
+      assert.match(readFileSync(join(root, 'caseA/system/controlDict'), 'utf8'), /writeInterval 100;/)
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('arguments that swap the case, dictionary or solver are refused in both forms', () => {
+  for (const cmd of ['foamRun -case=/tmp/x', 'postProcess -dict /etc/passwd', 'foamRun -solver whatever', 'simpleFoam -roots=/tmp', 'foamRun -dict=system/fvSchemes']) {
+    const r = commandAllowed(cmd)
+    assert.equal(r.ok, false, cmd)
+  }
+})
+
+test('clean with force:true needs approval and fails closed without it', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-clean-force-'))
+  try {
+    const dir = join(root, 'project')
+    mkdirSync(join(dir, '2024'), { recursive: true })
+    writeFileSync(join(dir, 'build.log'), 'x')
+    const tools = toolsFor(root)
+    const r = await tools.openfoam_clean.execute({ casePath: 'project', dryRun: false, force: true })
+    assert.equal(r.ok, false)
+    assert.match(r.error, /approval/)
+    assert.equal(r.approval.hasService, false)
+    assert.ok(existsSync(join(dir, 'build.log')), 'nothing may be deleted without approval')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
   }
 })

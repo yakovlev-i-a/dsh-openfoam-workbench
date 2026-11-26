@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.9.23
+
+Security review follow-up: the write gate and the run whitelist, again.
+
+- **Braces are refused in a scalar value.** `value='{ } libs ("libevil.so")'`
+  used to pass every check (one line, no `;`, balanced braces) and produced
+  `writeInterval { } libs ("libevil.so");` as a *low* impact change — the line
+  parser saw only `writeInterval` and the injected entry was invisible to the
+  structural guard. Any `{`/`}` in a value is now an error by name.
+- **Every `#` directive is critical.** `#includeEtc`/`#includeIfPresent`/
+  `#includeFunc`/`#inputMode`/`#remove` were applied as low/high because the
+  pattern used a trailing word boundary after `#include`; any `#word` token now
+  forces approval (`#codeStream`, `#calc`, `#eval`, absolute includes, rewrites).
+- **Structural invariant**: replacing one entry may not change the number of
+  semicolons in the file (an append is exempt by design), on top of the existing
+  top-level key comparison.
+- **Argument whitelist**: `-case`, `-dict`, `-solver`, `-roots`, `-hostRoots`,
+  `-libs` are refused in both `-x value` and `-x=value` forms.
+- **`clean(force:true)` requires approval**: forcing past the case-marker guard is
+  destructive and now fails closed without an answerer.
+- `test/golden/work/` (generated runs, ~2.6 MB including a 49k-line mesh) is out
+  of git and gitignored.
+- Tests: 165, including regressions for each item above.
+
 ## v0.9.22
 
 A clean com v2606 install fixed the segfaults, and com now passes the whole

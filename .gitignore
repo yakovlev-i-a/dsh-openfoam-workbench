@@ -13,3 +13,5 @@ DESIGN.md
 
 # local test cases, renders and package leftovers (files and directories)
 .tmp*
+# golden runs write their working cases here
+/test/golden/work/

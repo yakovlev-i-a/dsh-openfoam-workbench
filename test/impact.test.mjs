@@ -240,8 +240,8 @@ test('a sub-dictionary entry is refused instead of half-edited', async () => {
     const tools = registry({ caseRoots: [root] })
     const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'functions', value: '{}' })
     assert.equal(r.ok, false)
-    assert.match(r.error, /sub-dictionary/)
-    assert.match(r.hint, /single-line top-level entries/)
+    assert.match(r.error, /sub-dictionar/) // braces in a value are refused by name
+    assert.match(r.hint, /single-line top-level entry/)
     assert.match(readFileSync(cfg, 'utf8'), /fieldMinMax1/, 'the block must be untouched')
   } finally {
     rmSync(root, { recursive: true, force: true })
