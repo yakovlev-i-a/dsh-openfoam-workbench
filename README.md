@@ -171,6 +171,15 @@ dsh web
 `dsh plugin update` only tracks registry packages; with npm withdrawn there are
 none, so re-adding the tag (or the tarball) is the update.
 
+If [dshmarket](https://github.com/dsh-market/dsh-market) is installed it can
+signal updates by itself: it compares an npm version, or a **pinned commit
+against the repository HEAD**, and offers a one-click update with a "What
+changed" link (its background checks are off by default — enable them under
+*Plugins → Update checks*). A `git+…#<sha>` install therefore gets a signal; a
+tarball install does not (the market updates an archive only through its own
+source), and a `link:` install — a local checkout — is not tracked at all, which
+is why that one is `git pull` plus a restart.
+
 Where the new version comes from:
 
 - the releases page — <https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases>
