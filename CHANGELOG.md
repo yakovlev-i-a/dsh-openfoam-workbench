@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.9.7
+
+Reliability release: no new tools, only the defects the v0.9.6 review found.
+
+- **`purgeWrite` is value-aware**: `0` stays low impact, any value `> 0` is high
+  impact (preview), because it deletes older time directories — a long run's
+  history is not an organisational setting.
+- **Approval is always required for `libs`/`functions`**; the `approvals` switch
+  is gone (it never took effect and implied the protection was optional). A
+  missing agent identity or a missing answerer refuses the change (fail-closed).
+- **Sub-dictionaries are refused explicitly**: `dict_set` edits single-line
+  top-level entries; `functions { ... }` now returns a named error instead of a
+  confusing "entry not found", and the block is never half-edited.
+- **Undo of an appended key removes the line** (`existedBefore` is recorded in
+  the journal) instead of writing an empty value.
+- **No file is written without a durable undo record**: the journal is written
+  before the case file, and a failure aborts the change (the temp file and any
+  journal entry are rolled back).
+- **Release consistency**: the market index guard now verifies that the pinned
+  commit really carries the indexed version, and the README intro tool count is
+  checked against the status line and the registry.
+
 ## v0.9.6
 
 - **Impact-based write policy** (`lib/impact.js`): the decision comes from the

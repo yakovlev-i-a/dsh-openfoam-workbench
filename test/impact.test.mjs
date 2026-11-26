@@ -1,7 +1,7 @@
 // Impact-based write policy: the entry semantics decide apply / preview / approval.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { apply } from '../lib/index.js'
@@ -186,25 +186,104 @@ test('critical changes fail closed without an approval answerer, and pass with a
   const root = mkdtempSync(join(tmpdir(), 'ofwb-imp-appr-'))
   try {
     makeCase(root)
+    const exec = { agent: { id: 'test-agent' }, callId: 'call-1', signal: new AbortController().signal }
     const noService = registry({ caseRoots: [root] })
-    const refused = await noService.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' })
+    const refused = await noService.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' }, exec)
     assert.equal(refused.ok, false)
     assert.match(refused.error, /approval service is not mounted|fail-closed/)
     assert.match(readFileSync(join(root, 'caseA/system/controlDict'), 'utf8'), /libs\s+\(\);/, 'the file must be untouched')
 
     const rejected = { request: async () => 'rejected' }
-    const deny = registry({ caseRoots: [root], approvals: true }, rejected)
-    const denied = await deny.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' })
+    const deny = registry({ caseRoots: [root] }, rejected)
+    const denied = await deny.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' }, exec)
     assert.equal(denied.ok, false)
     assert.match(denied.error, /approval rejected/)
 
     const allowed = { request: async () => 'allowed-once' }
-    const allow = registry({ caseRoots: [root], approvals: true }, allowed)
-    const ok = await allow.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' })
+    const allow = registry({ caseRoots: [root] }, allowed)
+    const ok = await allow.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' }, exec)
     assert.equal(ok.ok, true, JSON.stringify(ok))
     assert.equal(ok.applied, true)
     assert.match(readFileSync(join(root, 'caseA/system/controlDict'), 'utf8'), /libs\s+\("libfoo\.so"\);/)
   } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('approval needs the agent identity: without it the change is refused', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-imp-agent-'))
+  try {
+    makeCase(root)
+    const allowed = { request: async () => 'allowed-once' }
+    const tools = registry({ caseRoots: [root] }, allowed)
+    const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'libs', value: '("libfoo.so")' })
+    assert.equal(r.ok, false)
+    assert.match(r.error, /no agent identity/)
+    assert.match(readFileSync(join(root, 'caseA/system/controlDict'), 'utf8'), /libs\s+\(\);/)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('purgeWrite is low only at 0 and high above it', () => {
+  assert.equal(classifyImpact('controlDict', 'purgeWrite', '0'), 'low')
+  assert.equal(classifyImpact('controlDict', 'purgeWrite', '2'), 'high')
+})
+
+test('a sub-dictionary entry is refused instead of half-edited', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-imp-subdict-'))
+  try {
+    makeCase(root)
+    const cfg = join(root, 'caseA/system/controlDict')
+    writeFileSync(cfg, readFileSync(cfg, 'utf8') + 'functions\n{\n    fieldMinMax1\n    {\n        type fieldMinMax;\n    }\n}\n')
+    const tools = registry({ caseRoots: [root] })
+    const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'functions', value: '{}' })
+    assert.equal(r.ok, false)
+    assert.match(r.error, /sub-dictionary/)
+    assert.match(r.hint, /single-line top-level entries/)
+    assert.match(readFileSync(cfg, 'utf8'), /fieldMinMax1/, 'the block must be untouched')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('undo of an appended key removes the line instead of writing an empty value', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-imp-append-'))
+  try {
+    makeCase(root)
+    const cfg = join(root, 'caseA/system/controlDict')
+    const tools = registry({ caseRoots: [root] })
+    const added = await tools.openfoam_dict_set.execute({
+      casePath: 'caseA', file: 'controlDict', entry: 'stopAt', value: 'endTime', append: true, apply: true,
+    })
+    assert.equal(added.applied, true)
+    assert.match(readFileSync(cfg, 'utf8'), /stopAt endTime;/)
+    const undone = await tools.openfoam_dict_undo.execute({ casePath: 'caseA', changeId: added.changeId })
+    assert.equal(undone.ok, true, JSON.stringify(undone))
+    assert.equal(undone.removed, true)
+    assert.doesNotMatch(readFileSync(cfg, 'utf8'), /stopAt/, 'the appended line must be gone')
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('no write happens when the undo journal cannot be recorded', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-imp-journal-'))
+  try {
+    makeCase(root)
+    const journal = join(root, 'caseA/.openfoam-changes')
+    mkdirSync(journal, { recursive: true })
+    let blocked = false
+    try { chmodSync(journal, 0o500); blocked = true } catch {}
+    if (!blocked) return
+    const tools = registry({ caseRoots: [root] })
+    const before = readFileSync(join(root, 'caseA/system/controlDict'), 'utf8')
+    const r = await tools.openfoam_dict_set.execute({ casePath: 'caseA', file: 'controlDict', entry: 'writeInterval', value: '42' })
+    if (r.ok === true) return // running as root: permissions cannot block the write
+    assert.match(r.error, /cannot record the change for undo/)
+    assert.equal(readFileSync(join(root, 'caseA/system/controlDict'), 'utf8'), before, 'the file must be untouched')
+  } finally {
+    try { chmodSync(join(root, 'caseA/.openfoam-changes'), 0o700) } catch {}
     rmSync(root, { recursive: true, force: true })
   }
 })

@@ -1,6 +1,6 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-Native **DeepSeek Harness** plugin for OpenFOAM: 61 tools and 11 on-demand skills
+Native **DeepSeek Harness** plugin for OpenFOAM: 63 tools and 11 on-demand skills
 covering case scaffolding, inspection, solver development, meshing, multi-region CHT runs,
 durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one coherent surface — a thin always-on core
@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.6 · 63 tools · 11 skills · 118 tests**
+**v0.9.7 · 63 tools · 11 skills · 125 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -203,10 +203,12 @@ plausible but wrong answer, so neither is "safe"):
 | `clean` | dry run | deletion cannot be undone |
 | `case_scaffold` | writes only missing files (`force: true` to overwrite) | an existing setup is the user's |
 | `dict_set` on `controlDict` output keys (`writeInterval`, `writeFormat`, …) | applies | organisational, visible in the log |
+| `dict_set` on `purgeWrite` | low for `0`, **preview** for any value > 0 | it deletes older time directories |
 | `dict_set` on `0/*`, `fvSchemes`, `fvSolution`, `constant/*`, `deltaT`, `application`, anything unknown | **preview** (`applied: false`, `NOT APPLIED`) until `apply: true` | can change physics or numerics |
-| `dict_set` on `controlDict` `libs`/`functions` | **approval** via the DSH user-approval seam, fail-closed without it | can execute code |
+| `dict_set` on `controlDict` `libs`/`functions` | **approval** via the DSH user-approval seam, always required (no config switch), fail-closed without an agent identity or an answerer | can execute code |
 
 `writeMode: impact | apply | preview` (Settings) overrides the default globally.
+`dict_set` edits **single-line top-level entries**; a sub-dictionary (`functions`, `boundaryField`) is refused with an explicit error rather than half-edited.
 `expect: "<current value>"` refuses a write on top of a value you did not see, and
 every applied change returns a `changeId` plus an `afterHash`; `openfoam_dict_undo`
 reverts it and refuses when the file changed after that edit.
