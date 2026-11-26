@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.9.18
+
+The golden matrix is proven in CI, not just locally.
+
+- `.github/workflows/golden.yml` runs on every push to main: docker images
+  `dicehub/openfoam:14` and `dicehub/openfoam:opencfd-2606`, Node bootstrapped
+  inside the image, installation located via `WM_PROJECT_DIR` or a glob/find
+  fallback, containers started with `--user root --entrypoint bash` (the images
+  ship a login-shell entrypoint and an unprivileged user).
+- Verified in CI: org container finds `/home/openfoam/OpenFOAM-14` and runs
+  `cavity`, `pitzDaily`, `sphereCht` — all ok; com container finds
+  `/home/openfoam/OpenFOAM-2606`, runs `cavity` ok (identical QoI to org) and
+  skips the other two with recorded reasons.
+- `run-golden.mjs` exits 2 when a requested distribution is not installed
+  (before, a missing installation made the run pass silently).
+- Discovery also scans the home directories container images use.
+
 ## v0.9.17
 
 Golden cases: stored reference quantities for real OpenFOAM runs.

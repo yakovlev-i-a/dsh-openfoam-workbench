@@ -3,10 +3,12 @@ name: golden
 # Golden cases against real OpenFOAM installations: org 14 and com v2606.
 #
 # The OpenFOAM images ship neither git nor node, so they run as plain docker
-# images (checkout and the workflow itself stay on the host). Start the workflow
-# manually until the matrix has been proven once; then it can move to `push`.
+# images (checkout and the workflow itself stay on the host). The matrix is proven
+# for org 14 and com v2606, so it also runs on every push to main.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   golden:
