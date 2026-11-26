@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.9.24
+
+Steering the agent onto the plugin's tools, in layers.
+
+- **New `enforceToolRouting` setting** (`off` / `warn` / `deny`, default `warn`).
+  The plugin subscribes to DSH's `tools/pre-execute` waterfall and classifies
+  every call: a `bash`/`write`/`edit` that writes a case dictionary
+  (`system/`, `constant/`, `0/`, or a known dictionary file name) is a bypass.
+  `warn` records it, `deny` returns a refusal naming the tool to use
+  (`openfoam_dict_set`, `openfoam_read_dict`) so the change is classified,
+  journaled and reversible.
+- `openfoam_usage_report` now carries a `routing` section (bypass attempts with
+  tool, target and decision), so "the work went through bash" is visible instead
+  of inferred.
+- `lib/routing-guard.js` is deliberately conservative: reads, `ls`, solver runs
+  and the plugin's own tools are never flagged; the shell patterns are known to
+  be evadable (printf/python indirection), which the README states plainly —
+  the guard is a deterrent and a signal, the sandbox stays the boundary.
+- 169 tests (routing classification, warn/deny/off modes, hook wiring).
+
 ## v0.9.23
 
 Security review follow-up: the write gate and the run whitelist, again.

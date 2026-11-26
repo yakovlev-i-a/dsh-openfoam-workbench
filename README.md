@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.23 · 64 tools · 11 skills · 165 tests**
+**v0.9.24 · 64 tools · 11 skills · 169 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -272,6 +272,11 @@ approval request. So treat them as **defense in depth**, not as the barrier:
 - the effective boundary is the DSH sandbox and permission mode (for example
   `workspace-write`, which refuses writes outside the workspace) plus the
   approval answerer for what you choose to review;
+- `enforceToolRouting` (Settings: `off` / `warn` / `deny`, default `warn`) makes
+  the plugin watch DSH's `tools/pre-execute` seam: a `bash`/`write`/`edit` call
+  that writes a case dictionary is recorded (and with `deny`, refused with a
+  message naming the plugin tool). Text matching on shell commands is evadable,
+  so this is a strong deterrent plus a signal, not a proof;
 - within a case, the plugin's gates make the *normal* path safe (one-entry
   atomic edits, previews for physics changes, approval for code execution,
   containment checks) and leave an audit trail (`changeId`, `afterHash`,
