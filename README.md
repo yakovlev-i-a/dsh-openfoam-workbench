@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.28 · 65 tools · 11 skills · 174 tests**
+**v0.9.29 · 65 tools · 11 skills · 181 tests**
 
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
@@ -205,6 +205,47 @@ defaultDistribution: org
 `openfoam_run_solver_async`, `openfoam_solver_build`, `openfoam_dry_compile`,
 `openfoam_solver_smoke` and `openfoam_version_info` take a `distribution` argument
 (`org` / `com`) and otherwise use `defaultDistribution`.
+
+## Case libraries (custom `.so`)
+
+A case can ship its own compiled libraries — a custom `fvMeshTopoChanger`, an
+`fvOption`, a boundary condition — and list them in `system/controlDict`:
+
+```text
+libs ("libamrTopoChanger.so");
+```
+
+OpenFOAM loads those with `dlopen()`, so the file has to be on the loader path of
+the process that creates the mesh. That path is derived from `FOAM_USER_LIBBIN`,
+which depends on `$USER`: a case built with a stripped environment (`env -i …`)
+installs into `~/OpenFOAM/-<version>/platforms/...`, while the same command run
+from a normal shell looks in `~/OpenFOAM/<user>-<version>/platforms/...`. The
+solver then stops with `dlopen error` or `Unknown fvMeshTopoChanger type`, which
+names neither the library nor the directory.
+
+Three tools close that gap:
+
+- **`libPaths`** (`run`, `run_solver_async`, `field_stats`, `solver_build`) —
+  directories prepended to `LD_LIBRARY_PATH`, e.g.
+  `libPaths: ["/home/me/OpenFOAM/-14/platforms/linux64GccDPInt32Opt/lib"]`.
+- **`env`** — the same thing explicitly: `{LD_LIBRARY_PATH: "…:…"}`. Only
+  library locations are accepted; `LD_PRELOAD`, `LD_AUDIT` and `PATH` are refused,
+  because they would let a call choose the code that runs.
+- **`solver_build(libbin=…)`** — install a library into a directory the run can
+  reach (overrides `FOAM_USER_LIBBIN` for `wmake`). Without it the build reports
+  the resolved target and refuses up front when that directory is not writable —
+  a lib dir outside the workspace is read-only under the file sandbox.
+
+`openfoam_check` resolves every `libs (...)` entry against `FOAM_LIBBIN`,
+`FOAM_USER_LIBBIN` and the `~/OpenFOAM/*/platforms/*/lib` trees, and its
+`case-library-missing` finding names the directory that does hold the library
+plus the exact `libPaths` call to fix it. `diagnose_error` recognises the
+`dlopen` / `Unknown fvMeshTopoChanger type` messages and points at the same fix.
+
+Background runs keep their registry entry with the extra environment
+(`openfoam_run_solver_async(logName=…)` only renames the log), so
+`openfoam_run_list` / `openfoam_solver_status` / `openfoam_run_progress` still
+track a run that needed a library path.
 
 ## Case conventions
 

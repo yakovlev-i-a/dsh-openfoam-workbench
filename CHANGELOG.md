@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.9.29
+
+Case libraries, and the environment a case needs to run (field report from an
+AMR + viewFactor + CHT case: the tools could not load the case's own `.so`).
+
+- `openfoam_run`, `openfoam_run_solver_async`, `openfoam_field_stats` and
+  `openfoam_solver_build` accept `libPaths` and `env`. Only library locations are
+  accepted (`LD_LIBRARY_PATH`, plus `FOAM_USER_LIBBIN` for a build); `LD_PRELOAD`,
+  `LD_AUDIT` and `PATH` are refused, because they would let a call choose the
+  code that runs.
+- `openfoam_run_solver_async(logName=…)` names the run log without leaving the
+  run registry, so `run_list`/`status`/`progress` still find it.
+- `openfoam_solver_build(libbin=…)` installs into a directory the run can reach,
+  and refuses up front with the resolved target when that directory is not
+  writable instead of letting `wmake` fail with "Permission denied".
+- `openfoam_check` gains `case-library-missing`: every `libs (...)` entry is
+  resolved against `FOAM_LIBBIN`/`FOAM_USER_LIBBIN` and the
+  `~/OpenFOAM/*/platforms/*/lib` trees; the finding names the directory that holds
+  the library and the exact `libPaths` call.
+- `openfoam_diagnose_error` recognises `dlopen error` / `Cannot open shared
+  object file` / `Unknown fvMeshTopoChanger type` as a missing case library.
+- `openfoam_field_stats` explains a `dlopen` failure instead of returning "no
+  statistics parsed".
+- 181 tests (7 new: the env whitelist, lib path merging, `logName` validation,
+  `libs (...)` parsing, the library rule, the diagnosis).
+
 ## v0.9.28
 
 npm distribution withdrawn.
