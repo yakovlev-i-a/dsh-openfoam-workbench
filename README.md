@@ -81,19 +81,31 @@ the host that boots the profile (`dsh web` for the Web UI, `dsh` for the termina
 one). `--profile web` is the profile that serves the Web UI; drop it to use the
 default profile.
 
-**1. Pinned to a release commit — recommended, reproducible.**
+**1. From a release tag — recommended: readable, reproducible, no registry.**
 
 ```bash
-dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#826d5c5
+dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#v0.9.30
 ```
 
-DSH accepts a 40-hex commit after `#`; `826d5c5` is what the `v0.9.28` tag points
-at. A branch name also works but gives you whatever `main` is at that moment.
+`#` takes anything git can check out: a tag, a branch, or a 40-hex commit. The
+tag is the useful middle ground — the version is in the command, the code is
+frozen at what was tested and released, and the update is a new tag in the same
+place. Use a 40-hex commit instead of the tag when you want to pin exactly, byte
+for byte, what a bug report was filed against:
+
+```bash
+dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#c5dac8e
+```
+
+A branch such as `#main` also installs, but it takes whatever `main` is at that
+moment — including a commit that was never released — and every build from it
+reports the same `plugin.version`, so "which code is running" stops being
+answerable.
 
 **2. From the release tarball — a versioned artefact, no git clone.**
 
 ```bash
-dsh plugin --profile web add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/download/v0.9.28/yakovlev-i-a-dsh-openfoam-workbench-0.9.28.tgz
+dsh plugin --profile web add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/download/v0.9.30/yakovlev-i-a-dsh-openfoam-workbench-0.9.30.tgz
 ```
 
 **3. From a local checkout — development.**
@@ -156,7 +168,7 @@ Pick the line that matches how the plugin was installed, then restart the host:
 
 | installed as | update |
 |---|---|
-| `git+https://…#<sha>` | `dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#<new-sha>` |
+| `git+https://…#<tag or sha>` | `dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#v<new-version>` |
 | release tarball | `dsh plugin --profile web add <new tarball URL>` |
 | local checkout or `link:` | `git -C /path/to/dsh-openfoam-workbench pull --ff-only` |
 | marketplace | *Update* on the plugin card, once the plugin is listed |
