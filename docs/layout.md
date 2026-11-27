@@ -31,6 +31,8 @@ lib/routing-guard.js  reads Bash calls that bypass the plugin's own tools
 lib/escalations.js  short-lived audited exceptions to that policy
 lib/of-engine.js    dict parser + 31 silent-failure rules (MIT, see below)
 lib/of-case.js      multi-region model: regions, dict paths, whitelist, progress
+lib/flowcheck.js    boundary flux read from the written phi files (flux check, empty axis)
+lib/fields.js       field min/max read from the written field files (no utility)
 lib/scaffold*.js    dictionaries for incompressible / compressible / CHT cases
 lib/meshlib.js      STL helpers + blockMesh/snappy plan writer
 lib/caselib.js      four-step contract extraction, case facts, contract audit

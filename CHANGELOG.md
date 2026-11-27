@@ -1,5 +1,45 @@
 # Changelog
 
+## v0.9.37
+
+The tools that read a result no longer depend on a utility being able to build the
+physics, and the camera stops rendering a plate as a line.
+
+- **`openfoam_field_stats` reads the field files itself.** Min/max used to come
+  from `foamPostProcess`, which fails on a reacting multi-region case
+  (`reactionModel … available objects … are 0()`), writes
+  `postProcessing/<region>/…` so it cannot touch a read-only case, and on a
+  decomposed case silently reported the *serial* time directory (min 0, max 0 on a
+  field that is not zero). The new reader (`lib/fields.js`) parses
+  `internalField` in all four spellings and merges `processor*/` results, so it
+  works on a read-only, decomposed or reacting case and writes nothing. An ASCII
+  `uniform` internalField is expanded with the cell count from the mesh `owner`
+  header, and a binary or oversized file falls back to the utility. `parallel`
+  selects between `processor*/<time>/<field>` and `<time>/<field>` (default: on
+  when `processor*` exist). Verified against the utility on a 4-processor case:
+  identical min/max, while the serial utility answered 0/0 — the failure mode the
+  field report hit is now impossible.
+- **`openfoam_render` camera presets.** `view: "xy" | "xz" | "yz"` renders
+  orthographically down the remaining axis and fits the frame — a 2.8 × 58.2 ×
+  0.2 mm case was previously a 300 px strip. `view: "auto"` (default) chooses that
+  preset when the mesh is a plate (smallest extent ≤ 2 % of the largest) and
+  perspective otherwise, so `elevation=90` is no longer the only way to see a 2D
+  case. `zoom` is documented as the multiplier of the camera distance after the
+  fit (1 = whole mesh), and `azimuth`/`elevation`/`zoom` finally have parameter
+  descriptions at all. Same `view` for `openfoam_compare_render`.
+- **`skills/openfoam-cht`** now covers building the regions on org-14
+  (`createZones` + `splitMeshRegions -cellZones all`, the quoted word list, the
+  deprecated `-overwrite`) and post-processing per region (`foamToVTK` has no
+  `-allRegions`, `surfaceFieldValue` reads `region <name>`, a solid has no `phi`).
+- **New `skills/openfoam-lts-ch`** — LTS in the gas with a transient or steady
+  solid: the three clocks (`deltaT`, `PIMPLE { maxCo; maxDeltaT }`, CFL), the
+  `Using LTS` and `Flow time scale min/max` log lines, and the fatal
+  `solid solver does not support LTS` / `keyword PIMPLE is undefined`.
+- **`skills/openfoam-viz`** gained a camera section (presets, `zoom` semantics,
+  what a one-pixel row means), and **`skills/openfoam-self-evolution`** now says to
+  recall *before* planning even with an empty library.
+- 215 tests.
+
 ## v0.9.36
 
 A case that moves no fluid is now a finding, and the field report that produced

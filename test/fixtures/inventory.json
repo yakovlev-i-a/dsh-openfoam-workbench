@@ -43,7 +43,7 @@
     {
       "name": "openfoam_compare_render",
       "description": "b69c86e280d54db1",
-      "parameters": "c4f99b5399c62c33"
+      "parameters": "960780700a635b50"
     },
     {
       "name": "openfoam_compute_first_layer",
@@ -122,8 +122,8 @@
     },
     {
       "name": "openfoam_field_stats",
-      "description": "4cac832fef2877d2",
-      "parameters": "c478ab82bc0dae9b"
+      "description": "8e3c0b1e6065b14a",
+      "parameters": "7850cd721bfe4e7b"
     },
     {
       "name": "openfoam_find_source",
@@ -242,8 +242,8 @@
     },
     {
       "name": "openfoam_render",
-      "description": "bda5918afae8ebc9",
-      "parameters": "5141a540cecf9a6a"
+      "description": "cf63e6277cdb93a5",
+      "parameters": "e8d085b9e2a7095f"
     },
     {
       "name": "openfoam_residual_series",
@@ -353,6 +353,10 @@
     {
       "name": "openfoam-code-modify",
       "description": "dd382c498c0f803f"
+    },
+    {
+      "name": "openfoam-lts-ch",
+      "description": "b7963c5d8ca25895"
     },
     {
       "name": "openfoam-mesh-independence",

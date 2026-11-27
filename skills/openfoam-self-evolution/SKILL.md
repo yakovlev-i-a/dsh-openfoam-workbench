@@ -6,7 +6,10 @@ description: After a verified OpenFOAM task, distil the reusable lesson into an 
 # openfoam-self-evolution
 
 ## When to use
-- before a long task: `openfoam_experience_recall(query)`
+- before a long task, **always** — even an empty library answers: call
+  `openfoam_experience_recall(query)` first, then plan. A recall that returns
+  nothing costs one call and proves the library has no prior for this physics;
+  skipping it is how the same mistake gets made twice.
 - after a task passed its `*_verify`: propose `openfoam_experience_save(...)`
 
 ## Rules

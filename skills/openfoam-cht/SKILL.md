@@ -48,6 +48,38 @@ root: never conclude that the case is broken, switch to the region view.
   honest one; `openfoam_mesh_verify(casePath, region="solid")` narrows it.
 - A failing region: read `logTail`, do not re-run the whole case.
 
+## Step 3b — one mesh, several regions (building the case)
+A CHT case usually starts as a single mesh with cell zones. Splitting it is the
+step where org and com diverge, and where the org-14 CLI bites:
+
+- **org-14**: `openfoam_run(casePath, "createZones")` then
+  `openfoam_run(casePath, "splitMeshRegions -cellZones all")`.
+  `-cellZones '(fluid solid)'` fails with `Wrong number of arguments` — the
+  positional argument is a *word list*, so quote it as one word
+  (`-cellZones 'fluid solid'` now reaches OpenFOAM correctly) or use `all`.
+  `-overwrite` is deprecated in org-14 (`now default behaviour`) and is parsed as
+  a stray positional token (`wrong token type … punctuation token '-'`) — drop it.
+- **com**: `splitMeshRegions -cellZones -overwrite` (no zone list), and the
+  original mesh lands in `constant/domain0/`.
+- After the split every region needs its own `0/<region>/`, `system/<region>/`
+  and the interface patches the splitter created (`<region>_to_<other>`); a
+  `coupled`/`mappedWall` boundary field on a wall patch is an error the doctor
+  reports as `coupled-bc-on-wall`.
+- Verify with `openfoam_patch_diff` (interface patches present, types as
+  expected) and `openfoam_mesh_verify` before touching the physics.
+
+## Step 3c — post-processing per region (org-14)
+- `foamToVTK` has **no** `-allRegions`: one call per region,
+  `openfoam_run("foamToVTK -region <r>")`, or loop over the regions.
+- `surfaceFieldValue` and friends read the region from a `region <name>;` entry —
+  not `regionType patch; patchName …`, and not `region0`, which does not exist in
+  an org-14 multi-region case.
+- `openfoam_field_stats` and `openfoam_flow_check` need no utility at all: they
+  read the written field files, so they work on a read-only case, on a decomposed
+  case and on reactor cases whose physics `foamPostProcess` cannot construct.
+- `openfoam_flow_check` per region: a solid has no `phi`, so it is reported as
+  skipped — that is expected, not a failure.
+
 ## Step 4 — decompose, then run under MPI
 - `openfoam_run(casePath, "decomposePar -allRegions -force")` — without `-allRegions` only
   the first region is decomposed.
@@ -72,6 +104,10 @@ root: never conclude that the case is broken, switch to the region view.
 - **Interface patches**: `mappedWall` needs matching `patchToPatch`; org-14 wants
   `sampleMode nearest`, not the com name `nearestPatchFace`.
 - **`symmetry` vs `symmetryPlane`**: org-14 expects `symmetryPlane` for flat faces.
+- **`splitMeshRegions -overwrite` on org-14** is deprecated and parsed as a zone
+  list: drop the flag or the run dies with `wrong token type … '-'`.
+- **`foamToVTK -fields '(T p)'`** works (quotes are honoured since v0.9.36), but
+  `-allRegions` does not exist in org-14.
 - **Timings are load-dependent**: s/step on a busy desktop can be 4–5× the idle value;
   never quote a throughput without saying when it was measured.
 - **`writeInterval` on a live run**: lowering it (via `openfoam_dict_set`, `runTimeModifiable on`)

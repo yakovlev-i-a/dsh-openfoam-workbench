@@ -1,13 +1,13 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-A native **DeepSeek Harness** plugin for OpenFOAM: 66 tools and 11 on-demand
+A native **DeepSeek Harness** plugin for OpenFOAM: 66 tools and 12 on-demand
 skills for case setup, inspection, meshing, solver development, multi-region CHT
 runs, durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one surface — a thin always-on core prompt
 (`CORE.md`), procedural skills, and tools that enforce the conventions instead of
 asking the model to remember them.
 
-**v0.9.36 · 66 tools · 11 skills · 208 tests** · validated on **OpenFOAM 14**
+**v0.9.37 · 66 tools · 12 skills · 215 tests** · validated on **OpenFOAM 14**
 (org) and **v2606** (com) with **ParaView 6.2** · in the
 [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog. Pre-1.0: tools and on-disk conventions may still change between minor
@@ -137,9 +137,9 @@ defaultDistribution: org
   (`dict_set`, `clean`), doctor checks, error diagnosis, flux checking
   (`flow_check`), papers, experience, and a usage self-audit. Verdicts on huge logs read only the tail (`logTailBytes`, 4 MB
   by default) instead of the whole file.
-- **Skills** (`SKILL.md`, load on demand, 11): case-builder, cht, solver-development,
-  code-modify, meshing, mesh-independence, stats, viz, analyze, paper-reproduction,
-  self-evolution. A test keeps every referenced tool registered and the always-on
+- **Skills** (`SKILL.md`, load on demand, 12): case-builder, cht, lts-ch,
+  solver-development, code-modify, meshing, mesh-independence, stats, viz, analyze,
+  paper-reproduction, self-evolution. A test keeps every referenced tool registered and the always-on
   catalog under 4 KB.
 - **Presentation**: inline render images, table renders for `check` / `run_list` /
   `mesh_verify` / `env_check` / `list_cases` / `run_progress` / `solve_verify` /
