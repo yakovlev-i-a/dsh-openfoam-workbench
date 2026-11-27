@@ -5,7 +5,7 @@
 - [CORE.md](./CORE.md) — the always-on core prompt, read at runtime (the section
   text is a function, re-evaluated on every model step), so editing it changes the
   agent on the next message without restarting DSH. A test fails if it grows past
-  3 KB or loses a routing marker. `{{language}}` is filled from the `language`
+  8 KB or loses a routing marker. `{{language}}` is filled from the `language`
   config or the OS locale, so one file serves every language. The iron rules
   separate *verifiable facts* (the case, the installed OpenFOAM, a run result —
   check with a tool) from *conceptual answers* (answer directly, cite the source

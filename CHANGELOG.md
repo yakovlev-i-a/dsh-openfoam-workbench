@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.9.44
+
+Two things the prompt budget was hiding.
+
+The 3 KB ceiling on `CORE.md` was never a harness rule — it was a discipline this
+plugin wrote for itself in v0.3.2, and it had started to cost more than it bought:
+v0.9.43 had to buy a two-line maths rule by compressing three neighbouring
+sentences, which is not a trade a prompt should be making. The cap is now **8 KB**
+(the runtime warning above 32 KB in `lib/core.js` is unchanged), so a routing line
+or a rule is added because it is right, not because bytes were found for it.
+
+`locale/ru.json` claimed "10 CFD-скиллов" while the bundle ships 11 and the English
+card said 11 — DSH reads `locale/<language>.json` `meta.title`/`meta.description`
+and shows them as the bundle's localized card, so the Russian plugin card was
+visibly wrong. A test now checks every tool/skill count stated in a locale card
+against `test/fixtures/inventory.json`, in both languages.
+
 ## v0.9.43
 
 The always-on prompt now fixes how maths is written. Without a rule the agent

@@ -80,3 +80,27 @@ test('the README intro and the tool count in it agree with the registry', () => 
   assert.ok(status)
   assert.equal(intro[1], status[1], 'the intro and the status line disagree')
 })
+
+test('the plugin-card locale files state the current tool and skill counts', () => {
+  // DSH reads locale/<language>.json meta.title/meta.description and shows them as
+  // the bundle's localized name and card text (dsh-app-boot registers them), so a
+  // stale number there is visible to the user in the plugin list.
+  const inventory = JSON.parse(readFileSync(new URL('test/fixtures/inventory.json', root), 'utf8'))
+  const expected = { tool: inventory.tools.length, skill: inventory.skills.length }
+  for (const language of ['en', 'ru']) {
+    const meta = JSON.parse(readFileSync(new URL(`locale/${language}.json`, root), 'utf8')).meta
+    assert.ok(meta && typeof meta.description === 'string' && meta.description.trim(), `locale/${language}.json needs meta.description`)
+    // A count claim is a number followed (within a few words) by its unit:
+    // "53 tools", "11 on-demand CFD skills", "53 инструмента и 11 навыков".
+    const claims = []
+    for (const m of meta.description.matchAll(/(\d+)([^0-9]{0,40})/g)) {
+      const unit = /(tools?|инструмент\w*|skills?|скилл\w*|навык\w*)/i.exec(m[2])
+      if (unit) claims.push([m[1], unit[1]])
+    }
+    assert.ok(claims.length > 0, `locale/${language}.json should state the tool or skill count`)
+    for (const [number, unit] of claims) {
+      const kind = /^(tools?|инструмент)/i.test(unit) ? 'tool' : 'skill'
+      assert.equal(Number(number), expected[kind], `locale/${language}.json is stale: "${number} ${unit}" but the bundle ships ${expected[kind]} ${kind}s`)
+    }
+  }
+})

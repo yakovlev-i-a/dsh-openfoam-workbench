@@ -419,7 +419,7 @@ test('apply fails loudly when CORE.md is missing or empty', () => {
 
 test('the shipped CORE.md stays within the prompt budget and keeps the routing markers', () => {
   const text = readFileSync(new URL('../CORE.md', import.meta.url), 'utf8')
-  assert.ok(Buffer.byteLength(text) <= 3072, `CORE.md grew to ${Buffer.byteLength(text)} bytes; keep the always-on prompt under 3 KB`)
+  assert.ok(Buffer.byteLength(text) <= 8192, `CORE.md grew to ${Buffer.byteLength(text)} bytes; keep the always-on prompt under 8 KB`)
   for (const marker of ['openfoam_source_search', 'openfoam_read_dict', 'openfoam_dict_set', 'openfoam_run_watch', 'openfoam_solve_verify', 'openfoam_usage_report', 'openfoam_clean']) {
     assert.ok(text.includes(marker), `CORE.md lost the routing marker ${marker}`)
   }
