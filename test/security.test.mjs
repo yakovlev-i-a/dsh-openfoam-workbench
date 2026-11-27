@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { FOAM_LOG_SCRIPT, FOAM_RUN_SCRIPT, runFoam, startSolverRun } from '../lib/runtime.js'
+import { FOAM_LOG_SCRIPT, FOAM_RUN_SCRIPT, runFoam, splitCommandArgs, startSolverRun } from '../lib/runtime.js'
 import { commandAllowed } from '../lib/of-case.js'
 import { apply } from '../lib/index.js'
 import { forgetExperience } from '../lib/explib.js'
@@ -95,6 +95,25 @@ test('the whitelist rejects metacharacters and hands argv to the runner', () => 
   assert.deepEqual(mpi.argv, ['mpirun', '-np', '4', 'foamRun', '-parallel'])
   // ranks without -parallel would each run the whole case serially
   assert.equal(commandAllowed('mpirun -np 4 foamRun').ok, false)
+  // a launcher flag whose value is the next word must not read the value as the app
+  const envFlag = commandAllowed('mpirun -x OMP_NUM_THREADS=4 -np 4 foamRun -parallel')
+  assert.equal(envFlag.ok, true, envFlag.reason)
+  assert.equal(envFlag.app, 'foamRun')
+  assert.deepEqual(envFlag.argv, ['mpirun', '-x', 'OMP_NUM_THREADS=4', '-np', '4', 'foamRun', '-parallel'])
+  // `-x=VAR` is one token and already parses
+  const envEq = commandAllowed('mpirun -x=OMP_NUM_THREADS -np 2 foamRun -parallel')
+  assert.equal(envEq.ok, true, envEq.reason)
+  assert.equal(envEq.app, 'foamRun')
+})
+
+test('the shared tokenizer is quote-aware and refuses an unterminated quote', () => {
+  assert.deepEqual(splitCommandArgs('a "b c" d'), { ok: true, words: ['a', 'b c', 'd'] })
+  assert.deepEqual(splitCommandArgs("a 'b c'"), { ok: true, words: ['a', 'b c'] })
+  assert.deepEqual(splitCommandArgs('a\\ b c'), { ok: true, words: ['a b', 'c'] })
+  assert.deepEqual(splitCommandArgs('foamRun -x=OMP_NUM_THREADS'), { ok: true, words: ['foamRun', '-x=OMP_NUM_THREADS'] })
+  const bad = splitCommandArgs('foamRun "unterminated')
+  assert.equal(bad.ok, false)
+  assert.match(bad.error, /unterminated double quote/)
 })
 
 // --- dictionary editing: injection, executable directives, traversal ---------
