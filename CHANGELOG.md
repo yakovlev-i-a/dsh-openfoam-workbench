@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.9.40
+
+The transient verdict now actually runs. v0.9.36 taught `solve_verify` that a
+transient case is judged on completion, not on the last step's initial residual —
+but `steadyFrom` asked for `fvSchemes` without the `system/` prefix, so it read a
+file that does not exist and returned `null` for every case. The old rule (compare
+the floor with 1e-3) stayed in force, which is why a healthy 33-minute CHT stage
+was still reported as `REVISE`.
+
+- `steadyFrom` reads `system/fvSchemes` and `system/<region>/fvSchemes`; a
+  multi-region case answers from the first region that has a `ddtSchemes.default`,
+  and an unreadable case still returns `null` instead of guessing.
+- Measured on the case that produced the report: `stage1-coupled.log` (10 000
+  steps, t = 0.1, 0.185 s/step) now gives `state: finished`, `decision: PROCEED`,
+  with the reason "transient run: residual floor 0.0014703535 (p) is the initial
+  residual of the last time step, not a convergence criterion"; the 1000 s stage
+  reports 9 800 steps and t = 1000.
+- `test/runwatch.test.mjs` covers single-region, region-dir and unreadable cases.
+
 ## v0.9.39
 
 A long run is now something the agent can watch, a dictionary key inside a block is

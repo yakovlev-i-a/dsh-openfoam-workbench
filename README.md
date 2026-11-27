@@ -7,7 +7,7 @@ experience library. The agent gets one surface — a thin always-on core prompt
 (`CORE.md`), procedural skills, and tools that enforce the conventions instead of
 asking the model to remember them.
 
-**v0.9.39 · 69 tools · 12 skills · 239 tests** · validated on **OpenFOAM 14**
+**v0.9.40 · 69 tools · 12 skills · 240 tests** · validated on **OpenFOAM 14**
 (org) and **v2606** (com) with **ParaView 6.2** · in the
 [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog. Pre-1.0: tools and on-disk conventions may still change between minor

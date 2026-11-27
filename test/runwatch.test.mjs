@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { apply } from '../lib/index.js'
 import { countTimeSteps, logFinished, logState, resetRunDirCache, runSnapshot } from '../lib/runtime.js'
+import { steadyFrom } from '../lib/of-case.js'
 
 function mount(cfg = {}) {
   const tools = {}
@@ -131,5 +132,25 @@ test('solver_status reports endTimeReached and the log verdict', async () => {
     assert.equal(s.lastTime, 0.1)
     assert.equal(s.endTimeReached, true)
     assert.match(s.logVerdict, /End/)
+  } finally { rmSync(root, { recursive: true, force: true }) }
+})
+
+test('steady detection reads system/<region>/fvSchemes and system/fvSchemes', () => {
+  const root = mkdtempSync(join(tmpdir(), 'ofwb-steady-'))
+  try {
+    const single = join(root, 'single')
+    mkdirSync(join(single, 'system'), { recursive: true })
+    writeFileSync(join(single, 'system', 'fvSchemes'), 'ddtSchemes\n{\n    default steadyState;\n}\n')
+    assert.equal(steadyFrom(single, ['']), true)
+    writeFileSync(join(single, 'system', 'fvSchemes'), 'ddtSchemes\n{\n    default Euler;\n}\n')
+    assert.equal(steadyFrom(single, ['']), false)
+
+    // Multi-region: the first region that has a ddtSchemes default answers.
+    const multi = join(root, 'multi')
+    mkdirSync(join(multi, 'system', 'fluid'), { recursive: true })
+    writeFileSync(join(multi, 'system', 'fluid', 'fvSchemes'), 'ddtSchemes\n{\n    default localEuler;\n}\n')
+    assert.equal(steadyFrom(multi, ['fluid', 'solid']), false)
+    // A case without any fvSchemes stays undecided instead of guessing.
+    assert.equal(steadyFrom(join(root, 'empty'), ['fluid']), null)
   } finally { rmSync(root, { recursive: true, force: true }) }
 })
