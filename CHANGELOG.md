@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.9.45
+
+The second code audit's two deferred minors, finished.
+
+- **Command whitelist, launcher flags with a separate value.** `commandAllowed`
+  (`lib/of-case.js`) skipped only `-np`/`-n` when walking a `mpirun`/`mpiexec`
+  prefix, so a flag whose value is the next word — `mpirun -x VAR`, `-host host`,
+  `-wdir dir` — had its value read as the application and rejected as
+  "not in the whitelist". Fail-safe but misleading. It now also skips the value of
+  `-x`, `-env`, `-host`, `-hostfile`, `-machinefile`, `-wdir`, `-wd`, `-path`,
+  `-prefix`, `-npernode` (the `-x=VAR` inline form already parsed as one token).
+- **Quote-aware command fallback in the launcher.** `startSolverRun`
+  (`lib/runtime.js`) had a defensive string branch that split on whitespace and
+  ignored quotes. `splitCommandArgs` moved from `of-case.js` into `runtime.js` —
+  a leaf that nothing imports from — so both the validator and the launcher now
+  share one tokenizer with no import cycle, and the fallback honours quotes,
+  backslash escapes and an unterminated quote.
+- Also folded into this release: the v0.9.41 audit's A1 (nested `functions/...`
+  and `libs/...` paths now classify as `critical`, not `high`) and the removal of
+  7 dead exports and 9 orphaned imports, committed in `f96e566`.
+
 ## v0.9.44
 
 Two things the prompt budget was hiding.
