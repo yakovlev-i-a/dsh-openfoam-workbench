@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.30 · 65 tools · 11 skills · 187 tests**
+**v0.9.31 · 65 tools · 11 skills · 189 tests**
 
 Listed in the [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog (GitHub-only entry: the npm package was withdrawn, so installs come from
@@ -463,7 +463,8 @@ lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (61 to
 skills/            # 11 × SKILL.md (progressive disclosure)
 test/              # 60 tests: engine, tools, registry, skills, case model, inventory, log tail
 locale/            # en/ru plugin-card strings
-icon.png           # plugin icon (512×512 PNG, < 256 KiB)
+icon.png           # plugin icon for the catalog (512x512 PNG, raster only there)
+icon.svg           # the same icon as the vector source (crisp at any size)
 ```
 
 ## Prior art & acknowledgements

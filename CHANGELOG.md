@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.9.31
+
+Presentation, and the plugin icon.
+
+- The tool row keeps the colour DSH gives it; the OpenFOAM mark in front of the
+  name is an SVG **mask** painted with `currentColor`, so it follows the row
+  (label colour, red on an error, both palettes) instead of introducing a second
+  accent. The blue `#3b518c` / `#9db4e0` rules are gone.
+- The mark now has three streamlines (the redrawn `inline-icon.svg`) and lives in
+  the stylesheet as a 1.2 KB data URI, so `client.js` shrank from 17 KB to 4 KB.
+- `scripts/make-icon-mask.mjs` regenerates the embedded mask from
+  `inline-icon.svg` (`--check` fails when the two drift, and a test runs it).
+- The plugin icon is the coloured flow drawing: `icon.png` is its 512x512 PNG
+  export (the catalog accepts raster only) and `icon.svg` ships as the vector
+  source for surfaces that take one.
+- 189 tests.
+
 ## v0.9.30
 
 The rest of the field report: patch keys, tutorial search, and the verdict of a
