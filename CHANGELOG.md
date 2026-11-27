@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.9.35
+
+The README is a map again: 237 lines instead of 491, and the long parts moved to
+`docs/` unchanged in substance.
+
+- `docs/conventions.md` — the `<case-dir-name>.foam` entry file, relative paths and
+  `caseRoots`, the geometry-scale gate, multi-region (CHT) behaviour, custom `.so`
+  libraries (`libPaths` / `env` / `libbin`).
+- `docs/write-policy.md` — the impact table and the `changeId` / `undo` contract.
+- `docs/security.md` — what the gates do, what they do not cover,
+  `enforceToolRouting` and the audited `openfoam_escalate` path.
+- `docs/layout.md` — the file layout, `CORE.md` and the marketplace index.
+- README now runs: what it is → install → update → configuration → what you get →
+  tested on → screenshot → the details table → prior art. Install and update are the
+  first thing a reader meets, and both are one version-less command.
+- `docs/` ships in the npm tarball so the links work from an installed package.
+
 ## v0.9.34
 
 Installing is one command that never mentions a version, and so is updating.
