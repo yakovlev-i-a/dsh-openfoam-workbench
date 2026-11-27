@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.33 · 65 tools · 11 skills · 196 tests**
+**v0.9.34 · 65 tools · 11 skills · 196 tests**
 
 Listed in the [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog (GitHub-only entry: the npm package was withdrawn, so installs come from
@@ -80,68 +80,88 @@ it followed.
 
 ## Install
 
-DSH imports plugin bundles at boot, so every install below ends with a restart of
-the host that boots the profile (`dsh web` for the Web UI, `dsh` for the terminal
-one). `--profile web` is the profile that serves the Web UI; drop it to use the
-default profile.
-
-**1. From a release tag — recommended: readable, reproducible, no registry.**
+One command installs the newest release, whatever it is:
 
 ```bash
-dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#v0.9.30
+dsh plugin --profile web add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/latest/download/dsh-openfoam-workbench.tgz
 ```
 
-`#` takes anything git can check out: a tag, a branch, or a 40-hex commit. The
-tag is the useful middle ground — the version is in the command, the code is
-frozen at what was tested and released, and the update is a new tag in the same
-place. Use a 40-hex commit instead of the tag when you want to pin exactly, byte
-for byte, what a bug report was filed against:
+Then restart the host that boots the profile — `dsh web` for this Web UI (it is
+the step that loads the new code):
 
 ```bash
-dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#c5dac8e
+dsh web
 ```
 
-A branch such as `#main` also installs, but it takes whatever `main` is at that
-moment — including a commit that was never released — and every build from it
-reports the same `plugin.version`, so "which code is running" stops being
-answerable.
+`--profile web` selects the profile that serves the Web UI; drop it for the
+default profile. The link has no version in it: `releases/latest/download/…` is
+GitHub's alias for the newest release, so it keeps working release after release.
 
-**2. From the release tarball — a versioned artefact, no git clone.**
-
-```bash
-dsh plugin --profile web add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/download/v0.9.30/yakovlev-i-a-dsh-openfoam-workbench-0.9.30.tgz
-```
-
-**3. From a local checkout — development.**
-
-```bash
-dsh plugin --profile web add /path/to/dsh-openfoam-workbench
-# or link it, so edits are picked up after a restart:
-dsh plugin --profile web add link:/path/to/dsh-openfoam-workbench
-```
-
-**4. From the plugin market** — listed in the
-[awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
-catalog, which `dshmarket` reads: open *Plugins → Plugin Market*, search
-"OpenFOAM", install. The catalog resolves a GitHub entry to its default branch, so
-this installs `main` — convenient, but a commit that is still being released can
-be picked up. Use the tag command above when the exact version matters.
-
-> The machine-readable catalog index (`dsh-plugin-catalog`) only lists packages
-> published to npm, so a GitHub entry is in the market UI and not in the Discover
-> search. To have the plugin in Discover without npm, add this repository's own
-> index as an index source:
-> `https://cdn.jsdelivr.net/gh/yakovlev-i-a/dsh-openfoam-workbench@v0.9.30/market/index.json`
-
-After the restart, verify the plugin is live:
+Verify that it is live — `openfoam_env_check` prints `plugin.version` and the
+OpenFOAM installations it found:
 
 ```text
-openfoam_env_check      # plugin.version and the OpenFOAM installations it found
+openfoam_env_check
 ```
 
-npm distribution was withdrawn: the package is gone from the registry and
-`package.json` keeps `private: true`, so the git spec and the release tarball are
-the supported install paths until that changes.
+## Update
+
+**The same command, then a restart:**
+
+```bash
+dsh plugin --profile web add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/latest/download/dsh-openfoam-workbench.tgz
+dsh web
+```
+
+None of it happens by itself, on purpose: a tarball install carries no registry
+metadata, so nothing polls for a new version, and the plugin never phones home.
+A running DSH instance also keeps the code it booted with, so files replaced on
+disk change nothing until the restart.
+
+Nothing to remember about versions: the link above always resolves to the newest
+release, and `openfoam_env_check` is the honest check of what is actually loaded —
+an old number there means the restart has not happened.
+
+### Pinned and other installs
+
+| you want | command |
+|---|---|
+| a specific release | `dsh plugin --profile web add https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases/download/v0.9.33/yakovlev-i-a-dsh-openfoam-workbench-0.9.33.tgz` |
+| a git tag | `dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#v0.9.33` |
+| exactly one commit (bug reports) | `…dsh-openfoam-workbench.git#<40-hex sha>` |
+| your own checkout | `dsh plugin --profile web add link:/path/to/dsh-openfoam-workbench` |
+| the plugin market | *Plugins → Plugin Market*, search "OpenFOAM" |
+
+All of them end with the same restart. Notes on the choices:
+
+- **pinned** — the tag is the useful middle ground: the version is in the
+  command, the code is frozen at what was tested and released. A 40-hex commit
+  pins byte for byte what a bug report was filed against. A branch such as
+  `#main` also installs but takes unreleased commits and reports the same
+  `plugin.version` for all of them.
+- **checkout** — `link:` follows your edits after a restart; plain `add /path`
+  copies the tree and goes stale silently. Update it with
+  `git -C /path/to/dsh-openfoam-workbench pull --ff-only`.
+- **market** — the [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
+  entry resolves to the default branch, i.e. `main`; if [dshmarket](https://github.com/dsh-market/dsh-market)
+  is installed it can also flag updates (npm version or pinned commit vs
+  repository HEAD — enable *Plugins → Update checks*). A tarball install gets no
+  such signal, and `link:` installs are not tracked at all.
+- **Discover** — the machine-readable `dsh-plugin-catalog` index only lists
+  packages published on npm. This one is not, so to see it in *Discover* add this
+  repository's own index as an index source:
+  `https://cdn.jsdelivr.net/gh/yakovlev-i-a/dsh-openfoam-workbench@v0.9.34/market/index.json`.
+- npm distribution was withdrawn: the package is gone from the registry and
+  `package.json` keeps `private: true`. The tarball and the git spec are the
+  supported paths.
+
+### Where the version is written down
+
+- the releases page — <https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases>
+  (each release carries a stable-named tarball for the line above, plus the
+  version-named one to pin, and the commit its tag points at);
+- `market/index.json` — `version` and `source.commit` of the latest release;
+- in a session — `openfoam_env_check`.
 
 **Zero configuration.** The bundle ships no paths: at startup the plugin scans
 `/opt`, `/usr/lib/openfoam`, `/usr/local` and `~/OpenFOAM` for directories that
@@ -170,51 +190,6 @@ or when discovery gets a path wrong:
 ```
 
 Restart DSH after install or after changing the patch.
-
-## Update
-
-There is **no automatic update**, deliberately: a git or tarball install carries
-no registry metadata, so nothing polls for new versions, and the plugin itself
-never phones home. A running DSH instance also keeps the code it booted with, so
-installing new files without a restart changes nothing in memory.
-
-Pick the line that matches how the plugin was installed, then restart the host:
-
-| installed as | update |
-|---|---|
-| `git+https://…#<tag or sha>` | `dsh plugin --profile web add git+https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git#v<new-version>` |
-| release tarball | `dsh plugin --profile web add <new tarball URL>` |
-| local checkout or `link:` | `git -C /path/to/dsh-openfoam-workbench pull --ff-only` |
-| marketplace | *Update* on the plugin card, once the plugin is listed |
-
-Then restart the host that boots the profile — that is the step that loads the
-new code:
-
-```bash
-dsh web
-```
-
-`dsh plugin update` only tracks registry packages; with npm withdrawn there are
-none, so re-adding the tag (or the tarball) is the update.
-
-If [dshmarket](https://github.com/dsh-market/dsh-market) is installed it can
-signal updates by itself: it compares an npm version, or a **pinned commit
-against the repository HEAD**, and offers a one-click update with a "What
-changed" link (its background checks are off by default — enable them under
-*Plugins → Update checks*). A `git+…#<sha>` install therefore gets a signal; a
-tarball install does not (the market updates an archive only through its own
-source), and a `link:` install — a local checkout — is not tracked at all, which
-is why that one is `git pull` plus a restart.
-
-Where the new version comes from:
-
-- the releases page — <https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases>
-  (each release carries the tarball and the commit its tag points at);
-- the market index — `market/index.json` in this repository has `version` and
-  `source.commit` for the latest release;
-- in a session — `openfoam_env_check` prints `plugin.version`, so a stale
-  in-memory copy is visible without guessing: if it still shows the old number,
-  the restart has not happened or the install did not replace the package.
 
 ## Multiple distributions
 
@@ -453,24 +428,38 @@ service, never in `settings.json` or in the bundle.
 ## Layout
 
 ```
-lib/index.js       # entry: apply() mounts core + skills + tool groups (~50 lines)
+lib/index.js       # entry: apply() mounts core + skills + tool groups (~60 lines)
 lib/core.js        # always-on prompt section, read from CORE.md on every assembly
 lib/skills.js      # reads skills/*/SKILL.md and registers the catalog
-lib/runtime.js     # process/paths/runs helpers + config defaults (deps for tools)
+lib/runtime.js     # process/paths/runs helpers + the LD_LIBRARY_PATH gate for runs
+lib/discover.js    # finds OpenFOAM/paraView installs, probes their capabilities
+lib/versions.js    # capability layer: feature detection instead of version tables
 lib/knowledge.js   # solver classification + error patterns + diagnosis
 lib/presentation.js# pvpython renders, inline images, tool-call cards, tables
 lib/registry.js    # registration choke point: render, strict schema, telemetry, safety
+lib/impact.js      # write-impact classification for dict_set (low/high/critical)
+lib/routing-guard.js # reads Bash calls that bypass the plugin's own tools
+lib/escalations.js # short-lived, audited exceptions to the routing policy
 lib/of-engine.js   # OpenFOAM dict parser + 31 silent-failure rules (MIT)
 lib/of-case.js     # multi-region model: regions, dict paths, command whitelist, progress
 lib/meshlib.js     # STL/geometry helpers + blockMesh/snappy plan writer
+lib/scaffold.js    # writes the dictionaries of a fresh incompressible case
+lib/scaffold-compressible.js, lib/scaffold-cht.js  # the same for those families
 lib/caselib.js     # four-step contract extraction, case facts, contract audit
 lib/buildlib.js    # Make/files parsing + first compiler error
 lib/paperlib.js    # PDF/paper extraction helpers
 lib/explib.js      # experience cards + learned error patterns
-lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (61 total)
+lib/settings-schema.js # native schemastery Config for Settings → Plugins
+lib/tools/*.js     # one factory per group: ({cfg, attachImage}) => tools (65 total)
+client.js          # browser half: the mark on this bundle's tool and skill rows
 skills/            # 11 × SKILL.md (progressive disclosure)
-test/              # 60 tests: engine, tools, registry, skills, case model, inventory, log tail
+test/              # 196 tests: engine, tools, registry, skills, security, golden schema
+test/golden/       # cases + stored meshes, run by scripts/run-golden.mjs
+scripts/           # release, catalog index, icon mask, golden runner
 locale/            # en/ru plugin-card strings
+inline-icon.svg    # source of the row mark (scripts/make-icon-mask.mjs turns it
+                   #   into the mask embedded in client.js; test/icon.test.mjs
+                   #   fails when the two drift)
 icon.png           # plugin icon for the catalog (512x512 PNG, raster only there)
 icon.svg           # the same icon as the vector source (crisp at any size)
 ```

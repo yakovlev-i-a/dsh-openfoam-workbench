@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.9.34
+
+Installing is one command that never mentions a version, and so is updating.
+
+- `releases/latest/download/dsh-openfoam-workbench.tgz` — every release now carries
+  a stable-named tarball next to the version-named one, so GitHub's "latest"
+  alias resolves to a real file. Install and update are the same line, followed by
+  a restart of the host that boots the profile.
+- README: Install and Update rewritten around that line; tag / commit / checkout /
+  market installs moved to a short table with the trade-off of each; the release
+  page, `market/index.json` and `openfoam_env_check` named as the three places the
+  version is written down.
+- `scripts/release-upload.sh <tag>` packs and uploads both asset names, so a release
+  cannot ship without the stable one; it prints the URL and checks that it resolves.
+- README Layout refreshed (it still said 61 tools / 60 tests, and missed
+  `client.js`, the routing and escalation modules, the scaffolds and the tools).
+
 ## v0.9.33
 
 The ParaView entry file stays one file, and the doctor sees the other one.
