@@ -14,6 +14,10 @@ Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 
 **v0.9.30 · 65 tools · 11 skills · 187 tests**
 
+Listed in the [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
+catalog (GitHub-only entry: the npm package was withdrawn, so installs come from
+git or the release tarball).
+
 Pre-1.0: the tool set and the on-disk conventions may still change between
 minor versions.
 
@@ -116,8 +120,18 @@ dsh plugin --profile web add /path/to/dsh-openfoam-workbench
 dsh plugin --profile web add link:/path/to/dsh-openfoam-workbench
 ```
 
-**4. From the marketplace**, once the catalog entry is merged:
-`Discover → search "OpenFOAM" → Install`.
+**4. From the plugin market** — listed in the
+[awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
+catalog, which `dshmarket` reads: open *Plugins → Plugin Market*, search
+"OpenFOAM", install. The catalog resolves a GitHub entry to its default branch, so
+this installs `main` — convenient, but a commit that is still being released can
+be picked up. Use the tag command above when the exact version matters.
+
+> The machine-readable catalog index (`dsh-plugin-catalog`) only lists packages
+> published to npm, so a GitHub entry is in the market UI and not in the Discover
+> search. To have the plugin in Discover without npm, add this repository's own
+> index as an index source:
+> `https://cdn.jsdelivr.net/gh/yakovlev-i-a/dsh-openfoam-workbench@v0.9.30/market/index.json`
 
 After the restart, verify the plugin is live:
 
