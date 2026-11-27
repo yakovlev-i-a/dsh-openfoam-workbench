@@ -62,6 +62,11 @@ test('impact is judged by the entry, not by the file', () => {
   assert.equal(classifyImpact('controlDict', 'application'), 'high')
   assert.equal(classifyImpact('controlDict', 'libs'), 'critical')
   assert.equal(classifyImpact('controlDict', 'functions'), 'critical')
+  // a nested path into functions/libs stays critical (the tier keys off the first component)
+  assert.equal(classifyImpact('controlDict', 'functions/fieldMinMax1/type'), 'critical')
+  assert.equal(classifyImpact('controlDict', 'libs/anything'), 'critical')
+  // but a nested path into a physics block is high, not critical
+  assert.equal(classifyImpact('controlDict', 'PIMPLE/maxDeltaT'), 'high')
   // unknown file or entry: conservative
   assert.equal(classifyImpact('somethingElse', 'x'), 'high')
   assert.equal(classifyImpact('controlDict', 'unknownKey'), 'high')
