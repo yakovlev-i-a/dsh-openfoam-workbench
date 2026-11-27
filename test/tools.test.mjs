@@ -167,6 +167,18 @@ test('version_info reports the bundle version and accepts distribution', async (
   assert.equal(r.plugin.version, pkg.version)
 })
 
+test('version_info answers with the plugin identity even without OpenFOAM', async () => {
+  // CI has no OpenFOAM: the tool must still say which build is loaded instead of
+  // failing with no identity at all (that broke the release pipeline once).
+  const tools = registry({ foamRoots: { org: '/nonexistent/openfoam14' } })
+  const r = await tools.openfoam_version_info.execute({})
+  assert.equal(r.ok, false)
+  assert.match(r.error, /bashrc|foamRoot/)
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  assert.equal(r.plugin.name, pkg.name)
+  assert.equal(r.plugin.version, pkg.version)
+})
+
 test('durable registry: apply reconciles a dead run with End to success', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'ofwb-runs-'))
   try {

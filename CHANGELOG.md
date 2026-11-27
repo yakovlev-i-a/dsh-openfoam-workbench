@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.9.42
+
+The release pipeline runs on a machine without OpenFOAM, and `version_info`
+answered `{ok: false}` with no identity at all there, which failed a test that
+asserts the loaded build. The tool now always reports `plugin: {name, version,
+language}` — the question "which build am I talking to?" is answerable even when
+no distribution was found — and a regression test pins that shape.
+
 ## v0.9.41
 
 The surface is smaller on purpose. A revision of every tool and skill found 16
