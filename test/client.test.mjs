@@ -40,6 +40,12 @@ test('client.js registers the openfoam accent stylesheet and removes it on clean
     assert.match(style.textContent, /\[data-tool\^="openfoam_"\]/)
     assert.match(style.textContent, /\[class\*="_summary"\] \{ color: #3b518c/, 'blue summary expected')
     assert.match(style.textContent, /#9db4e0/, 'dark palette variant expected')
+    // The chip: a filled 3-letter block before the tool name, and no DOM change.
+    assert.match(style.textContent, /\[class\*="_summary"\]::before \{/, 'the chip is a pseudo-element')
+    assert.match(style.textContent, /content: "OFW"/, 'the chip reads OFW')
+    assert.match(style.textContent, /background: #3b518c/, 'the chip is filled blue')
+    assert.match(style.textContent, /color: #fff/, 'the chip letters are white')
+    assert.equal((style.textContent.match(/::before/g) || []).length, 2, 'light and dark chips')
     assert.doesNotMatch(style.textContent, /box-shadow/, 'the ring was removed by request')
     assert.match(style.textContent, /data-ds-dark-theme/, 'dark palette variant expected')
     assert.equal(typeof cleanup, 'function')
