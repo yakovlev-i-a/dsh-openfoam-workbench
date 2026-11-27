@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.32 · 65 tools · 11 skills · 190 tests**
+**v0.9.33 · 65 tools · 11 skills · 196 tests**
 
 Listed in the [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog (GitHub-only entry: the npm package was withdrawn, so installs come from
@@ -281,7 +281,10 @@ them), not by the prompt:
 - **`<case-dir-name>.foam`** — `clone_tutorial`, `mesh_plan`, `run`,
   `run_solver_async` and `render` create the ParaView entry file named after the
   case directory (`case.foam` is *not* accepted as a substitute). `inspect_case`
-  reports `foamFile`, `list_cases` reports whether it exists.
+  reports `foamFile` and every other `.foam` in `foamFiles`, `list_cases` reports
+  whether the entry file exists, and `check` warns about a stray `case.foam` — the
+  usual souvenir of a case copied from an older one, or of a render helper that an
+  older build wrote into the case directory.
 - **Relative paths** — a relative `casePath` resolves against the first
   `caseRoots` entry (the session working directory is only the fallback when
   `caseRoots` is empty); absolute paths always work. Run records and logs live

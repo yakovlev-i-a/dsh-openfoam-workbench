@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.9.33
 
 The ParaView entry file stays one file, and the doctor sees the other one.
 
