@@ -335,14 +335,19 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   `run_progress` / `solve_verify` / `usage_report`, compact JSON for large
   payloads, and a `QUESTION` block whenever a tool needs a human decision
   (`needs_input`). In the Web UI every `openfoam_*` row carries a small OpenFOAM
-  mark — flow around an obstacle, 26x13 — in front of the tool name. The row keeps
+  mark — flow around an obstacle, 26x13 — in front of the tool name, and so does
+  the row of every skill this bundle ships (`Skill · openfoam-cht`), while other
+  plugins' skills keep their plain row. The row keeps
   the colour DSH gives it (the label colour, red on an error, whatever the theme
   uses) and the mark inherits that colour through `currentColor`, so the
   presentation adds no second palette. It is one `::before` rule in `client.js`,
   the browser half of this bundle: no per-tool registration and no DOM change. The
-  mark is an SVG **mask** (667 bytes of drawing inlined as a data URI) because only
+  mark is an SVG **mask** (~900 bytes of drawing inlined as a data URI) because only
   a mask can be painted with `currentColor`; it needs no file, no `assets/` export
-  and no request from the host. The drawing itself lives in `inline-icon.svg` and
+  and no request from the host. A skill row exposes no name attribute CSS could
+  match on, so a small `MutationObserver` tags the rows whose summary is one of the
+  `openfoam-*` skills with `data-ofw-skill` and removes the tag again when React
+  reuses the node for another skill. The drawing itself lives in `inline-icon.svg` and
   `node scripts/make-icon-mask.mjs` regenerates the embedded copy — a test fails
   when the two drift apart.
 
