@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.9.32
+
+The mark reaches the skill rows.
+
+- Skill rows, `Skill · openfoam-cht`, now carry the same mark in front of the
+  name. A skill row exposes no name attribute CSS could match on — its root says
+  only `data-tool="skill"` — so a small `MutationObserver` in `client.js` tags the
+  rows whose summary is one of this bundle's `openfoam-*` skills with
+  `data-ofw-skill` and removes the tag again when React reuses the node for
+  another skill. Other plugins' skills keep their plain row.
+- Still one `::before` rule, one mask, `currentColor`: the skill mark follows the
+  row colour exactly like the tool mark, error state included.
+- The mid guide line of the mark is thicker (`stroke-width` 25 instead of 15),
+  from the redrawn `inline-icon.svg`.
+- Repository hygiene: `openfoam_icon_colored.svg` (a byte-identical copy of
+  `icon.svg`) and `inline-icon-backup.svg` are gone; `icon.svg` is the vector
+  source and `inline-icon.svg` the row mark.
+- 190 tests: a new behavioural test drives the observer (our row tagged, another
+  plugin's not, a reused node untagged, attribute mutations ignored, cleanup).
+
 ## v0.9.31
 
 Presentation, and the plugin icon.

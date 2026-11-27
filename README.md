@@ -12,7 +12,7 @@ instead of asking the model to remember them.
 Implemented and validated on **OpenFOAM 14** (org, modular solvers),
 **OpenFOAM v2606** (com, multi-region tutorials) and **ParaView 6.2.0**:
 
-**v0.9.31 · 65 tools · 11 skills · 189 tests**
+**v0.9.32 · 65 tools · 11 skills · 190 tests**
 
 Listed in the [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog (GitHub-only entry: the npm package was withdrawn, so installs come from
