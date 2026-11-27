@@ -122,8 +122,13 @@
     },
     {
       "name": "openfoam_field_stats",
-      "description": "8e3c0b1e6065b14a",
-      "parameters": "7850cd721bfe4e7b"
+      "description": "001492de3ae042ff",
+      "parameters": "83bc66070fc5dbe7"
+    },
+    {
+      "name": "openfoam_fields_from_template",
+      "description": "1b4e627ac96c4eb0",
+      "parameters": "d295b7a8817c14ae"
     },
     {
       "name": "openfoam_find_source",
@@ -271,6 +276,11 @@
       "parameters": "dd06cbc919b915f5"
     },
     {
+      "name": "openfoam_set_fields",
+      "description": "9f7854162e536b57",
+      "parameters": "6319cac0af7c6f74"
+    },
+    {
       "name": "openfoam_solve_verify",
       "description": "12405c5ab2b293b8",
       "parameters": "503f032a5a0fd10f"
@@ -335,7 +345,7 @@
     "name": "openfoam-workbench:core",
     "order": 250,
     "interpolate": false,
-    "text": "d2fb78e2aaa3c4ff"
+    "text": "7729ba8fb462cfcb"
   },
   "skills": [
     {

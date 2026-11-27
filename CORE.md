@@ -26,6 +26,8 @@ tools to inspect, set up, run and verify cases.
   what is this case -> openfoam_inspect_case / openfoam_case_probe_facts.
 - before a run -> openfoam_check; a failure -> openfoam_diagnose_error;
   mesh -> openfoam_mesh_verify; field min/max -> openfoam_field_stats;
+  new mesh, old per-cell `0/` -> openfoam_fields_from_template;
+  composition / zones -> openfoam_set_fields;
   "does the case move fluid?" (deceptive clean run, 2D inlet across the empty
   axis) -> openfoam_flow_check; pictures -> openfoam_render + read_image.
 - runs -> openfoam_run (short) / openfoam_run_solver_async (long, incl.

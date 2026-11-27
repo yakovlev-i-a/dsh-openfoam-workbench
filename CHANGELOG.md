@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.9.38
+
+The `0/` directory becomes something the agent can build instead of hand-edit, and
+`field_stats` can answer "did it change".
+
+- **`openfoam_fields_from_template`** — `0/` for a new mesh. When a case is
+  remeshed, its `0/` files still hold one value per cell of the *old* mesh (the
+  reacting CHT case that triggered this carries a 8352-value list in `CH4`, `T`,
+  `O2`, `N2`); the solver then refuses to start, or `mapFields` maps values by
+  index and silently produces different physics. The tool takes class,
+  dimensions and `boundaryField` from a reference case (itself by default) and
+  sets each `internalField` to one uniform value. It never invents a physical
+  value: a per-cell list becomes `needsValue` with the most frequent entry as an
+  explicit suggestion (`suggestion.share` says how much of the old mesh it
+  covered), and `values: {"T": "300"}` accepts one. A boundary key that matches
+  no patch of the new mesh is reported as `stalePatches`, so a rename is caught
+  before the solver is. Preview by default, `.bak` on write; `lib/fieldwrite.js`,
+  `test/fieldwrite.test.mjs`.
+- **`openfoam_set_fields`** — initial composition, hot spot, seeded zone. Writes
+  `system/[<region>/]setFieldsDict` (`defaultValues`, `zones` of type box /
+  sphere / cylinder / set / …, `extrapolatePatches`) and can run `setFields
+  [-region]`; every field is checked to exist in `0/` and to carry the right
+  number of components first, because `setFields` silently sets nothing for a
+  field that does not exist, and a box that misses the mesh is reported as a
+  warning. Verified on the real CHT case: a 15 mm box at 450 K over a 300 K
+  default, then `field_stats T` → 8352 cells, min 300, max 450.
+- **`openfoam_field_stats` gained `time2`**: two written steps in one call,
+  reporting each range and the change between them (`p` at 0 and 0.5 on a
+  4-processor channel: 0/0 → 0.000282916/0.0452882).
+- The always-on core gained two routing lines for the new tools (3 KB budget kept).
+
 ## v0.9.37
 
 The tools that read a result no longer depend on a utility being able to build the

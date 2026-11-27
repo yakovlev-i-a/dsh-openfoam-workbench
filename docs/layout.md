@@ -33,6 +33,7 @@ lib/of-engine.js    dict parser + 31 silent-failure rules (MIT, see below)
 lib/of-case.js      multi-region model: regions, dict paths, whitelist, progress
 lib/flowcheck.js    boundary flux read from the written phi files (flux check, empty axis)
 lib/fields.js       field min/max read from the written field files (no utility)
+lib/fieldwrite.js   0/ rewritten for a new mesh, setFieldsDict text (fields_from_template, set_fields)
 lib/scaffold*.js    dictionaries for incompressible / compressible / CHT cases
 lib/meshlib.js      STL helpers + blockMesh/snappy plan writer
 lib/caselib.js      four-step contract extraction, case facts, contract audit
