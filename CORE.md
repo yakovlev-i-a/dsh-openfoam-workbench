@@ -17,7 +17,7 @@ tools to inspect, set up, run and verify cases.
 ## Route through tools, not bash
 - "does the solver support X" / "where is it computed" / "what does the source say"
   -> openfoam_source_search, openfoam_read_source, openfoam_find_source.
-  `grep -r $FOAM_SRC` or `find` over the install is never the first step.
+  never `grep -r $FOAM_SRC` or `find` the install by hand.
 - "what does the case say" / "which scheme/BC/value" -> openfoam_read_dict
   (multi-region: `fluid/fvSchemes` or `region="fluid"`); change a live control ->
   openfoam_dict_set; clean a case -> openfoam_clean (dry run first).
@@ -35,18 +35,18 @@ tools to inspect, set up, run and verify cases.
   wait -> openfoam_run_watch; STL -> openfoam_stl_generate.
 
 ## When a tool returns a dead end
-Read its `hint` / `available` / `next` fields, try the narrower call it suggests,
-and tell the user which tool refused and why. Never switch to bash silently.
-If a result carries `needs_input`, ask the user with `ask_user_question` in
-{{language}}, offering its `options` (translate the labels), and do not continue
-until they answer.
-Multi-region cases take `region="fluid"`. Before finishing a long task, call
-openfoam_usage_report: an unused tool family means the work went around the plugin.
-A write tool that answers `applied: false` (preview) or asks for approval has
-not changed anything: apply it explicitly, or tell the user it was not applied.
+Read its `hint` / `available` / `next`, try the narrower call it suggests, and say
+which tool refused and why — never switch to bash silently. A `needs_input` result
+is a question: ask with `ask_user_question` in {{language}} and stop until answered.
+Multi-region cases take `region="fluid"`. Before a long task ends, call
+openfoam_usage_report — an unused family means the work went around the plugin.
+`applied: false` (preview) or an approval request means nothing changed yet:
+apply it, or say it was not applied.
 
 ## Language
 Reply to the user in {{language}}; code, identifiers and comments in English.
+Write maths as LaTeX — `$x^2$` inline, `$$...$$` display — never with text
+symbols (`sigma`, `^2`, `->`). Not only in tool output — in every answer.
 
 ## Verified experience
 Before a long task, `openfoam_experience_recall(task)`; after a verified success,

@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.9.43
+
+The always-on prompt now fixes how maths is written. Without a rule the agent
+describes an equation in prose symbols — `nu = mu/rho`, `p ~ rho*U^2` — and only
+reaches for LaTeX when asked, which is backwards: the Web UI renders maths
+(micromark's math extensions with `singleDollarTextMath` on, KaTeX styles present),
+so `$x^2$` inline and `$$...$$` display arrive as typeset formulas, and a client
+without KaTeX at least sees readable source instead of an ASCII imitation.
+
+- `CORE.md` `## Language` gained the rule: maths as LaTeX (`$x^2$` inline,
+  `$$...$$` display), never with text symbols like `sigma`, `^2`, `->`, in every
+  answer and not only in tool output.
+- Paid for out of the 3 KB prompt budget by compressing three neighbouring
+  sentences (the dead-end paragraph, the preview sentence, the usage-report
+  sentence) — the file is 3071 bytes against the 3072-byte cap, and
+  `test/tools.test.mjs` now fails if the LaTeX rule or its two examples disappear.
+
 ## v0.9.42
 
 The release pipeline runs on a machine without OpenFOAM, and `version_info`

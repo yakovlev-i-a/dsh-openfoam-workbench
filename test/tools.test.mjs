@@ -423,6 +423,11 @@ test('the shipped CORE.md stays within the prompt budget and keeps the routing m
   for (const marker of ['openfoam_source_search', 'openfoam_read_dict', 'openfoam_dict_set', 'openfoam_run_watch', 'openfoam_solve_verify', 'openfoam_usage_report', 'openfoam_clean']) {
     assert.ok(text.includes(marker), `CORE.md lost the routing marker ${marker}`)
   }
+  // The maths rule is a user requirement, not decoration: it must survive the
+  // 3 KB budget trimming that keeps happening to this file.
+  assert.match(text, /LaTeX/, 'CORE.md lost the LaTeX rule for maths')
+  assert.match(text, /\$x\^2\$/, 'CORE.md no longer shows the inline form')
+  assert.match(text, /\$\$\.\.\.\$\$/, 'CORE.md no longer shows the display form')
 })
 
 test('an explicit foamRoot wins over environment discovery', async () => {
