@@ -334,16 +334,17 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   `check` / `run_list` / `mesh_verify` / `env_check` / `list_cases` /
   `run_progress` / `solve_verify` / `usage_report`, compact JSON for large
   payloads, and a `QUESTION` block whenever a tool needs a human decision
-  (`needs_input`). In the Web UI every `openfoam_*` row carries the OpenFOAM
-  mark — flow around an obstacle, 26x13 — before the tool name, and its call
-  summary (`openfoam_x · …`) is blue, `#3b518c` on light and `#9db4e0` on dark.
-  Both come from one `::before` rule in `client.js`, the browser half of this
-  bundle: no per-tool registration and no DOM change. The mark is an SVG **mask**
-  painted with `currentColor` (667 bytes of drawing inlined as a base64 data URI,
-  source `inline-icon.svg`), so it takes the colour of the row it sits in — blue
-  normally, red on an errored row, whatever the theme — and it needs no file, no
-  `assets/` export and no extra request from the host. The summary keeps DSH's
-  error and stopped colours (`:not([class*="errorSummary"])` in the rule).
+  (`needs_input`). In the Web UI every `openfoam_*` row carries a small OpenFOAM
+  mark — flow around an obstacle, 26x13 — in front of the tool name. The row keeps
+  the colour DSH gives it (the label colour, red on an error, whatever the theme
+  uses) and the mark inherits that colour through `currentColor`, so the
+  presentation adds no second palette. It is one `::before` rule in `client.js`,
+  the browser half of this bundle: no per-tool registration and no DOM change. The
+  mark is an SVG **mask** (667 bytes of drawing inlined as a data URI) because only
+  a mask can be painted with `currentColor`; it needs no file, no `assets/` export
+  and no request from the host. The drawing itself lives in `inline-icon.svg` and
+  `node scripts/make-icon-mask.mjs` regenerates the embedded copy — a test fails
+  when the two drift apart.
 
 ## Screenshots
 

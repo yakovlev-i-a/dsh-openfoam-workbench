@@ -15,29 +15,23 @@ window.__ModuleLoader__.load({
   id: '@yakovlev-i-a/dsh-openfoam-workbench',
   factory() {
     const TAG = '@yakovlev-i-a/dsh-openfoam-workbench/tool-accent.css'
-    // Light/dark come from the Host palette attribute on <body>. The row shows
-    // `Tool call` as the title and `openfoam_x · <argument summary>` in the
-    // summary element (css-module local name `_summary`; its hash prefix changes
-    // between builds). Blue marks the call itself; the ring and the orange title
-    // are gone by request.
+    // The row shows `Tool call` as the title and `openfoam_x · <argument summary>`
+    // in the summary element (css-module local name `_summary`; its hash prefix
+    // changes between builds).
     //
-    // The chip is a `::before` on the summary, so it needs no slot, no React
-    // component and no per-tool view: the summary starts with the tool name, and
-    // a pseudo-element puts a filled 3-letter block in front of it.
-    // The mark is the simplified flow-around-obstacle drawing, inlined as a
-    // 667-byte SVG mask. A mask (not a background image) is what lets the glyph
-    // take `currentColor`: the pseudo-element paints its own box with the colour
-    // the row already has, so the mark is blue on a normal row, red on an errored
-    // one and follows the theme without a second rule.
-    // Source: inline-icon.svg (the guide path stripped); base64 -w0 regenerates it.
+    // One presentation rule: a small mark in front of the tool name, and nothing
+    // else — the row keeps whatever colour DSH gives it (label colour, red for an
+    // error, the theme's own palette), so the mark inherits it through
+    // `currentColor` instead of introducing a second identity colour.
+    //
+    // The mark is an SVG *mask*, not a background image, because only a mask can
+    // be painted with `currentColor`; it costs 667 bytes of drawing, inlined as a
+    // data URI, so it needs no file, no package `assets/` export and no request.
+    // Source: inline-icon.svg — `node scripts/make-icon-mask.mjs` regenerates the
+    // constant below from it.
     const MARK_URL = 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMjAwIj48cGF0aCBkPSJtIDAsMTQ0LjI3Njg3IGMgNzguNTQzMzk2LDAgMTI0LjE1OTE0LDQ1LjgwODcgMTg0LjE5MTM0LDQ1LjgwODcgNjAuMDMyMiwwIDcxLjI3NTcsLTQ0Ljc4NjYzIDE4MC4yOTE3LC00NC43ODY2MyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjE1Ii8+PHBhdGggZD0ibSAzNTcuOTgzODEsMTIxLjAzODE4IDYuNDk5MjMsMjQuMjYwNzYgLTYuNDk5MjMsMjQuMjU3NjUgTCA0MDAsMTQ1LjI5ODk0IFoiIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJtIDAsNTUuNzIzMTQgYyA3OC41NDMzOTYsMCAxMjQuMTU5MTQsLTQ1LjgwODcxNSAxODQuMTkxMzQsLTQ1LjgwODcxNSA2MC4wMzIyLDAgNzEuMjc1Nyw0NC43ODY2MzUgMTgwLjI5MTcsNDQuNzg2NjM1IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMTUiLz48cGF0aCBkPSJNIDM1Ny45ODM4MSw3OC45NjE4MzIgMzY0LjQ4MzA0LDU0LjcwMTA2IDM1Ny45ODM4MSwzMC40NDM0MDEgNDAwLDU0LjcwMTA2IFoiIGZpbGw9IiMwMDAiLz48Y2lyY2xlIGN4PSIxODYuNzk3NTkiIGN5PSI5OS45OTk5OTIiIHI9IjU0LjkzNjE5OSIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==")'
     const CSS = [
-      '/* OpenFOAM Workbench: the OpenFOAM mark on every openfoam_* tool row */',
-      // The state classes DSH puts on the summary (errorSummary / stoppedSummary)
-      // keep their own colour: the mark follows the text, so an errored row must
-      // stay red rather than turn blue.
-      '[data-tool^="openfoam_"] [class*="_summary"]:not([class*="errorSummary"]):not([class*="stoppedSummary"]) { color: #3b518c; }',
-      'body[data-ds-dark-theme] [data-tool^="openfoam_"] [class*="_summary"]:not([class*="errorSummary"]):not([class*="stoppedSummary"]) { color: #9db4e0; }',
+      '/* OpenFOAM Workbench: the mark on every openfoam_* tool row */',
       '[data-tool^="openfoam_"] [class*="_summary"]::before {',
       '  content: "";',
       '  display: inline-block;',
