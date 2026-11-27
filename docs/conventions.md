@@ -101,3 +101,22 @@ Two checks cover it, and they are complementary:
 Both work for single- and multi-region cases; a compressible or reacting case is
 allowed a mass imbalance up to 5 % (density and composition change store mass in
 the domain), an incompressible one must balance to a fraction of a percent.
+
+## A long run needs a watchdog, not hope
+
+`openfoam_run_solver_async` puts the process in the workbench registry, not in the
+DSH background-job list, so there is **no completion event** for the agent: after
+the turn ends nobody polls, and a 33-minute CHT stage can finish unnoticed.
+
+- `openfoam_run_watch(run_id | log_path, timeout_s, poll_s)` blocks for one window
+  and returns the verdict with `time`, `steps`, `secondsPerStep`, ETA, and
+  `reason` + `firstErrorLine` on failure. Call it again for another window.
+- If the turn has to end, launch a real background job that waits on the log —
+  that is what produces a job-finished notification.
+- `openfoam_solver_status` reconciles the registry with the log (`logVerdict`,
+  `lastTimeFromLog`, `endTimeReached`): a run whose log ends with `End` is reported
+  as finished even when the registry record still says `interrupted`, and a
+  `foamMultiRun` log that ends `End`, blank, `Finalising parallel run` counts as
+  finished.
+- A rank dying under MPI (`mpirun noticed … exited on signal 8`) is a crash even
+  though the log carries no `FOAM FATAL` line.

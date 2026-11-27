@@ -57,8 +57,8 @@
     },
     {
       "name": "openfoam_dict_set",
-      "description": "e709fe21ba4b8251",
-      "parameters": "87377fdfb5de9bba"
+      "description": "44fa27e419a1c9f1",
+      "parameters": "e2917613d937b1fe"
     },
     {
       "name": "openfoam_dict_undo",
@@ -274,6 +274,11 @@
       "name": "openfoam_run_solver_async",
       "description": "0afa24394f10a017",
       "parameters": "dd06cbc919b915f5"
+    },
+    {
+      "name": "openfoam_run_watch",
+      "description": "a67c8a0d542fe305",
+      "parameters": "ab506a21b9492ac6"
     },
     {
       "name": "openfoam_set_fields",

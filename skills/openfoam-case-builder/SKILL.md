@@ -42,8 +42,18 @@ Ask one item, wait, apply with `edit`, mark the todo done, move on. Never fire
 ## Step 5 — run + verify
 Pre-flight `openfoam_check(casePath)` (silent failures) → `blockMesh` →
 `checkMesh` → solver via `openfoam_run_solver_async` → `openfoam_residual_series`
-→ `openfoam_render`. Do **not** poll immediately after starting; tell the user the
-runId and let the monitor refresh.
+→ `openfoam_render`.
+
+**A long run needs a watchdog, not hope.** `openfoam_run_solver_async` registers the
+run in the workbench registry, not as a DSH background job, so no completion event
+reaches you: nobody polls after the turn ends. For anything past ~5 minutes:
+`openfoam_run_watch(run_id, timeout_s)` blocks for one window and returns the
+verdict (finished / failed / still running), and if the turn has to end, launch a
+watchdog as a real background job (`bash <case>/tools/watch_run.sh <log>`, which
+waits for `End` or `FOAM FATAL|exited on signal|Segmentation fault`) — that is what
+produces a job-finished notification. `openfoam_solver_status` also reconciles the
+registry with the log now (`logVerdict`, `lastTimeFromLog`, `endTimeReached`), so a
+run that ends with `End` is never reported as `interrupted`.
 
 ## Run validity (before declaring success)
 - **Pre-flight**: if a stale half-finished run is in the case dir, archive it (`<case>.stale_<ts>`) and start fresh; do not clobber without asking.

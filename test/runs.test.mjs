@@ -53,7 +53,8 @@ test('runSnapshot settles a finished log even when the pid is gone', () => {
     writeFileSync(log, 'Time = 0.1\nTime = 0.2\nEnd\n')
     const snap = runSnapshot(cfg, 'runB2')
     assert.equal(snap.status, 'success')
-    assert.equal(snap.lastTime, '0.2')
+    // Numeric on purpose: the same unit as progressFrom().time, so a caller can compare.
+    assert.equal(snap.lastTime, 0.2)
   } finally {
     rmSync(root, { recursive: true, force: true })
   }

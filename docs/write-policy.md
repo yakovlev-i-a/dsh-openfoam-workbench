@@ -14,8 +14,12 @@ answer, so neither is "safe":
 | `dict_set` on `controlDict` `libs` / `functions` | **approval** through the DSH user-approval seam, always (no config switch), fail-closed without an agent identity or an answerer | can execute code |
 
 `writeMode: impact | apply | preview` (Settings) overrides the default globally.
-`dict_set` edits **single-line top-level entries**; a sub-dictionary (`functions`,
-`boundaryField`) is refused with an explicit error rather than half-edited.
+`dict_set` edits **single-line entries**, at the top level (`deltaT`) or inside a
+block (`PIMPLE/maxDeltaT`, up to three levels) — the same guards apply at the
+addressed level, and the rest of the file is untouched line for line. A whole
+sub-dictionary (`functions`, `boundaryField`) is refused with an explicit error
+rather than half-edited: address a scalar inside it.
 `expect: "<current value>"` refuses a write on top of a value you did not see, and
 every applied change returns a `changeId` plus an `afterHash`;
 `openfoam_dict_undo` reverts it and refuses when the file changed after that edit.
+An appended key inherits its neighbours' indentation, so a block keeps its shape.

@@ -30,15 +30,44 @@ LTS does not add a time axis — it changes how one global step is taken:
 ## Recipe
 1. `openfoam_read_dict(casePath, "fluid/fvSchemes")` → `ddtSchemes { default localEuler; }`,
    and make sure the solid region keeps `Euler` (or `steadyState`).
-2. `openfoam_dict_set(casePath, "fluid/fvSolution", "maxDeltaT", "0.5")` — the
-   local cap, typically 10–100× `deltaT`; it must be inside the `PIMPLE { }`
-   block, which must therefore exist even when it is nearly empty.
+2. `openfoam_dict_set(casePath, "fluid/fvSolution", "PIMPLE/maxDeltaT", "0.5", append: true)` —
+   the local cap, typically 10–100× `deltaT`, *inside* the `PIMPLE { }` block (the
+   path form exists exactly for this: a top-level `maxDeltaT` is never read). The
+   block must exist even when it is nearly empty, and a missing one is fatal.
 3. Keep `deltaT` small enough for the solid's thermal diffusion
    (`alpha·dt/dx² ≲ 0.5`) — the solid still takes that step.
 4. Run, watch `Co` and the flow residuals with `openfoam_run_progress`; with LTS
    the residuals drop fast and then plateau.
 5. `openfoam_solve_verify` judges a transient case on completion, and its
    residual floor ignores species fields.
+
+## The decoupling trap (a ratio between the two clocks)
+The two clocks are independent, so a bad pair of numbers freezes the gas while the
+run looks healthy:
+
+    controlDict deltaT   0.1        <- clock; the solid advances by exactly this
+    PIMPLE   maxDeltaT   1e-5       <- the gas advances at most this per clock step
+
+The gas then advances 1e-5 s per iteration while the solid advances 0.1 s — a ratio
+of 10⁴. The flame cannot move, the temperature field still looks plausible, the
+residuals behave, there is no NaN and no warning. Keep `maxDeltaT` within a small
+factor of `deltaT`: LTS is meant to let *slow* cells take longer steps, not to
+replace the clock. Sanity check: 10 iterations must advance the gas by roughly
+`10 · deltaT`, so if a reacting front has not moved after a few hundred iterations,
+compare `maxDeltaT` with `deltaT` before blaming the kinetics.
+
+## Step limiters (off by default)
+`setRDeltaT` also sub-steps on temperature/mass-fraction change, and both limiters
+are silent until you enable them:
+
+- **temperature**: active only when `alphaTemp < 1` (`PIMPLE { alphaTemp 0.5; }`);
+  the default `alphaTemp 1` switches it off, so raising `maxDeltaT` in a reacting
+  channel is what produces negative mass fractions and a floating point exception
+  inside the chemistry.
+- **composition**: active when `alphaY` is present (`PIMPLE { alphaY 0.05; }`).
+
+So "raise `maxDeltaT` and see" is a trap: raise it only together with `alphaTemp`,
+or you exchange a slow-but-valid run for a crash you cannot read.
 
 ## How to tell it is working (verified on org-14, `foamRun -solver incompressibleFluid`)
 The log says it outright:

@@ -1,5 +1,50 @@
 # Changelog
 
+## v0.9.39
+
+A long run is now something the agent can watch, a dictionary key inside a block is
+something it can reach, and a rank that dies under MPI is a diagnosable failure
+instead of a silent stop.
+
+- **`openfoam_run_watch`** (new, 69th tool) — one blocking window over a run log:
+  `run_id` or `log_path`, `timeout_s` (default 120, max 1800), `poll_s`. It returns
+  the verdict (finished / failed / still running) with `time`, `endTime`, `steps`,
+  `secondsPerStep`, ETA, and `reason` + `firstErrorLine` on failure. This is the
+  answer to the real gap: `openfoam_run_solver_async` registers the run in the
+  workbench registry, not as a DSH background job, so no completion event reaches
+  the agent and nobody polls after the turn ends.
+- **Status no longer contradicts the log.** `openfoam_solver_status` read
+  `<id>.log` even when the run was started with `logName`, and required the *last*
+  non-empty line to be exactly `End` — a `foamMultiRun` log ends `End`, a blank
+  line, `Finalising parallel run`, so every finished CHT run was reported as
+  `interrupted` while `solve_verify` said finished. The registry now follows the
+  recorded log path, accepts `End` among the last six non-empty lines, reads
+  `lastTime` from the last `Time = …` line (leading whitespace and the `s` suffix
+  included), corrects a stale `interrupted` record to `success`, and reports
+  `endTime`, `endTimeReached` and `logVerdict`.
+- **`solve_verify` counted zero steps** on every indented parallel log: the counter
+  required `Time` in column 0. Fixed in `lib/runtime.js` (`TIME_LINE`,
+  `TIME_VALUE`), the same tolerant pattern the log parser already used.
+- **`openfoam_dict_set` reaches into a block**: `entry: "PIMPLE/maxDeltaT"` (up to
+  three levels) with the same `expect`, structure guard, journal and undo as a
+  top-level key. `maxCo`/`maxDeltaT`/`minDeltaT` live in the `PIMPLE` sub-dictionary
+  of the fluid region's `fvSolution` (`singleRegionSolutionControl::dict()` returns
+  `mesh.solution().subDict("PIMPLE")`), so switching LTS on used to need an
+  escalation and a manual edit. An appended key inherits its neighbours'
+  indentation; a one-line block is rewritten in place.
+- **A dead MPI rank is a pattern, not a mystery**: `diagnose_error` learned
+  `mpirun noticed that process rank N … exited on signal 8` (plus `MPI_ABORT`). A
+  chemistry crash prints no `FOAM FATAL` — the log only carries the signal — so
+  the pattern names signals 8/9/11 and points at the step limits.
+- **Skills**: `openfoam-case-builder` and `openfoam-cht` now say that a long run
+  needs a watchdog (`openfoam_run_watch`, or a real background job) rather than
+  hope; `openfoam-lts-ch` documents the two-clock decoupling (with `deltaT 0.1`
+  and `maxDeltaT 1e-5` the gas advances 1e-5 per global step while the solid
+  advances 0.1 — the flame cannot move, with no crash and no warning) and the two
+  step limiters that are off by default (`alphaTemp`, `alphaY`).
+- Tests: `test/runwatch.test.mjs` (7), `test/nested-dict.test.mjs` (7), and the
+  tool count is 69 in `test/inventory.test.mjs` / `test/registry.test.mjs`.
+
 ## v0.9.38
 
 The `0/` directory becomes something the agent can build instead of hand-edit, and

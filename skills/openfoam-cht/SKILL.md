@@ -87,7 +87,13 @@ step where org and com diverge, and where the org-14 CLI bites:
   `openfoam_run` refuses `mpirun` on purpose: a production run must not be killed by a
   tool timeout.
 - `openfoam_run_progress(log_path)` → t, steps, s/step, ETA, state;
-  `openfoam_solver_status(run_id)` → process state; `openfoam_solver_stop(run_id)` to stop.
+  `openfoam_solver_status(run_id)` → process state plus `logVerdict`; `openfoam_solver_stop(run_id)` to stop.
+- **A CHT run is long by definition: watch it.** There is no completion notification for an
+  async run, so `openfoam_run_watch(run_id, timeout_s)` for one blocking window, and when the
+  turn must end, start a watchdog as a real background job (`bash <case>/tools/watch_run.sh
+  <log>`). A `foamMultiRun` log ends `End`, a blank line, `Finalising parallel run` — check
+  the last few lines, not just the last one, and treat `mpirun noticed … exited on signal 8`
+  as a crash (a rank dying with an FPE prints no `FOAM FATAL`).
 
 ## Step 5 — verify before reporting
 - `openfoam_solve_verify(log_path)` → `RUNNING` is a state, not a failure; `RERUN` only on

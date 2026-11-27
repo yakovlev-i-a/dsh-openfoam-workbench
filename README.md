@@ -1,13 +1,13 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-A native **DeepSeek Harness** plugin for OpenFOAM: 68 tools and 12 on-demand
+A native **DeepSeek Harness** plugin for OpenFOAM: 69 tools and 12 on-demand
 skills for case setup, inspection, meshing, solver development, multi-region CHT
 runs, durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one surface — a thin always-on core prompt
 (`CORE.md`), procedural skills, and tools that enforce the conventions instead of
 asking the model to remember them.
 
-**v0.9.38 · 68 tools · 12 skills · 225 tests** · validated on **OpenFOAM 14**
+**v0.9.39 · 69 tools · 12 skills · 239 tests** · validated on **OpenFOAM 14**
 (org) and **v2606** (com) with **ParaView 6.2** · in the
 [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog. Pre-1.0: tools and on-disk conventions may still change between minor
@@ -130,7 +130,7 @@ defaultDistribution: org
 
 ## What you get
 
-- **Tools** (`openfoam_*`, 68): env/version, tutorials, solver clone/build/smoke,
+- **Tools** (`openfoam_*`, 69): env/version, tutorials, solver clone/build/smoke,
   durable async runs (`run_solver_async` → `run_list` / `solver_status`), run
   progress and ETA, meshing (STL → blockMesh/snappy → checkMesh), renders (inline
   PNG, multi-region), verification (`solve_verify`, `mesh_verify`), case editing
