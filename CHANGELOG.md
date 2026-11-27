@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+The ParaView entry file stays one file, and the doctor sees the other one.
+
+- A case directory can carry a `case.foam` it inherited from a copy, or from a
+  render helper an older build wrote into the case. The plugin only ever writes
+  `<case-dir-name>.foam` (`ensureFoamFile`, every creating path) and only accepts
+  that (`findFoamFile`), so the stray was invisible: it opens fine in ParaView and
+  quietly survives every copy.
+- `openfoam_check` now reports `stray-foam-file` (a `.foam` file that is not the
+  case entry file, with the exact delete/rename fix) and `stale-render-script`
+  (a leftover `.pv_render.py` from an older build).
+- `openfoam_inspect_case` lists every `.foam` file in `foamFiles` and carries a
+  hint naming the accepted one when a stray is present.
+- The render script no longer has a hardcoded `case.foam` fallback: it derives the
+  name from the case directory, and `openfoam_render` always passes the accepted
+  name instead of `none`.
+- 196 tests.
+
 ## v0.9.32
 
 The mark reaches the skill rows.
