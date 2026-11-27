@@ -27,8 +27,8 @@
     },
     {
       "name": "openfoam_clean",
-      "description": "2f48259974891b58",
-      "parameters": "23e00d141670d624"
+      "description": "5352936a28024a51",
+      "parameters": "96ea45555f74d17f"
     },
     {
       "name": "openfoam_clone_solver",
@@ -134,6 +134,11 @@
       "name": "openfoam_find_tutorial",
       "description": "4301178233562b05",
       "parameters": "0b438a7765162544"
+    },
+    {
+      "name": "openfoam_flow_check",
+      "description": "f06ae13c2d49ca2c",
+      "parameters": "ccff37edeeac45ab"
     },
     {
       "name": "openfoam_geom_verify",
@@ -330,7 +335,7 @@
     "name": "openfoam-workbench:core",
     "order": 250,
     "interpolate": false,
-    "text": "0519f1877533b51d"
+    "text": "d2fb78e2aaa3c4ff"
   },
   "skills": [
     {

@@ -359,10 +359,12 @@ test('usage_report counts tool calls and lists unused tools', async () => {
 
 test('command whitelist allows mpirun-wrapped apps and rejects the rest', async () => {
   const { commandAllowed } = await import('../lib/of-case.js')
-  const ok = commandAllowed('mpirun -np 5 foamMultiRun')
+  const ok = commandAllowed('mpirun -np 5 foamMultiRun -parallel')
   assert.equal(ok.ok, true)
   assert.equal(ok.app, 'foamMultiRun')
-  assert.equal(commandAllowed('mpirun -np 0 foamMultiRun').ok, false)
+  assert.equal(commandAllowed('mpirun -np 0 foamMultiRun -parallel').ok, false)
+  // without -parallel each rank would run its own serial copy of the case
+  assert.equal(commandAllowed('mpirun -np 5 foamMultiRun').ok, false)
   assert.equal(commandAllowed('bash -c ls').ok, false)
   assert.equal(commandAllowed('checkMesh && rm -rf /').ok, false)
   assert.equal(commandAllowed('mySolver', ['mySolver']).ok, true)

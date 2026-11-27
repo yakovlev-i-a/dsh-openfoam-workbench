@@ -68,8 +68,12 @@ test('restore0Dir -processor fills every processor dir', () => {
 })
 
 test('the whitelist accepts CHT pre-processing commands', () => {
-  for (const cmd of ['restore0Dir', 'restore0Dir -processor', 'splitMeshRegions -cellZones all', 'changeDictionary -region solid', 'chtMultiRegionSimpleFoam', 'mpirun -np 5 foamMultiRun']) {
+  for (const cmd of ['restore0Dir', 'restore0Dir -processor', 'splitMeshRegions -cellZones all', 'changeDictionary -region solid', 'chtMultiRegionSimpleFoam', 'mpirun -np 5 foamMultiRun -parallel']) {
     assert.equal(commandAllowed(cmd).ok, true, cmd)
   }
   assert.equal(commandAllowed('rm -rf /').ok, false)
+  // mpirun without -parallel starts N independent serial copies of the case
+  const noPar = commandAllowed('mpirun -np 5 foamMultiRun')
+  assert.equal(noPar.ok, false)
+  assert.match(noPar.reason, /-parallel/)
 })

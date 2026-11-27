@@ -90,9 +90,11 @@ test('the whitelist rejects metacharacters and hands argv to the runner', () => 
   const ok = commandAllowed('checkMesh -region fluid -allGeometry')
   assert.equal(ok.ok, true)
   assert.deepEqual(ok.argv, ['checkMesh', '-region', 'fluid', '-allGeometry'])
-  const mpi = commandAllowed('mpirun -np 4 foamRun')
+  const mpi = commandAllowed('mpirun -np 4 foamRun -parallel')
   assert.equal(mpi.ok, true)
-  assert.deepEqual(mpi.argv, ['mpirun', '-np', '4', 'foamRun'])
+  assert.deepEqual(mpi.argv, ['mpirun', '-np', '4', 'foamRun', '-parallel'])
+  // ranks without -parallel would each run the whole case serially
+  assert.equal(commandAllowed('mpirun -np 4 foamRun').ok, false)
 })
 
 // --- dictionary editing: injection, executable directives, traversal ---------

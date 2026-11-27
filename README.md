@@ -1,13 +1,13 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-A native **DeepSeek Harness** plugin for OpenFOAM: 65 tools and 11 on-demand
+A native **DeepSeek Harness** plugin for OpenFOAM: 66 tools and 11 on-demand
 skills for case setup, inspection, meshing, solver development, multi-region CHT
 runs, durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one surface — a thin always-on core prompt
 (`CORE.md`), procedural skills, and tools that enforce the conventions instead of
 asking the model to remember them.
 
-**v0.9.35 · 65 tools · 11 skills · 196 tests** · validated on **OpenFOAM 14**
+**v0.9.36 · 66 tools · 11 skills · 208 tests** · validated on **OpenFOAM 14**
 (org) and **v2606** (com) with **ParaView 6.2** · in the
 [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog. Pre-1.0: tools and on-disk conventions may still change between minor
@@ -130,12 +130,12 @@ defaultDistribution: org
 
 ## What you get
 
-- **Tools** (`openfoam_*`, 65): env/version, tutorials, solver clone/build/smoke,
+- **Tools** (`openfoam_*`, 66): env/version, tutorials, solver clone/build/smoke,
   durable async runs (`run_solver_async` → `run_list` / `solver_status`), run
   progress and ETA, meshing (STL → blockMesh/snappy → checkMesh), renders (inline
   PNG, multi-region), verification (`solve_verify`, `mesh_verify`), case editing
-  (`dict_set`, `clean`), doctor checks, error diagnosis, papers, experience, and a
-  usage self-audit. Verdicts on huge logs read only the tail (`logTailBytes`, 4 MB
+  (`dict_set`, `clean`), doctor checks, error diagnosis, flux checking
+  (`flow_check`), papers, experience, and a usage self-audit. Verdicts on huge logs read only the tail (`logTailBytes`, 4 MB
   by default) instead of the whole file.
 - **Skills** (`SKILL.md`, load on demand, 11): case-builder, cht, solver-development,
   code-modify, meshing, mesh-independence, stats, viz, analyze, paper-reproduction,
@@ -208,7 +208,7 @@ The long parts live in `docs/`, one page each — the README stays a map:
 
 | page | what is in it |
 |---|---|
-| [docs/conventions.md](./docs/conventions.md) | the `<case-dir-name>.foam` entry file, relative paths and `caseRoots`, the geometry-scale gate, multi-region (CHT) behaviour, custom `.so` libraries (`libPaths` / `env` / `libbin`) |
+| [docs/conventions.md](./docs/conventions.md) | the `<case-dir-name>.foam` entry file, relative paths and `caseRoots`, the geometry-scale gate, 2D cases and the `empty` axis, multi-region (CHT) behaviour, custom `.so` libraries (`libPaths` / `env` / `libbin`) |
 | [docs/write-policy.md](./docs/write-policy.md) | what each mutating tool does by default and why: previews for physics, approval for `libs`/`functions`, `changeId` + `undo` |
 | [docs/security.md](./docs/security.md) | what the gates do, what they do not cover, `enforceToolRouting`, and the audited `openfoam_escalate` path |
 | [docs/layout.md](./docs/layout.md) | file layout, `CORE.md` and how the always-on prompt works, `market/index.json` |

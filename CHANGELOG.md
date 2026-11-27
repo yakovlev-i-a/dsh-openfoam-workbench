@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.9.36
+
+A case that moves no fluid is now a finding, and the field report that produced
+it is closed item by item.
+
+- **`openfoam_flow_check`** (66th tool) — sums the boundary flux `phi` on every
+  patch and compares it with what each velocity boundary condition intends. This
+  is the failure no residual, convergence or mesh check can see: a 2D case whose
+  inlet velocity points along the `empty` axis carries zero flux, continuity is
+  then trivially satisfied, every residual falls to 0, the run reaches `End` and
+  the temperature and heat-release fields still look physical.
+  - Read-only: the flux is parsed out of the written `phi` field files, so no
+    post-processing utility runs, no `postProcessing/` directory is written and a
+    read-only case works. (On a reacting multi-region case `foamPostProcess`
+    cannot build the physics at all — `reactionModel` and `objectRegistry region0`
+    failures — so a utility-based probe was abandoned.)
+  - Per patch: role from the `U` condition (`fixedValue`, `flowRateInletVelocity`
+    vs `zeroGradient`, `inletOutlet`, `waveTransmissive`), area and mean normal
+    velocity from the polyMesh, signed flux. Findings: `inlet-without-flux`
+    (error), `no-flow-through-boundaries` (error), `outlet-without-flux` (warn),
+    `mass-imbalance` (warn), `no-flow-boundaries` (info — a lid-driven cavity is
+    not a problem). Decomposed cases are summed over `processor*/`.
+- **Quoted arguments** — the run whitelist tokenizer now honours `'…'` and `"…"`,
+  so `foamToVTK -fields '(T p)'`, `splitMeshRegions -cellZones 'fluid solid'` and
+  `foamPostProcess -func "cellMax(U)"` pass one argument each instead of leaking
+  the quotes to OpenFOAM ("invalid first character found : ''").
+- **`mpirun` without `-parallel`** is refused with the reason ("every rank runs
+  its own complete serial copy of the case and they overwrite each other").
+- **Doctor: `vector-along-empty-axis`** — a vector field with a component along
+  the one-cell-thick axis of a 2D mesh is an error before the solver starts.
+- **`solve_verify` reads transient runs as transient**: a `ddtSchemes` entry of
+  `Euler`/`backward` means the residual floor of the last step is not a
+  convergence criterion, so the verdict is completion instead of `REVISE`.
+  Species (`CH4`, `CO2`, …) no longer dominate the floor; the core fields do, and
+  the reason names the worst field.
+- **`clean`** learned `vtk` (`VTK/`, `vtk/`) and `runs` (`.openfoam-runs/`).
+
 ## v0.9.35
 
 The README is a map again: 237 lines instead of 491, and the long parts moved to

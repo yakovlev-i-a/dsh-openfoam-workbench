@@ -79,3 +79,25 @@ directory that does hold the library plus the exact `libPaths` call.
 messages and points at the same fix. Background runs keep the extra environment in
 their registry entry, so `run_list` / `solver_status` / `run_progress` still track
 them.
+
+## 2D cases and the `empty` axis
+
+A 2D case is one cell thick along one axis, and the two patches on that axis are
+`empty`. Nothing can flow across them — and that is exactly what makes a 2D case
+easy to break silently: a velocity that points along the `empty` axis carries zero
+flux, continuity is then satisfied by definition, every residual falls to 0 and
+the run reaches `End` looking healthy while the domain has no through-flow at all.
+
+Two checks cover it, and they are complementary:
+
+- **`check`** raises `vector-along-empty-axis` (error) *before* a run: it reads
+  which axis the `empty` patches are normal to from the patch geometry, then looks
+  for a vector field with a component along it.
+- **`flow_check`** raises `inlet-without-flux` (error) *after* a write: it sums the
+  boundary `phi` per patch from the written field files and compares it with what
+  each velocity condition intends. Read-only — no utility runs, nothing is written
+  into the case, and a decomposed case is summed over `processor*/`.
+
+Both work for single- and multi-region cases; a compressible or reacting case is
+allowed a mass imbalance up to 5 % (density and composition change store mass in
+the domain), an incompressible one must balance to a fraction of a percent.
