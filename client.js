@@ -24,8 +24,12 @@ window.__ModuleLoader__.load({
     // The chip is a `::before` on the summary, so it needs no slot, no React
     // component and no per-tool view: the summary starts with the tool name, and
     // a pseudo-element puts a filled 3-letter block in front of it.
+    // The mark is a data-URI SVG, so the chip needs no file, no package
+    // `assets/` export and no extra request: one glyph, scaled by background-size.
+    const MARK = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3.2 19.4 7.6v8.8L12 20.8 4.6 16.4V7.6Z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/></svg>'
+    const MARK_URL = 'url("data:image/svg+xml,' + encodeURIComponent(MARK) + '")'
     const CSS = [
-      '/* OpenFOAM Workbench: blue "OFW" chip on every openfoam_* tool row */',
+      '/* OpenFOAM Workbench: mesh mark + "OFW" chip on every openfoam_* tool row */',
       '[data-tool^="openfoam_"] [class*="_summary"] { color: #3b518c; }',
       '[data-tool^="openfoam_"] [class*="_summary"]::before {',
       '  content: "OFW";',
@@ -33,9 +37,13 @@ window.__ModuleLoader__.load({
       '  box-sizing: border-box;',
       '  min-width: 27px;',
       '  margin-right: 6px;',
-      '  padding: 0 5px;',
+      '  padding: 0 6px 0 21px;',
       '  border-radius: 3px;',
-      '  background: #3b518c;',
+      '  background-color: #3b518c;',
+      '  background-image: ' + MARK_URL + ';',
+      '  background-repeat: no-repeat;',
+      '  background-position: 6px center;',
+      '  background-size: 11px 11px;',
       '  color: #fff;',
       '  font-size: 10px;',
       '  font-weight: 700;',
@@ -45,7 +53,7 @@ window.__ModuleLoader__.load({
       '  vertical-align: 1px;',
       '}',
       'body[data-ds-dark-theme] [data-tool^="openfoam_"] [class*="_summary"] { color: #9db4e0; }',
-      'body[data-ds-dark-theme] [data-tool^="openfoam_"] [class*="_summary"]::before { background: #4b63a6; color: #fff; }',
+      'body[data-ds-dark-theme] [data-tool^="openfoam_"] [class*="_summary"]::before { background-color: #4b63a6; }',
     ].join('\n')
 
     return {

@@ -334,11 +334,13 @@ does not exist in OpenFOAM.org — the per-region call is the only honest one.
   `check` / `run_list` / `mesh_verify` / `env_check` / `list_cases` /
   `run_progress` / `solve_verify` / `usage_report`, compact JSON for large
   payloads, and a `QUESTION` block whenever a tool needs a human decision
-  (`needs_input`). In the Web UI every `openfoam_*` row carries a filled **OFW**
-  chip (white letters on `#3b518c`, `#4b63a6` on dark) before the tool name, and
-  its call summary (`openfoam_x · …`) is blue, `#3b518c` on light and `#9db4e0`
-  on dark. Both come from a `::before` rule in `client.js`, the browser half of
-  this bundle — no per-tool registration and no DOM change.
+  (`needs_input`). In the Web UI every `openfoam_*` row carries a filled chip
+  before the tool name: a white mesh mark plus **OFW**, on `#3b518c` (`#4b63a6`
+  on dark), and its call summary (`openfoam_x · …`) is blue, `#3b518c` on light
+  and `#9db4e0` on dark. Both come from one `::before` rule in `client.js`, the
+  browser half of this bundle — no per-tool registration, no DOM change, and the
+  mark is an inline SVG data URI, so it needs no file, no `assets/` export and no
+  extra request.
 
 ## Screenshots
 
