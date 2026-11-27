@@ -26,7 +26,7 @@ description: Set up, run and verify a multi-region conjugate-heat-transfer case 
 
 ## Step 1 — read the case as regions, not as one mesh
 `openfoam_inspect_case` → `regions`, `regionSolvers`, per-region `fields`/`patches`;
-`openfoam_case_probe_facts` → `region_governing` (e.g. fluid compressible multicomponent,
+`openfoam_inspect_case(facts: true)` → `region_governing` (e.g. fluid compressible multicomponent,
 solid solid mechanics) and `compressible`.
 
 A single `patches: []` or `fields: ["fluid","solid"]` means the tool looked at the case
@@ -86,7 +86,7 @@ step where org and com diverge, and where the org-14 CLI bites:
 - `openfoam_run_solver_async(casePath, "mpirun -np 5 foamMultiRun")`. The synchronous
   `openfoam_run` refuses `mpirun` on purpose: a production run must not be killed by a
   tool timeout.
-- `openfoam_run_progress(log_path)` → t, steps, s/step, ETA, state;
+- `openfoam_solve_verify(log_path)` → t, steps, s/step, ETA, state (`run_watch` to wait);
   `openfoam_solver_status(run_id)` → process state plus `logVerdict`; `openfoam_solver_stop(run_id)` to stop.
 - **A CHT run is long by definition: watch it.** There is no completion notification for an
   async run, so `openfoam_run_watch(run_id, timeout_s)` for one blocking window, and when the

@@ -1,6 +1,6 @@
 ---
 name: openfoam-stats
-description: Numerical analysis patterns for OpenFOAM run outputs — Cf/Cp and wall-shear extraction, drag/lift, residual plateau, QoI drift, Richardson/GCI, two-extractor agreement — plus the anti-patterns that cause silent-zero results. Use when post-processing a run or judging convergence.
+description: Numerical analysis patterns for OpenFOAM run outputs — Cf/Cp and wall-shear extraction, drag/lift, residual plateau, QoI drift, Richardson/GCI, two-extractor agreement, and the cross-case QoI table (trends, correlations, RMSE/MAE) — plus the anti-patterns that cause silent-zero results. Use when post-processing a run, judging convergence, or comparing a parameter sweep.
 ---
 
 # openfoam-stats
@@ -43,4 +43,16 @@ Compare two independent reads (log parse vs function-object / PyVista): `rel = |
 - If a snippet fails or returns NaN/inf, write `<pattern>_failed.json` with the error, never a fake number.
 
 ## Tools
-`openfoam_residual_series`, `openfoam_log`, `openfoam_post_verify`, `openfoam_render`; `bash` + `python3` for the snippets.
+`openfoam_residual_series`, `openfoam_solve_verify`, `openfoam_render`; `bash` + `python3` for the snippets.
+
+## Pattern N — several cases: the QoI table
+Once single-case extraction works, a sweep is the same recipe per case plus one table.
+1. **Collect**: for every case read the solver and parameters (`controlDict`, `0/`), and the run status — keep only runs whose log ends in `End` with no FATAL; record why a case was excluded.
+2. **Pick 3–6 metrics** for the topic: BFS → `Cf`, `x_reattach`, `Cp`; channel → `Cf`, friction factor, centerline `U` RMSE; bluff body / airfoil → `Cd`, `Cl`, wake decay.
+3. **Per-case values** from `postProcessing/*` (forces, wallShearStress, probes) and the boundary fields, using the patterns above.
+4. **Table**: rows = cases, columns = metrics; write `metrics.csv` next to `analysis.json`.
+5. **Trends**: sort by the sweep axis, note monotone trends, Pearson `r` against the sweep axis and against every other metric; keep `|r| ≥ 0.7` and `n ≥ 3`.
+6. **Reference comparison** (only if real data exists): `RMSE = sqrt(mean((sim-ref)^2))`, `MAE = mean(|sim-ref|)`, Pearson `r`. Never invent reference data.
+7. **Write `analysis.json`**: `{cases_included, cases_excluded, metrics, trends, correlations, conclusions, best_case}`.
+
+Anti-hallucination: every metric carries units and `n_samples` (below ~5 it is invalid), and a case that failed or did not converge never enters a ranking.

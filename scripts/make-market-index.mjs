@@ -39,7 +39,7 @@ const index = {
       title: { en: 'OpenFOAM Workbench', ru: 'OpenFOAM Workbench' },
       description: {
         en: pkg.description,
-        ru: `Плагин OpenFOAM для DeepSeek Harness: ${toolCount} инструментов и 11 навыков — осмотр кейса, разработка солверов, сетки, многорегиональные CHT-расчёты, фоновые запуски, рендеры, воспроизведение статей и библиотека опыта.`,
+        ru: `Плагин OpenFOAM для DeepSeek Harness: ${toolCount} инструмента и 11 навыков — осмотр кейса, разработка солверов, сетки, многорегиональные CHT-расчёты, фоновые запуски, рендеры, воспроизведение статей и библиотека опыта.`,
       },
       icon,
       author: 'yakovlev-i-a',

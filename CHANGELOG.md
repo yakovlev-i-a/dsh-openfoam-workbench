@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.9.41
+
+The surface is smaller on purpose. A revision of every tool and skill found 16
+tools that were a strict subset of another tool or had no producer at all, four
+skills that repeated each other, and an always-on prompt sitting at 3071 of its
+3072 allowed bytes — the budget was spent on routing lines for duplicates.
+
+Every removal below was verified by running both sides on the same real input
+before it was deleted, and every merge kept the surviving tool's behaviour:
+
+- **Merged into an existing tool** (no capability lost): `mesh_box_stl` and
+  `mesh_stl_check` → `stl_generate(bbox_min, bbox_max)` / `stl_inspect` +
+  `mesh_verify`; `geom_verify` → `stl_inspect(expected_bbox)` (returns `pass` and
+  `checks: watertight, positive volume, bbox matches expected`);
+  `env_check` → `version_info(all: true)`; `log` → `mesh_verify(log_path)` for a
+  saved checkMesh log and `solve_verify` for a solver log; `run_progress` →
+  `solve_verify`, which now returns `time`, `endTime`, `secondsPerStep` and `eta`
+  while the run is live; `case_probe_facts` → `inspect_case(facts: true)`
+  (accepts `case_path` as before); `dry_compile` and `solver_smoke` →
+  `solver_build(dryRun: true, smoke: true)`; `paper_param_verify` →
+  `paper_extract(verify: true, expected_units: {…})`.
+- **Removed** (duplicate or dead): `compare_render` (`render` twice),
+  `post_verify`, `list_cases`, `read_document` (the harness `read` tool covers
+  text), `experience_export_sft` and `experience_eval_compare` (nothing in the
+  plugin ever produced the records the latter compared).
+- **Skills 12 → 11**: `openfoam-analyze` folded into `openfoam-stats` as "Pattern
+  N — several cases: the QoI table" (its collection, trends, correlation and
+  RMSE/MAE recipe kept verbatim in spirit); every skill that named a removed tool
+  now names the surviving call.
+- `CORE.md` rewritten around the surviving tools and back inside the budget
+  (3064 of 3072 bytes), so the always-on prompt routes to `inspect_case(facts:
+  true)`, `solve_verify`, `run_watch` and `stl_generate` instead of the tools they
+  replaced.
+
+69 tools → **53**, 12 skills → **11**, 240 tests still green.
+
 ## v0.9.40
 
 The transient verdict now actually runs. v0.9.36 taught `solve_verify` that a

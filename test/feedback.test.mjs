@@ -41,7 +41,7 @@ test('0_orig is read like 0/ (fields, patches, restore)', async () => {
     const inspect = await tools.openfoam_inspect_case.execute({ casePath: 'case0orig' })
     assert.deepEqual(inspect.fields.sort(), ['U', 'p'], 'inspect_case must read 0_orig/')
 
-    const facts = await tools.openfoam_case_probe_facts.execute({ casePath: 'case0orig' })
+    const facts = await tools.openfoam_inspect_case.execute({ casePath: 'case0orig', facts: true })
     assert.deepEqual([...facts.fields_in_0].sort(), ['U', 'p'])
     assert.equal(facts.fields_from, '0_orig')
     assert.deepEqual([...facts.patches].sort(), ['inlet', 'outlet'], 'patches come from polyMesh/boundary')
@@ -72,7 +72,7 @@ test('log tools accept path/log_path and explain a wrong name', async () => {
     assert.match(wrong.error, /log_path \(alias: path\) is required/)
     assert.match(wrong.error, /got: log/)
 
-    const progress = await tools.openfoam_run_progress.execute({ path: log })
+    const progress = await tools.openfoam_solve_verify.execute({ path: log })
     assert.equal(progress.ok, true, JSON.stringify(progress))
     const verdict = await tools.openfoam_solve_verify.execute({ path: log })
     assert.equal(verdict.ok, true, JSON.stringify(verdict))
@@ -88,7 +88,7 @@ test('mesh_verify on a case without polyMesh reports failed:true with the reason
     const caseDir = join(root, 'nomesh')
     makeTree(caseDir, { 'system/controlDict': 'application icoFoam;\n', 'system/fvSchemes': 'ddtSchemes { default Euler; }\n' })
     const tools = registry({ caseRoots: [root] })
-    const env = await tools.openfoam_env_check.execute({})
+    const env = await tools.openfoam_version_info.execute({})
     if (!env.ok) return // no OpenFOAM on this host
     const r = await tools.openfoam_mesh_verify.execute({ casePath: 'nomesh' })
     assert.equal(r.ok, true, JSON.stringify(r))
@@ -138,7 +138,7 @@ test('steps counts the whole log while the window is reported separately', async
     lines.push('End')
     writeFileSync(log, lines.join('\n') + '\n')
     const tools = registry({ caseRoots: [root], logTailBytes: 4000 })
-    const progress = await tools.openfoam_run_progress.execute({ log_path: log })
+    const progress = await tools.openfoam_solve_verify.execute({ log_path: log })
     assert.equal(progress.ok, true, JSON.stringify(progress).slice(0, 300))
     assert.equal(progress.logScan.truncated, true, 'the fixture must exceed the tail window')
     assert.equal(progress.stepsTotal, 3000)
@@ -156,7 +156,7 @@ test('steps counts the whole log while the window is reported separately', async
 // 3.5: list_solvers must see solvers below the category level (chtMultiRegionFoam).
 test('list_solvers recurses into applications/solvers and finds CHT', async () => {
   const tools = registry({})
-  const env = await tools.openfoam_env_check.execute({})
+  const env = await tools.openfoam_version_info.execute({})
   if (!env.ok) return
   const com = await tools.openfoam_list_solvers.execute({ distribution: 'com' })
   if (com.ok) {

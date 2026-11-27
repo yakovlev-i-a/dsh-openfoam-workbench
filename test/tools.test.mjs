@@ -158,12 +158,11 @@ test('list_solvers classifies modules and reports distribution', async () => {
   }
 })
 
-test('env_check reports the bundle version and accepts distribution', async () => {
+test('version_info reports the bundle version and accepts distribution', async () => {
   const tools = registry()
-  assert.ok(tools.openfoam_env_check.parameters.properties.distribution)
   assert.ok(tools.openfoam_version_info.parameters.properties.distribution)
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  const r = await tools.openfoam_env_check.execute({})
+  const r = await tools.openfoam_version_info.execute({})
   assert.equal(r.plugin.name, pkg.name)
   assert.equal(r.plugin.version, pkg.version)
 })
@@ -230,7 +229,7 @@ test('multi-region case: inspect_case and case_probe_facts expose regions', asyn
     assert.equal(i.regionDetails.length, 2)
     assert.equal(i.regionDetails[0].patches.length, 3)
     assert.ok(i.fields.includes('T'))
-    const p = await tools.openfoam_case_probe_facts.execute({ case_path: dir })
+    const p = await tools.openfoam_inspect_case.execute({ case_path: dir, facts: true })
     assert.deepEqual(p.regions, ['fluid', 'solid'])
     assert.equal(p.region_governing.find((g) => g.region === 'fluid').compressible, true)
   } finally {
@@ -318,13 +317,13 @@ test('clean lists artefacts in a dry run and removes them on demand', async () =
   }
 })
 
-test('run_progress and solve_verify report RUNNING on a live multi-region log', async () => {
+test('solve_verify reports RUNNING on a live multi-region log', async () => {
   const dir = makeCase({ 'system/controlDict': 'application foamMultiRun;\nendTime 300;\n' })
   try {
     const log = join(dir, 'log.foamMultiRun')
     writeFileSync(log, readFileSync(new URL('./fixtures/log.foamMultiRun.running', import.meta.url), 'utf8'))
     const tools = registry()
-    const p = await tools.openfoam_run_progress.execute({ log_path: log })
+    const p = await tools.openfoam_solve_verify.execute({ log_path: log })
     assertJsonSafe(p)
     assert.equal(p.ok, true)
     assert.equal(p.state, 'running')
@@ -409,7 +408,7 @@ test('apply fails loudly when CORE.md is missing or empty', () => {
 test('the shipped CORE.md stays within the prompt budget and keeps the routing markers', () => {
   const text = readFileSync(new URL('../CORE.md', import.meta.url), 'utf8')
   assert.ok(Buffer.byteLength(text) <= 3072, `CORE.md grew to ${Buffer.byteLength(text)} bytes; keep the always-on prompt under 3 KB`)
-  for (const marker of ['openfoam_source_search', 'openfoam_read_dict', 'openfoam_dict_set', 'openfoam_run_progress', 'openfoam_solve_verify', 'openfoam_usage_report', 'openfoam_clean']) {
+  for (const marker of ['openfoam_source_search', 'openfoam_read_dict', 'openfoam_dict_set', 'openfoam_run_watch', 'openfoam_solve_verify', 'openfoam_usage_report', 'openfoam_clean']) {
     assert.ok(text.includes(marker), `CORE.md lost the routing marker ${marker}`)
   }
 })

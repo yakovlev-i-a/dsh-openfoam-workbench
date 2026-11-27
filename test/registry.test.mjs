@@ -88,7 +88,7 @@ test('wrapped execute records a failure and rethrows', async () => {
 test('every registered tool has a working output.render (incl. the image tools)', () => {
   const tools = []
   apply({ systemPrompt: { section() {} }, skills: { register() {} }, tools: { register: (t) => tools.push(t) } }, { caseRoots: [] })
-  assert.equal(tools.length, 69)
+  assert.equal(tools.length, 53)
   const value = { ok: true, image: { id: 'x' }, a: { image: { id: 'a' } }, b: { image: { id: 'b' } }, findings: [], runs: [], metrics: {} }
   for (const tool of tools) {
     assert.equal(typeof tool.output.render, 'function', `${tool.name}: output.render is missing`)
@@ -100,6 +100,5 @@ test('every registered tool has a working output.render (incl. the image tools)'
   const image = (n) => byName(n).output.render({}, { ok: true, image: { id: 'x' } })
   assert.ok(image('openfoam_render').some((b) => b.type === 'image'), 'openfoam_render lost its image block')
   assert.ok(image('openfoam_stl_render').some((b) => b.type === 'image'), 'openfoam_stl_render lost its image block')
-  const cmp = byName('openfoam_compare_render').output.render({}, { ok: true, a: { image: { id: 'a' } }, b: { image: { id: 'b' } } })
-  assert.equal(cmp.filter((b) => b.type === 'image').length, 2, 'compare_render must show both images')
+  assert.equal(byName('openfoam_compare_render'), undefined, 'compare_render is folded into openfoam_render')
 })

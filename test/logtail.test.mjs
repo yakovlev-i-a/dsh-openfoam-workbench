@@ -55,7 +55,7 @@ test('solve_verify watches a huge log through the tail without seeing stale erro
     assert.equal(v.decision !== 'RERUN', true, 'an early FATAL from a previous attempt must not force RERUN')
     assert.equal(v.logScan.truncated, true)
     assert.equal(v.logScan.totalBytes > v.logScan.scannedBytes, true)
-    const r = await tools.openfoam_run_progress.execute({ log_path: p })
+    const r = await tools.openfoam_solve_verify.execute({ log_path: p })
     assert.equal(r.ok, true)
     assert.equal(r.state, 'finished')
     assert.equal(r.logScan.truncated, true)

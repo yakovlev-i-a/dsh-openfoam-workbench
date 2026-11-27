@@ -57,4 +57,4 @@ between a picture and a line:
   wrong, or the region was not written — the tool says which, read the message.
 
 ## Tools
-`openfoam_render` (pvpython), `openfoam_residual_series`, `openfoam_log`, `bash` + `python3` (matplotlib/numpy), `read_image` to judge the rendered PNGs.
+`openfoam_render` (pvpython), `openfoam_residual_series`, `bash` + `python3` (matplotlib/numpy), `read_image` to judge the rendered PNGs.

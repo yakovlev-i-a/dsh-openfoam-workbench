@@ -1,13 +1,13 @@
 # OpenFOAM Workbench (dsh-openfoam-workbench)
 
-A native **DeepSeek Harness** plugin for OpenFOAM: 69 tools and 12 on-demand
+A native **DeepSeek Harness** plugin for OpenFOAM: 53 tools and 11 on-demand
 skills for case setup, inspection, meshing, solver development, multi-region CHT
 runs, durable background jobs, off-screen renders, paper reproduction and an
 experience library. The agent gets one surface — a thin always-on core prompt
 (`CORE.md`), procedural skills, and tools that enforce the conventions instead of
 asking the model to remember them.
 
-**v0.9.40 · 69 tools · 12 skills · 240 tests** · validated on **OpenFOAM 14**
+**v0.9.41 · 53 tools · 11 skills · 240 tests** · validated on **OpenFOAM 14**
 (org) and **v2606** (com) with **ParaView 6.2** · in the
 [awesome-dsh-plugin](https://awesome-dsh-plugin.com/p/yakovlev-i-a/dsh-openfoam-workbench/)
 catalog. Pre-1.0: tools and on-disk conventions may still change between minor
@@ -25,11 +25,11 @@ replacing files on disk changes nothing in memory. `--profile web` is the profil
 that serves the Web UI — drop it for the default profile. The link carries no
 version: `releases/latest/download/…` is GitHub's alias for the newest release.
 
-Check what is actually loaded — `openfoam_env_check` prints `plugin.version` and
-the OpenFOAM installations it found:
+Check what is actually loaded — `openfoam_version_info` prints `plugin.version`
+and the OpenFOAM installations it found (`all: true` reports every distribution):
 
 ```text
-openfoam_env_check
+openfoam_version_info({ "all": true })
 ```
 
 Requirements: **DSH `>=0.2.2-rc.1`** (declared as `engines.dsh`, so an older host
@@ -83,7 +83,7 @@ All of them end with the same restart.
 - **where the version is written down** — the
   [releases page](https://github.com/yakovlev-i-a/dsh-openfoam-workbench/releases)
   (stable-named asset for the install line, version-named one to pin, and the
-  commit its tag points at), `market/index.json`, and `openfoam_env_check`.
+  commit its tag points at), `market/index.json`, and `openfoam_version_info`.
 
 ## Configuration
 
@@ -123,28 +123,27 @@ foamRoots:
 defaultDistribution: org
 ```
 
-`openfoam_env_check` reports **every** configured distribution. `openfoam_run`,
-`openfoam_run_solver_async`, `openfoam_solver_build`, `openfoam_dry_compile`,
-`openfoam_solver_smoke` and `openfoam_version_info` take `distribution`
+`openfoam_version_info(all: true)` reports **every** configured distribution.
+`openfoam_run`, `openfoam_run_solver_async`, `openfoam_solver_build`,
+`openfoam_field_stats` and `openfoam_version_info` take `distribution`
 (`org` / `com`) and otherwise use `defaultDistribution`.
 
 ## What you get
 
-- **Tools** (`openfoam_*`, 69): env/version, tutorials, solver clone/build/smoke,
-  durable async runs (`run_solver_async` → `run_list` / `solver_status`), run
-  progress and ETA, meshing (STL → blockMesh/snappy → checkMesh), renders (inline
+- **Tools** (`openfoam_*`, 53): env/version, tutorials, solver clone/build/smoke,
+  durable async runs (`run_solver_async` → `run_list` / `solver_status` /
+  `run_watch`), progress, ETA and the final verdict (`solve_verify`), meshing (STL → blockMesh/snappy → checkMesh), renders (inline
   PNG, multi-region), verification (`solve_verify`, `mesh_verify`), case editing
   (`dict_set`, `clean`), `0/` fields for a new mesh (`fields_from_template`) and
   zone values (`set_fields`), doctor checks, error diagnosis, flux checking
   (`flow_check`), papers, experience, and a usage self-audit. Verdicts on huge logs read only the tail (`logTailBytes`, 4 MB
   by default) instead of the whole file.
-- **Skills** (`SKILL.md`, load on demand, 12): case-builder, cht, lts-ch,
-  solver-development, code-modify, meshing, mesh-independence, stats, viz, analyze,
-  paper-reproduction, self-evolution. A test keeps every referenced tool registered and the always-on
+- **Skills** (`SKILL.md`, load on demand, 11): case-builder, cht, lts-ch,
+  solver-development, code-modify, meshing, mesh-independence, stats (single case
+  and sweeps), viz, paper-reproduction, self-evolution. A test keeps every referenced tool registered and the always-on
   catalog under 4 KB.
 - **Presentation**: inline render images, table renders for `check` / `run_list` /
-  `mesh_verify` / `env_check` / `list_cases` / `run_progress` / `solve_verify` /
-  `usage_report`, compact JSON for large payloads, and a `QUESTION` block whenever
+  `mesh_verify` / `version_info` / `solve_verify` / `usage_report`, compact JSON for large payloads, and a `QUESTION` block whenever
   a tool needs a human decision (`needs_input`). In the Web UI every `openfoam_*`
   row and every skill row of this bundle (`Skill · openfoam-cht`) carries a small
   OpenFOAM mark — flow around an obstacle, 26×13 — while other plugins' skills keep
@@ -173,7 +172,7 @@ must pass on both families, and they run on every push.
 | anything older or unknown | – | `unknown` | best effort; `openfoam_check` adds an `untested-version` warning |
 
 Capabilities are detected from the installation itself, not from a version table:
-`openfoam_version_info` / `openfoam_env_check` return a `caps` object (modular
+`openfoam_version_info` returns a `caps` object (modular
 form, post-processing and feature utilities, transport/turbulence file names, 0/
 vs 0.orig, support level), and `mesh_plan`, `case_scaffold` and `check` report the
 same capabilities, so a generated case always says which conventions it followed.

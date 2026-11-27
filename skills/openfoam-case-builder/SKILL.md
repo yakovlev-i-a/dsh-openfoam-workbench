@@ -16,7 +16,7 @@ description: Set up and run an OpenFOAM case from a tutorial — find a matching
   executable. Module names are in `applications/modules/`.
 - **OpenFOAM.com (ESI):** `application <solver>;`, run the solver executable
   (e.g. `simpleFoam`).
-`openfoam_inspect_case` and `openfoam_case_probe_facts` accept both keys — read
+`openfoam_inspect_case` (add `facts: true`) accepts both keys — read
 what the case actually has, do not assume `application` or `solver`.
 
 ## Step 1 — intent

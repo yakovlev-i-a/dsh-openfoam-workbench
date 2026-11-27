@@ -36,7 +36,7 @@ LTS does not add a time axis — it changes how one global step is taken:
    block must exist even when it is nearly empty, and a missing one is fatal.
 3. Keep `deltaT` small enough for the solid's thermal diffusion
    (`alpha·dt/dx² ≲ 0.5`) — the solid still takes that step.
-4. Run, watch `Co` and the flow residuals with `openfoam_run_progress`; with LTS
+4. Run, watch `Co` and the flow residuals with `openfoam_solve_verify`; with LTS
    the residuals drop fast and then plateau.
 5. `openfoam_solve_verify` judges a transient case on completion, and its
    residual floor ignores species fields.
@@ -104,6 +104,6 @@ The log says it outright:
 ## Tools
 `openfoam_read_dict` / `openfoam_dict_set` (per-region `ddtSchemes`,
 `PIMPLE { maxCo; maxDeltaT }`), `openfoam_run_solver_async` +
-`openfoam_run_progress`, `openfoam_solve_verify`, `openfoam_field_stats` (native
+`openfoam_solve_verify`, `openfoam_run_watch`, `openfoam_field_stats` (native
 reader, works on a decomposed or read-only case), `openfoam_flow_check` (the gas
 must still move).

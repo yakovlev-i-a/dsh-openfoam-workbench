@@ -11,7 +11,7 @@ description: Reproduce a paper or implant its algorithm in OpenFOAM — extract 
 ## Four-step method (mandatory)
 1. `openfoam_algo_extract_contract(source_file, algorithm_name)` — inputs/outputs/
    equations/governing_type/assumptions. **No** `write` of new source before this.
-2. `openfoam_case_probe_facts(case_path)` — real facts: solver, phases, turbulence,
+2. `openfoam_inspect_case(case_path, facts: true)` — real facts: solver, phases, turbulence,
    dimensions, patches, fields. **No** BC/property edits before this.
 3. `openfoam_algo_case_audit(contract, case_facts)` — mismatches. Non-empty → stop
    and resolve or report; do not proceed.

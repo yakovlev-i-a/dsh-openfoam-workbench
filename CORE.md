@@ -23,7 +23,7 @@ tools to inspect, set up, run and verify cases.
   openfoam_dict_set; clean a case -> openfoam_clean (dry run first).
 - find a case/template -> openfoam_find_tutorial + openfoam_clone_tutorial;
   build one from scratch (incompressible laminar) -> openfoam_case_scaffold;
-  what is this case -> openfoam_inspect_case / openfoam_case_probe_facts.
+  which case is this -> openfoam_inspect_case (facts: true).
 - before a run -> openfoam_check; a failure -> openfoam_diagnose_error;
   mesh -> openfoam_mesh_verify; field min/max -> openfoam_field_stats;
   new mesh, old per-cell `0/` -> openfoam_fields_from_template;
@@ -31,8 +31,8 @@ tools to inspect, set up, run and verify cases.
   "does the case move fluid?" (deceptive clean run, 2D inlet across the empty
   axis) -> openfoam_flow_check; pictures -> openfoam_render + read_image.
 - runs -> openfoam_run (short) / openfoam_run_solver_async (long, incl.
-  `mpirun -np N foamMultiRun`); progress/ETA -> openfoam_run_progress or
-  openfoam_solver_status; verdict -> openfoam_solve_verify.
+  `mpirun -np N foamMultiRun`); progress/ETA/verdict -> openfoam_solve_verify;
+  wait -> openfoam_run_watch; STL -> openfoam_stl_generate.
 
 ## When a tool returns a dead end
 Read its `hint` / `available` / `next` fields, try the narrower call it suggests,

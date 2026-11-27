@@ -30,8 +30,8 @@ inspect_case        -> regions, regionSolvers, per-region fields/patches
 read_dict           -> "fluid/fvSchemes", "system/fluid/…", "0/fluid/T", or region="fluid"
 mesh_verify         -> checkMesh -region <r> per region, verdict from checkMesh itself
 run / run_async     -> mpirun -np N foamMultiRun (whitelisted launcher)
-run_progress        -> t, steps, s/step, ETA from a multi-region/parallel log
-solve_verify        -> RUNNING | STALLED | finished, no false divergence from the sigFpe banner
+solve_verify        -> t, steps, s/step, ETA, RUNNING | finished, no false divergence from the sigFpe banner
+run_watch           -> the same verdict, but blocks until the run leaves RUNNING/STALLED
 render              -> every mesh region (or region="fluid"), errors on an empty scene
 ```
 
@@ -77,7 +77,7 @@ and the `~/OpenFOAM/*/platforms/*/lib` trees; `case-library-missing` names the
 directory that does hold the library plus the exact `libPaths` call.
 `diagnose_error` recognises the `dlopen` / `Unknown fvMeshTopoChanger type`
 messages and points at the same fix. Background runs keep the extra environment in
-their registry entry, so `run_list` / `solver_status` / `run_progress` still track
+their registry entry, so `run_list` / `solver_status` / `solve_verify` still track
 them.
 
 ## 2D cases and the `empty` axis

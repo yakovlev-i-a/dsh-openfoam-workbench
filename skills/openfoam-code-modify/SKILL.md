@@ -21,7 +21,7 @@ description: Implement a small custom OpenFOAM model (viscosity/turbulence/sourc
 2. `openfoam_read_source` — pull the parent class header/signatures (never guess the API).
 3. Write `<Class>.H`, `<Class>.C`, `Make/files`, `Make/options`.
 4. `wmake libso`; on failure read the **tail** of `build.log`, fix the specific line, retry.
-5. Activate, then smoke: `openfoam_dry_compile` / a short run, verify the log ends in `End`.
+5. Activate, then smoke: `openfoam_solver_build` with `dryRun: true` / a short run, verify the log ends in `End`.
 
 ## Pitfalls
 - A bare `lib<Class>.so` in `controlDict.libs` resolves through the global search path — the case becomes non-portable. Use the case-relative path.

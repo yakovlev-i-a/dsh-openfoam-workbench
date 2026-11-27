@@ -18,7 +18,7 @@ description: Go from STL geometry to an OpenFOAM mesh — inspect/render the STL
 5. `blockMesh` → `openfoam_mesh_verify(casePath)`.
 6. `snappyHexMesh -overwrite` → `openfoam_mesh_verify(casePath)`.
 7. `openfoam_patch_diff` — confirm inlet/outlet/walls were cut out.
-8. `openfoam_mesh_stl_check` — Hausdorff fit to the original STL.
+8. `openfoam_stl_inspect` on the source STL + `openfoam_mesh_verify` on the mesh.
 
 ## Pitfalls
 - Missing `domain.type` → the wrong computational domain.
@@ -27,4 +27,4 @@ description: Go from STL geometry to an OpenFOAM mesh — inspect/render the STL
 
 ## Verify
 - `openfoam_mesh_verify` pass=true (checkMesh + visual)
-- `openfoam_mesh_stl_check` pass=true
+- `openfoam_mesh_verify` pass=true

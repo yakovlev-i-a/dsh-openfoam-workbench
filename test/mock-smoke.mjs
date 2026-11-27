@@ -26,7 +26,7 @@ const results = []
 // Batch 4a
 results.push(await run('openfoam_compute_first_layer', { U_ref: 10, L_ref: 1 }))
 results.push(await run('openfoam_patch_diff', { casePath: 'kineticTheoryTransport/validation' }))
-results.push(await run('openfoam_mesh_box_stl', { casePath: tmp, bbox_min: [-1, -1, -1], bbox_max: [1, 1, 1], name: 'box' }))
+results.push(await run('openfoam_stl_generate', { casePath: tmp, bbox_min: [-1, -1, -1], bbox_max: [1, 1, 1], name: 'box' }))
 results.push(await run('openfoam_stl_inspect', { stl_path: join(tmp, 'constant/triSurface/box.stl') }))
 
 // Batch 4b
@@ -43,7 +43,7 @@ results.push(await run('openfoam_mesh_verify', { casePath: 'kineticTheoryTranspo
 
 // Batch 5
 results.push(await run('openfoam_diagnose_error', { text: '--> FOAM FATAL ERROR: Floating point exception (FPE) at t=0.1 for U' }))
-results.push(await run('openfoam_case_probe_facts', { case_path: 'kineticTheoryTransport/validation' }))
+results.push(await run('openfoam_inspect_case', { case_path: 'kineticTheoryTransport/validation', facts: true }))
 results.push(await run('openfoam_algo_extract_contract', { source_file: '/opt/openfoam14/applications/legacy/incompressible/icoFoam/icoFoam.C', algorithm_name: 'icoFoam-main' }))
 results.push(
   await run('openfoam_algo_case_audit', {
@@ -56,14 +56,14 @@ results.push(await run('openfoam_experience_recall', { query: 'box blockMesh ext
 results.push(await run('openfoam_experience_list', {}))
 
 // Batch 6
-results.push(await run('openfoam_geom_verify', { stl_path: join(tmp, 'constant/triSurface/box.stl') }))
+results.push(await run('openfoam_stl_inspect', { stl_path: join(tmp, 'constant/triSurface/box.stl'), expected_bbox: [-1, -1, -1, 1, 1, 1] }))
 results.push(await run('openfoam_solve_verify', { log_path: join(tmp, 'run.log') }))
-results.push(await run('openfoam_paper_param_verify', { params: { U_in: 1.5, nu: 1.5e-5, T: 300 }, expected_units: { U_in: 'm/s', nu: 'm2/s' } }))
+results.push(await run('openfoam_paper_extract', { path: join(tmp, 'none.pdf'), verify: true, expected_units: { U_in: 'm/s', nu: 'm2/s' } }))
 results.push(await run('openfoam_render', { case_path: tmp }))
 
 // Batch 7
 const pdf = '/media/yakovlev-i-a/adata-legend-512/openfoam-dev/lowMachMulticomponentFluid/hassanalyMinimallydissipativeLowMachNumber2018.pdf'
-results.push(await run('openfoam_read_document', { path: pdf }))
+results.push(await run('openfoam_paper_extract', { path: pdf, focus: 'dissipation' }))
 results.push(await run('openfoam_read_paper', { path: pdf, focus: 'dissipation' }))
 results.push(await run('openfoam_paper_extract', { path: pdf }))
 results.push(await run('openfoam_paper_search', { query: 'k-omega SST turbulence', top_k: 3 }))

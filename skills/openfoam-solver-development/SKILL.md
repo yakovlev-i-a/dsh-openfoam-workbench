@@ -40,8 +40,8 @@ Never mix the two: a `.org` case with `solver incompressibleFluid` will not run 
 4. Check `Make/files`: exactly one main `.C` and `EXE = $(FOAM_USER_APPBIN)/<name>`.
 5. Inventory `createFields.H`, IOobject flags, thermo/turbulence, `fvModels`/`fvConstraints`.
 6. Map the loop: `UEqn`/`pEqn`, `simpleControl`/`pimpleControl`, `nOuterCorrectors`, `CorrectPhi`, all `solve()`s.
-7. `openfoam_dry_compile(modulePath)` for the first error, then `openfoam_solver_build`.
-8. `openfoam_solver_smoke` — `-help` and a short copied case.
+7. `openfoam_solver_build(modulePath, dryRun: true)` for the first error, then a full build.
+8. `openfoam_solver_build(modulePath, smoke: true)` — `-help`, then a short copied case.
 
 ## Key parameters
 - EXE target: `EXE = $(FOAM_USER_APPBIN)/<name>`
@@ -55,7 +55,7 @@ Never mix the two: a `.org` case with `solver incompressibleFluid` will not run 
 - `.org` vs `.com` differ in headers/APIs — check the installed version first.
 
 ## Verify
-- `openfoam_dry_compile` success and `wmake -j` exit 0
+- `dryRun` success and a full `wmake -j` exit 0
 - `<name> -help` starts without missing-library errors
 - `ldd` resolves custom libraries from the user directory
 - cloned tutorial: blockMesh → checkMesh → solver completes
