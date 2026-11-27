@@ -22,11 +22,11 @@
       "versions": [
         {
           "version": "0.9.41",
-          "publishTimestamp": 1795776306,
+          "publishTimestamp": 1795776434,
           "source": {
             "type": "git",
             "url": "https://github.com/yakovlev-i-a/dsh-openfoam-workbench.git",
-            "commit": "87ecec22a072e5760903f1710ff220b51ea44a28"
+            "commit": "cc9ff035cac49cefa7dccda4729eafe528368bcc"
           },
           "engines": {
             "dsh": ">=0.2.2-rc.1"
