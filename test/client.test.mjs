@@ -43,12 +43,11 @@ test('client.js registers the openfoam accent stylesheet and removes it on clean
     // The chip: a filled 3-letter block before the tool name, and no DOM change.
     assert.match(style.textContent, /\[class\*="_summary"\]::before \{/, 'the chip is a pseudo-element')
     assert.match(style.textContent, /content: "OFW"/, 'the chip reads OFW')
-    assert.match(style.textContent, /background-color: #3b518c/, 'the chip is filled blue')
-    assert.match(style.textContent, /color: #fff/, 'the chip letters are white')
+    assert.match(style.textContent, /color: #3b518c/, 'the letters carry the accent colour')
     // The mark travels inside the stylesheet: no file, no assets export, no request.
-    assert.match(style.textContent, /background-image: url\("data:image\/svg\+xml,/, 'the mark is a data URI')
-    assert.match(style.textContent, /background-size: 11px 11px/, 'the mark is scaled down')
-    assert.match(style.textContent, /padding: 0 6px 0 21px/, 'space is reserved for the mark')
+    assert.match(style.textContent, /background-image: url\("data:image\/svg\+xml;base64,/, 'the mark is an inline data URI')
+    assert.match(style.textContent, /background-size: 20px 15px/, 'the mark keeps its 4:3 aspect')
+    assert.match(style.textContent, /padding: 0 0 0 26px/, 'space is reserved for the mark')
     assert.equal((style.textContent.match(/::before/g) || []).length, 2, 'light and dark chips')
     assert.doesNotMatch(style.textContent, /box-shadow/, 'the ring was removed by request')
     assert.match(style.textContent, /data-ds-dark-theme/, 'dark palette variant expected')
